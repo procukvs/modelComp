@@ -6,7 +6,7 @@ public class Algorithm extends Model {
 	public boolean isNumeric = true;
 	public int rank = 1;
 	
-	Algorithm(int id, String name) {
+	public Algorithm(int id, String name) {
 		super(id,name);
 	}
 
