@@ -4,6 +4,7 @@ import java.sql.*;
 //import java.text.*;
 //import java.util.*;
 import org.sqlite.*;
+import java.util.*;
 
 import main.*;
 
@@ -96,6 +97,13 @@ public class DbAccess {
 	public Model getModel(String type, int id){
 		switch(type){
 		case "Algorithm" : return dbAlgo.getAlgorithm(id);
+		default: return null;
+		}
+	}
+	
+	public ArrayList getDataSource(String type, int id){
+		switch(type){
+		case "Algorithm" : return dbAlgo.getDataSource(id);
 		default: return null;
 		}
 	}

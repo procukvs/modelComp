@@ -17,6 +17,7 @@ public class ShowModelOne extends JPanel {
 	
 	private JLabel selection;
 	private ShowDescription description;
+	private ShowModelProgram program;
 	
 	
 	ShowModelOne(DbAccess  db, Frame owner){
@@ -25,7 +26,7 @@ public class ShowModelOne extends JPanel {
 		description = new ShowDescription(db);
 		//JButton program = new JButton("This is place for program");
 		//description = new ShowDescription(db);
-		ShowModelProgram program = new ShowModelProgram(db, owner);
+		program = new ShowModelProgram(db, owner);
 		selection = new JLabel("  0:0  ");  //("  0:" + db.getModelCount());
 		JButton first = new JButton("|<");
 		first.setMaximumSize(new Dimension(20,20));
@@ -133,7 +134,7 @@ public class ShowModelOne extends JPanel {
 	    else {
 	    	                         //nameModel.setText(model.nmAlgo);
 	    	description.setModel(model);
-	    //	program.setModel(model);
+	    	program.setModel(model);
 	    	                     //work.setModel(model);
 	    }
 	}

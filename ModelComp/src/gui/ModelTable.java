@@ -86,15 +86,18 @@ public class ModelTable extends AbstractTableModel {
 	public void setDataSource(ArrayList dataIn){
 		data.clear();
 		//System.out.println("setDateSourse : " + dataIn.size() + "...");
-		if (dataIn.size()==0) fireTableStructureChanged();
-		for (int i = 0; i < dataIn.size(); i++){
-			//System.out.println("size = " + dataIn.size() + " i =   " + i);
-			synchronized(data){
-				data.add(dataIn.get(i));
-				// повідомляємо про появу рядка
-				fireTableRowsInserted(data.size()-1, data.size()-1);
+		//if ((dataIn != null) && (dataIn.size() > 0)) {
+			for (int i = 0; i < dataIn.size(); i++){
+				//System.out.println("size = " + dataIn.size() + " i =   " + i);
+				synchronized(data){
+					data.add(dataIn.get(i));
+					// повідомляємо про появу рядка
+					fireTableRowsInserted(data.size()-1, data.size()-1);
+				}
 			}
-		}
+		//} else {
+	//		fireTableStructureChanged();
+	//	}
 	}
 	
 }

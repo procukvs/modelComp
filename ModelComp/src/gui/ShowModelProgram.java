@@ -1,15 +1,20 @@
 package gui;
 
-import java.awt.*;
+import main.*;
+import db.*;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import db.*;
+
 
 
 public class ShowModelProgram extends JPanel {
 	DbAccess db;
+	private String type = "Algorithm";
+	private int idModel;
+	private ShowModelTable table;
 	
 	ShowModelProgram(DbAccess  db, Frame owner){
 		
@@ -18,7 +23,7 @@ public class ShowModelProgram extends JPanel {
 		//label.setHorizontalAlignment(label.CENTER);
 		//JButton table = new JButton("This is place for table");
 		ShowCommandButtons buttons = new ShowCommandButtons(db);
-		ShowModelTable table = new ShowModelTable(db,owner);
+		table = new ShowModelTable(db,owner);
 		//JPanel buttons = new JPanel();
 		
 		this.db = db; 
@@ -53,5 +58,12 @@ public class ShowModelProgram extends JPanel {
 		workRule = new WorkRule(owner); */
 	}
 
-
+	public void setModel(Model model){
+	//	this.model = model;
+		idModel = model.id;
+	//	db.setModel(algo);
+		table.showTable(type, idModel);
+	}
+	
+	
 }

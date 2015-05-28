@@ -58,4 +58,33 @@ class DbAlgorithm {
 		return rules;
 	}
 
+	public ArrayList getDataSource(int idModel){
+		try{ 
+			ArrayList data = new ArrayList();
+			char[] typeInfo = {'I','S','S','B','S','I'}; 
+			sql = "select id, sLeft, sRigth, isEnd, txComm, idModel " +
+	    				" from mRule where idModel = " + idModel;
+	    	//System.out.println("model = " + model + "   " + sql);
+	        db.s.execute(sql);
+	        ResultSet rs = db.s.getResultSet();
+	        while((rs!=null) && (rs.next())) {
+	        	// тут будемо зберігати комірки одного рядка
+				ArrayList row = new ArrayList();
+				for(int i = 0; i < typeInfo.length; i++) {
+					switch (typeInfo[i]){
+					case 'B': row.add(rs.getBoolean(i+1)); break;
+					case 'I': row.add(rs.getInt(i+1)); break;
+					case 'S': row.add(rs.getString(i+1)); break;
+					default: row.add(rs.getObject(i+1)); 
+					}
+				}	        	
+				data.add(row);
+	        } 
+	        return data;
+   		}catch (Exception e){
+			System.out.println("ERROR: DbAlgorithm-getDataSource :" + sql);
+			System.out.println(">>> " + e.getMessage());
+			return null;
+		}
+	}
 }

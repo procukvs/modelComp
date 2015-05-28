@@ -1,7 +1,7 @@
 package gui;
 
 import java.awt.*;
-
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -10,15 +10,20 @@ import db.*;
 
 public class ShowModelTable extends JPanel {
 	DbAccess db;
+	private ModelTable  dbm;
+	private JTable table;
+	private JLabel selection;
+	
+	private String type = "Algorithm";
 	
 	ShowModelTable(DbAccess  db, Frame owner){
 		
 		//сформувати необхідні gui-елементи 
-		ModelTable  dbm = new ModelTable(false);
-		JTable table = new JTable(dbm);
+		dbm = new ModelTable(false);
+		table = new JTable(dbm);
 		JScrollPane forTable = new JScrollPane(table);
 		//JLabel head = new JLabel("Підстановка ");
-		JLabel selection = new JLabel("  0:" + dbm.getRowCount());
+		selection = new JLabel("  0:" + dbm.getRowCount());
 		JButton first = new JButton("|<");
 		first.setMaximumSize(new Dimension(20,20));
 		JButton prev = new JButton("<");
@@ -54,15 +59,10 @@ public class ShowModelTable extends JPanel {
 				{"Коментар","S","E"},
 				{"№Ал","I","N"}
 		};
-		//db.setModel(8);
 		dbm.setInitialModel(inform);
-		TableColumn column = null;
-		int[] widthCol = {10,100,100,10,400,10};
-	    for (int i = 0; i < widthCol.length; i++) {
-	        column = table.getColumnModel().getColumn(i);
-	        column.setPreferredWidth(widthCol[i]); 
-	    }     
-
+		//setColumnWidth();
+		setTableStructure();
+		
 	/*	
 		TableColumnModel colModel;
 		colModel = table.getColumnModel();
@@ -83,5 +83,30 @@ public class ShowModelTable extends JPanel {
 	//	last.addActionListener(new SelectLast());
 		
 	}
-
+	
+	public void showTable(String type, int idModel){
+		int r = table.getSelectedRow();
+		ArrayList ds = db.getDataSource(type,idModel);
+		if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
+		else setTableStructure();
+		//System.out.println(".." + r+ ".."+table.getSelectedRow() );
+		if (r >= 0){ 
+			table.getSelectionModel().setSelectionInterval(r, r);
+			selection.setText((r+1)  + " : " + dbm.getRowCount());
+		}	
+	}
+	
+	private void setTableStructure() {
+		dbm.fireTableStructureChanged();
+		setColumnWidth();
+	}
+	
+	private void setColumnWidth() {
+		TableColumn column = null;
+		int[] widthCol = {10,100,100,10,400,10};
+	    for (int i = 0; i < widthCol.length; i++) {
+	        column = table.getColumnModel().getColumn(i);
+	        column.setPreferredWidth(widthCol[i]); 
+	    }     
+	}
 }
