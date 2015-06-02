@@ -156,9 +156,9 @@ public class ShowModelButtons extends JPanel {
 	class ModelInput implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			String text = "Файл для введення не вказано !";
-		//	String name = nmFile.getText();
-		//	Algorithm model;
-		//	if (!name.isEmpty()) {
+			String name = nmFile.getText();
+			Algorithm model;
+			if (!name.isEmpty()) {
 				//text = "Ввести модель з файлу " 
 				//		+ fc.getSelectedFile().getAbsolutePath() + "...";
 		//		WorkFile wf = new WorkFile();
@@ -173,7 +173,7 @@ public class ShowModelButtons extends JPanel {
 		//			else text = "Алгоритм " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 		//		}
 		//		else text = wf.getErrorText();
-		//	}	
+			}	
 			JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelInput..."); // text);
 		}	
 	}

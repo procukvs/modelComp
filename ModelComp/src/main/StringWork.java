@@ -29,15 +29,15 @@ public class StringWork {
 		return Pattern.matches("[0-9]+", s);
 	}
 	
-	static boolean isAlfa(char ch) {
+	public static boolean isAlfa(char ch) {
 		return Pattern.matches("[a-zA-Z]", new String("" + ch));
 	}
 
-	static boolean isIden(char ch) {
+	public static boolean isIden(char ch) {
 		return Pattern.matches("[a-zA-Z_0-9]", new String("" + ch));
 	}
 	
-	static boolean isDigit(char ch) {
+	public static boolean isDigit(char ch) {
 		return Pattern.matches("[0-9]", new String("" + ch));
 	}
 	
