@@ -22,4 +22,8 @@ public class Model {
 	public ArrayList eval(String str, int nodef){
 		return null;
 	}
+	
+	public String show(){
+		 return "Model-show";
+	}
 }
