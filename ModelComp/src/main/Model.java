@@ -10,4 +10,16 @@ public class Model {
 		this.id = id; this.name = name;
 		descr = ""; program = null;
 	}
+	
+	public ArrayList getDataSource(int idModel) {
+		return null;
+	}
+	
+	public String[] testingRules(){
+		return null;
+	}
+	
+	public ArrayList eval(String str, int nodef){
+		return null;
+	}
 }

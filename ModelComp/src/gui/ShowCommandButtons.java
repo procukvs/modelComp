@@ -1,15 +1,28 @@
 package gui;
 
+
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
 import db.*;
+import main.*;
 
 public class ShowCommandButtons extends JPanel {
-	DbAccess db;
+	private DbAccess db;
+	private String type = "Algorithm";
+	private ShowModelTable table;
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	private ShowModels showMain;
+	//private ShowModelAll showMain;
+	private Model model = null;
+	private ShowCommand workCommand;
+	private Command command;
 	
-	ShowCommandButtons(DbAccess db){
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	ShowCommandButtons(DbAccess db, ShowModelTable table, ShowModels owner){
+	//ShowCommandButtons(DbAccess db, ShowModelTable table, ShowModelAll owner, ShowMenu frame){
 		//сформувати необхідні gui-елементи 
 		JButton test = new JButton("Перевірка");
 		JButton add = new JButton("Нова");
@@ -17,7 +30,13 @@ public class ShowCommandButtons extends JPanel {
 		JButton delete = new JButton("Вилучити");
 		JButton up = new JButton("Перемістити вверх");
 		JButton down = new JButton("Перемістити вниз");
+		
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		workCommand = new ShowCommand(owner);
+		//workCommand = new ShowCommand(frame);
 		this.db = db;
+		this.table = table;
+		showMain = owner;
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -38,120 +57,128 @@ public class ShowCommandButtons extends JPanel {
 		add(buttons);	
 		add(Box.createVerticalStrut(5));
 		// встановити слухачів !!!			
-		test.addActionListener(new SelectTesting());
-		add.addActionListener(new RuleAdd());
-		edit.addActionListener(new RuleEdit());
-		delete.addActionListener(new RuleDelete());
-		up.addActionListener(new RuleUp());
-		down.addActionListener(new RuleDown());
+		test.addActionListener(new LsTesting());
+		add.addActionListener(new LsAdd());
+		edit.addActionListener(new LsEdit());
+		delete.addActionListener(new LsDelete());
+		up.addActionListener(new LsUp());
+		down.addActionListener(new LsDown());
 			
 	}
 	
+	public void setModel(String type, Model model){
+		this.type = type;
+		this.model = model;
+	}	
+	
 	// Класи слухачі 
-	class SelectTesting implements ActionListener  {
+	class LsTesting implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-		//	if (model != null){
-		//		int all = model.asub.size();
-		//		int r = table.selectedRule();
-				//table.getSelectionModel().setSelectionInterval(r-1, r-1);
-		//		String text = "Вибрано підстановку  " + r + " з " + all + " підстановок  алгоритму " + model.nmAlgo +".";
-		//		if (r==0) text = "Не вибрано ніякої підстановки  з " + all + " підстановок алгоритму " + model.nmAlgo+ ".";
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"Testing..."); //text);
-		//	}
+			if (model != null){
+				String[] text= model.testingRules();
+				if (text != null) JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
+			}
 		}	
 	}
-	class RuleAdd implements ActionListener  {
+	class LsAdd implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-		/*	if (model != null) {
+			if (model != null) {
 				Rule rule;
 				int row = table.selectedRule();
-				if (row == 0) rule = new Rule("","",false,"====");
-			else rule = (Rule)model.asub.get(row-1);
+				//if (row == 0) rule = new Rule("","",false,"====");
+				//else rule = (Rule)model.program.get(row-1);
 				//System.out.println("New.."+row + ".."+rule.show());
-				workRule.setInit("new", algo, row+1, rule);
-				workRule.show();
-				rule= workRule.getRule();
-				if (rule != null) { 
-					db.newRule(algo, row, rule);
+				workCommand.setCommand("Add", model, row);
+				workCommand.show();
+				command= workCommand.getCommand();
+				if (command != null) { 
+					db.newCommand(type, model.id, row, command);
+					showMain.showModel(type, model.id);
+					//System.out.println("  row = " + row);
+					table.showNextRow(false);
+					/*model = db.getModel(type, model.id);
 					if (row == 0) table.showFirstRow(true);
-					else table.showNextRow(true);
-					model = db.getAlgorithm(algo);
+					else table.showNextRow(true);*/
 				}
-			}  */
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleAdd...");
+			}
+		}  
+	}
+	
+	class LsEdit implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+		if (model != null) {
+			Rule rule;
+			int row = table.selectedRule();
+			if (row > 0){
+			//	rule = (Rule)model.asub.get(row-1);
+			//	workRule.setInit("edit", algo,row, rule);
+			//	workRule.show();
+			//	rule= workRule.getRule();
+				workCommand.setCommand("Edit", model, row);
+				workCommand.show();
+				command= workCommand.getCommand();
+				if (command != null) { 
+					db.editCommand(type, model.id, row, command);
+					showMain.showModel(type, model.id);
+					//model = db.getModel(type, model.id);
+					//table.showModel(type, model);
+				}
+			}
+		}
+		//	JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleEdit...");
 		}	
 	}
-	class RuleEdit implements ActionListener  {
+	class LsDelete implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-		/*	if (model != null) {
-				Rule rule;
-				int row = table.selectedRule();
-				if (row > 0){
-					rule = (Rule)model.asub.get(row-1);
-					workRule.setInit("edit", algo,row, rule);
-					workRule.show();
-					rule= workRule.getRule();
-					if (rule != null) { 
-						db.editRule(algo, row, rule);
-						table.showTable();
-						model = db.getAlgorithm(algo);
-					}
-				}
-			}*/
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleEdit...");
-		}	
-	}
-	class RuleDelete implements ActionListener  {
-		public void actionPerformed(ActionEvent event){
-		/*	if (model != null) {
-				int row = table.selectedRule();
-				if (row > 0){
-					Rule rule = (Rule)model.asub.get(row-1);
-					String text = "Вилучити правило з номером  " + row + ".." + rule.show() + " !";
-					int response = 
-							JOptionPane.showConfirmDialog(ShowProgram.this,text);
-					if (response == JOptionPane.YES_OPTION) { 
-						db.deleteRule(algo, row);
-						model = db.getAlgorithm(algo);
-						table.showPrevRow(true);
-					}	
-				}
-			} */
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleDelete...");
+		if (model != null) {
+			int row = table.selectedRule();
+			if (row > 0){
+				Rule rule = (Rule)model.program.get(row-1);
+				//Command c = (Command) model.program.get(row-1);
+				String text1;
+				if (rule.getisEnd()) text1 = "заключна: " ; else  text1 = "             : ";
+				text1 = text1 + "\"" + rule.getsLeft() + " -> " + rule.getsRigth() + "\"";
+				String text2 = "Коментар: \"" + rule.gettxComm() + "\"";
+				String [] text = new String[] {"Вилучити підстановку з номером  " + row + "..",  text1, text2} ;
+				UIManager.put("OptionPane.yesButtonText", "Так");
+				UIManager.put("OptionPane.noButtonText", "Ні");	
+				int response = 
+						JOptionPane.showConfirmDialog(ShowCommandButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
+				if (response == JOptionPane.YES_OPTION) { 
+					db.deleteCommand(type, model.id, row);
+					showMain.showModel(type, model.id);
+					table.showPrevRow(false);
+				}	
+			}
+		}
+		//	JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleDelete...");
 		}	
 	} 
-	class RuleUp implements ActionListener  {
+	class LsUp implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			/*if (model != null){
-				//int all = model.asub.size();
+			if (model != null){
 				int row = table.selectedRule();
 				if (row > 1) {
-					db.moveUp(algo, row);
-					model = db.getAlgorithm(algo);
-					table.showPrevRow(true);
+					db.moveUp(type, model.id, row);
+					showMain.showModel(type, model.id);
+					table.showPrevRow(false);
 				}
-			} */
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleUp...");
+			} 
+			//JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleUp...");
 		}	
 	}
- 	class RuleDown implements ActionListener  {
+ 	class LsDown implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			/*if (model != null){
-				int all = model.asub.size();
-				//table.getSelectionModel().setSelectionInterval(r-1, r-1);
+			if (model != null){
+				//int all = model.program.size();
 				int row = table.selectedRule();
-				if ((row > 0) && (row < all)){
-					db.moveDown(algo, row);
-					model = db.getAlgorithm(algo);
-					table.showNextRow(true);
-					//dbm.setDataSource(db.getDataSource());
-					//table.getSelectionModel().setSelectionInterval(r+1, r+1);
-					//selection.setText((table.getSelectedRow() + 1)  + " : " + dbm.getRowCount());
-					//String text1 = "Опущено вниз правило алгоритму " + algo + " з номером " + row + "!";
-					//JOptionPane.showMessageDialog(ModelProgram.this,text1);
+				if ((row > 0) && (row < model.program.size())){
+					db.moveDown(type, model.id, row);
+					showMain.showModel(type, model.id);
+					table.showNextRow(false);
 				}
-			}*/
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleDown...");
+			} 
+			//JOptionPane.showMessageDialog(ShowCommandButtons.this,"RuleDown...");
 		}	
 	}
 	

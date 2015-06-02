@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -9,24 +10,34 @@ import db.*;
 import main.*;
 
 public class ShowModelOne extends JPanel {
-	DbAccess db;
+	private DbAccess db;
+	//!!!!!!!!!!!!!!!!!!!!!!!
+	private ShowModels showMain;
+	//private ShowModelAll showMain;
+	private String type = "Algorithm";
+	private int r = 0;
+	private Model model = null;
 	// завжди виділяється одна модель із списку моделей !!!
 	// порядок в списку визначається в БД 
 	private int selected = 0;
-	private String type = "Algorithm";
-	
+		
 	private JLabel selection;
 	private ShowDescription description;
 	private ShowModelProgram program;
 	
 	
-	ShowModelOne(DbAccess  db, Frame owner){
+	//!!!!!!!!!!!!!!!!!!!!!
+	ShowModelOne(DbAccess  db, ShowModels owner){
+	//ShowModelOne(DbAccess  db, ShowModelAll owner, ShowMenu frame){
 		
 		//сформувати необхідні gui-елементи 
-		description = new ShowDescription(db);
-		//JButton program = new JButton("This is place for program");
-		//description = new ShowDescription(db);
+		description = new ShowDescription(true);
+		description.setLink(db, owner);
+					//JButton program = new JButton("This is place for program");
+					//description = new ShowDescription(db);
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		program = new ShowModelProgram(db, owner);
+		//program = new ShowModelProgram(db, owner,frame);
 		selection = new JLabel("  0:0  ");  //("  0:" + db.getModelCount());
 		JButton first = new JButton("|<");
 		first.setMaximumSize(new Dimension(20,20));
@@ -38,6 +49,7 @@ public class ShowModelOne extends JPanel {
 		last.setMaximumSize(new Dimension(20,20));
 		
 		this.db = db; 
+		showMain = owner;
 		//=================================
 		// формуємо розміщення
 		setLayout(new BorderLayout());
@@ -68,92 +80,60 @@ public class ShowModelOne extends JPanel {
 		
 	}	
 	
+	public void setModel(String type, Model model) {
+		this.model = model;
+		this.type = type;
+		if (model == null) selected = 0;
+	   	description.setModel(type, model);
+    	program.setModel(type, model);
+    	r = db.getModelCount(type);
+    	if (selected > r) selected = r;
+    	selection.setText(selected + " : " + r);
+	}
+	
 	// класи - слухачі виділення (selection...)
 	class SelectFirst implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			int r = db.getModelCount(type);
-			if (r>0){ 
-				selected = 1;
-				
-					//table.getSelectionModel().setSelectionInterval(0, 0);
-					//int r = table.getSelectedRow() + 1;
-					//selection.setText((table.getSelectedRow() + 1)  + " : " + dbm.getRowCount());
-			}
-			selection.setText(selected +" : " + r);
-			showSelected();
+			r = db.getModelCount(type);
+			//System.out.println("SelectFirst  " + r);
+			selected = 1;
+			if (r==0){ 
+				selected = 0; 
+				showMain.showModel(type, 0);
+			} else showMain.showModel(type, db.getNumber(type, selected));
 		}	
 	}
 	class SelectPrev implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			//int r = db.getModelCount();
-			//if (selected > 1){
-			//	selected--;
-			//}
-			//selection.setText(selected +" : " + r);
-			//showSelected();
-			showPrev();
+			selectPrev();
 		}	
 	}
 	class SelectNext implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			int r = db.getModelCount(type);
-			//System.out.println(".." + r + "..");
-			if ((r > selected) && (selected > 0)){ 
-				//int all = dbm.getRowCount();
+			if ((db.getModelCount(type)> selected) && (selected > 0)){ 
 				selected++;
-					//table.getSelectionModel().setSelectionInterval(r-1, r-1);
-					//selection.setText((table.getSelectedRow() + 1)  + " : " + dbm.getRowCount());
+				showMain.showModel(type, db.getNumber(type, selected));
 			}
-			selection.setText(selected +" : " + r);
-			showSelected();
 		}	
 	}
 	class SelectLast implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-				//int r = db.getModelCount();
-				//if (r > 0){
-				//	selected = r;
-				//}	
-				//selection.setText(selected +" : " + r);
-				//showSelected();
-			showLast();
+			selectLast();
 		}	
 	}
-	private void showSelected() {
-		Model model;
-		int id;
-		if (selected > 0) {
-			id = db.getNumber(type,selected);
-			model = null;
-			if (id > 0) model = db.getModel(type, id);
-		}
-		else model = null;
-	    if (model == null) {
-	    	//nameModel.setText("-----------");
-	    }
-	    else {
-	    	                         //nameModel.setText(model.nmAlgo);
-	    	description.setModel(model);
-	    	program.setModel(model);
-	    	                     //work.setModel(model);
-	    }
-	}
-		
-	public void showLast(){
-		int r = db.getModelCount(type);
-		if (r > 0)	selected = r;
-		selection.setText(selected +" : " + r);
-		showSelected();
+			
+	public void selectLast(){
+		r = db.getModelCount(type);
+		selected = r;
+		if (r==0){ 
+			selected = 0; showMain.showModel(type, 0);
+		} else showMain.showModel(type, db.getNumber(type, selected));
 	}	
-		
-		public void showPrev() {
-			int r = db.getModelCount(type);
-			if (selected > 1){
-				selected--;
-			}
-			selection.setText(selected +" : " + r);
-			showSelected();
+	public void selectPrev() {
+		if (selected > 1) {
+			selected--;
+			showMain.showModel(type, db.getNumber(type, selected));
 		}
-				
-	
+	}
+
 }

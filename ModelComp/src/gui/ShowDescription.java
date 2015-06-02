@@ -5,10 +5,15 @@ import db.*;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class ShowDescription extends JPanel {
 	private DbAccess db;
+	//!!!!!!!!!!!!!!!!!!!!
+	private ShowModels showMain;
+	//private ShowModelAll showMain;
+	private String type = "Algorithm";
 	private Model model;
 	
 	private JTextField sName;
@@ -20,7 +25,7 @@ public class ShowDescription extends JPanel {
 	private JTextField sAdd;
 	private JTextField sComm;
 	
-	ShowDescription(DbAccess db){
+	ShowDescription(boolean isEdit){
 		//сформувати необхідні gui-елементи 
 		JLabel txtAlgo = new JLabel("Алгоритм ");
 		sName = new JTextField(10);
@@ -42,8 +47,8 @@ public class ShowDescription extends JPanel {
 		JLabel txtComm = new JLabel("Опис алгоритму");
 		sComm = new JTextField(50); 
 		sComm.setMaximumSize(new Dimension(100,100));
-		
-		this.db = db;
+		 
+	
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -91,191 +96,208 @@ public class ShowDescription extends JPanel {
 		add(Box.createVerticalStrut(5));
 		add(commBox);	
 		add(Box.createVerticalStrut(5));
-		// встановити слухачів !!!			
-		sName.addActionListener(new LsName());
-		sMain.addActionListener(new LsMain());
-		sAdd.addActionListener(new LsAdd());
-		isNumeric.addActionListener(new LisNumeric());
-		iRank.addActionListener(new LiRank());
-		sComm.addActionListener(new LsComm());
+		if (isEdit) {
+			// 	встановити слухачів !!!			
+			sName.addActionListener(new LssName());
+			sMain.addActionListener(new LssMain());
+			sAdd.addActionListener(new LssAdd());
+			isNumeric.addActionListener(new LsisNumeric());
+			iRank.addActionListener(new LsiRank());
+			sComm.addActionListener(new LsComm());
+		}
+		sName.setEnabled(isEdit);
+		sMain.setEnabled(isEdit);
+		sAdd.setEnabled(isEdit);
+		isNumeric.setEnabled(isEdit);
+		iRank.setEnabled(isEdit);
+		sComm.setEnabled(isEdit);
 		
 	}
 	
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	public void setLink(DbAccess db, ShowModels owner) {
+	//public void setLink(DbAccess db, ShowModelAll owner) {
+		this.db = db;
+		showMain = owner;		
+	}
+	
 	// Класи слухачі 
-	class LsName implements ActionListener  {
+	class LssName implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			/*String name = sName.getText();
+			String name = sName.getText();
 			String text="";
 			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {
-				if(!name.equals(model.nmAlgo)) {
-					if(!sw.isIdentifer(name)) text = "Ім\"я алгоритму " + name + " - не ідентифікатор!";
-					if((text.isEmpty()) && (db.isModel(name)))
+				if(!name.equals(model.name)) {
+					if(!StringWork.isIdentifer(name)) text = "Ім\"я алгоритму " + name + " - не ідентифікатор!";
+					if((text.isEmpty()) && (db.isModel(type,  name)))
 						text = "Алгоритм з іменем " + name + " вже існує !";
 					if(text.isEmpty()) {
-						model.nmAlgo = name;
-						db.editAlgorithm(model);
+						model.name = name;
+						db.editModel(type,model);
+						sMain.requestFocus();
 					} else {
 						JOptionPane.showMessageDialog(ShowDescription.this,text);		
 						showModel();
 					}
 				}	
-			}*/
-			JOptionPane.showMessageDialog(ShowDescription.this,"sName....");
+			}
+			//JOptionPane.showMessageDialog(ShowDescription.this,"sName....");
 		}	
 	}
-		class LsMain implements ActionListener  {
-			public void actionPerformed(ActionEvent event){
-			/*	String com = sMain.getText();
-				String text;
-				System.out.println(".." + com + "..");
-				if (model == null) showEmpty();
-				else {
-					if (!com.equals(model.main)) {
-						if (model.isNumeric) {
-							text = "Основний алфавіт у функції завжди |# !";
-							sMain.setText("|#");
-							JOptionPane.showMessageDialog(ShowDescription.this,text);	
-						} 
-						model.main = sMain.getText();
-						db.editAlgorithm(model);
-						//text = db.testingRules(model.algo, com + model.add);
-						text = model.testingRules();
-						if (!text.isEmpty())
-							JOptionPane.showMessageDialog(ShowDescription.this,text);
-					//	sAdd.requestFocus();
+	class LssMain implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String com = sMain.getText();
+			String text;
+			//System.out.println(".." + com + "..");
+			if (model == null) showEmpty();
+			else {
+				Algorithm algo = (Algorithm)model;
+				if (!com.equals(algo.main)) {
+					if (algo.isNumeric) {
+						text = "Основний алфавіт у функції завжди |# !";
+						sAdd.setText(StringWork.unionAlfa(sAdd.getText(), com));
+						sMain.setText("|#");
+						JOptionPane.showMessageDialog(ShowDescription.this,text);	
 					} 
-					sAdd.requestFocus();
-				}*/
-				JOptionPane.showMessageDialog(ShowDescription.this,"sMain....");
-			}	
-		}
-		class LsAdd implements ActionListener  {
-			public void actionPerformed(ActionEvent event){
-			/*	String com = sAdd.getText();
-				//System.out.println(".." + com + "..");
-				if (model == null) showEmpty();
-				else {
-					if (!com.equals(model.add)) {
-						// String text = "Символи із " + com + " що не входять в abc ." + sw.isAlfa("abc", com) +".";
-					    //String text = db.testingRules(model.algo, model.main + com);
-					    model.add = com;
-					    db.editAlgorithm(model);
-					    String text = model.testingRules();
-					    if (!text.isEmpty())
-					    	 JOptionPane.showMessageDialog(ShowDescription.this,text);
+					algo.main = sMain.getText();
+					algo.add = sAdd.getText();
+					db.editModel(type,algo);
+					//text = db.testingRules(model.algo, com + model.add);
+					String[] text1 = algo.testingRules();
+					if (text1 != null)
+						JOptionPane.showMessageDialog(ShowDescription.this,text1);
+				} 
+				sAdd.requestFocus();
+			}
+			//JOptionPane.showMessageDialog(ShowDescription.this,"sMain....");
+		}	
+	}
+	class LssAdd implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String com = sAdd.getText();
+			if (model == null) showEmpty();
+			else {
+				Algorithm algo = (Algorithm)model;
+				if (!com.equals(algo.add)) {
+				    algo.add = com;
+					db.editModel(type,algo);
+				    String[] text= algo.testingRules();
+				    if (text != null)
+				    	 JOptionPane.showMessageDialog(ShowDescription.this,text);
+				}
+				sComm.requestFocus();
+			}
+			//JOptionPane.showMessageDialog(ShowDescription.this,"sAdd....");
+		}	
+	}
+	class LsisNumeric implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			Boolean isNew;
+			//String text = "";
+			//System.out.println(".." + com + "..");
+			if (model != null){
+				Algorithm algo = (Algorithm)model;
+				isNew = isNumeric.isSelected();
+				if(isNew){
+					if(!algo.isNumeric){
+						// зробили модель функцією !!!!!
+						algo.isNumeric = true;
+						txtRank.setVisible(true);
+						iRank.setVisible(true);
+						algo.add = algo.add + StringWork.isAlfa(algo.add +"|#", algo.main);
+						algo.main = "|#";
+						sMain.setText("|#");
+						sAdd.setText(algo.add);
+						//db.editAlgorithm(model);
+						db.editModel(type,algo);
+						//text = db.testingRules(model.algo, model.main+model.add);
+						String[] text= algo.testingRules();
+						if (text != null)
+							JOptionPane.showMessageDialog(ShowDescription.this,text);
 					}
-					sComm.requestFocus();
-					
-				}*/
-				JOptionPane.showMessageDialog(ShowDescription.this,"sAdd....");
-			}	
-		}
-		class LisNumeric implements ActionListener  {
-			public void actionPerformed(ActionEvent event){
-			/*	Boolean isNew;
-				String text = "";
-				//System.out.println(".." + com + "..");
-				if (model != null){
-					isNew = isNumeric.isSelected();
-					if(isNew){
-						if(!model.isNumeric){
-							// зробили модель функцією !!!!!
-							model.isNumeric = true;
-							txtRank.setVisible(true);
-							iRank.setVisible(true);
-							model.main = "|#";
-							sMain.setText("|#");
-							db.editAlgorithm(model);
-							//text = db.testingRules(model.algo, model.main+model.add);
-							text = model.testingRules();
-							if (!text.isEmpty())
-								JOptionPane.showMessageDialog(ShowDescription.this,text);
-						
-						}
-						
-					} else{
-						if(model.isNumeric){
-							// зробили модель НЕ функцією!!
-							model.isNumeric = false;
-							txtRank.setVisible(false);
-							iRank.setVisible(false);
-							db.editAlgorithm(model);
-						}
+				} else{
+					if(algo.isNumeric){
+						// зробили модель НЕ функцією!!
+						algo.isNumeric = false;
+						txtRank.setVisible(false);
+						iRank.setVisible(false);
+						db.editModel(type,algo);
 					}
-				} else showEmpty();
-				*/
-				JOptionPane.showMessageDialog(ShowDescription.this,"isNumeric....");
-			}	
-		}
+				}
+				sComm.requestFocus();
+			} else showEmpty();
+			//JOptionPane.showMessageDialog(ShowDescription.this,"isNumeric....");
+		}	
+	}
 		
-		class LiRank implements ActionListener  {
-			public void actionPerformed(ActionEvent event){
-			/*	String srank = iRank.getText();
-				int rank = 1;
-				String text;
-				//System.out.println(".." + com + "..");
-				if (model == null) showEmpty();
-				else {
-					if(sw.isPosNumber(srank)){
-						rank = new Integer(srank); 
-						if (model.rank != rank) {
-							model.rank = rank;
-							db.editAlgorithm(model);
-						}
-					} else{
-						text = "Арність - додатнє ціле число ! ";
-						JOptionPane.showMessageDialog(ShowDescription.this,text);
-						showModel();
+	class LsiRank implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String srank = iRank.getText();
+			int rank = 1;
+			String text;
+			//System.out.println(".." + com + "..");
+			if (model == null) showEmpty();
+			else {
+				Algorithm algo = (Algorithm)model;
+				if(StringWork.isPosNumber(srank)){
+					rank = new Integer(srank); 
+					if (algo.rank != rank) {
+						algo.rank = rank;
+						db.editModel(type,algo);
 					}
-				}*/
-				JOptionPane.showMessageDialog(ShowDescription.this,"iRank....");
-			}	
-		}
-		class LsComm implements ActionListener  {
-			public void actionPerformed(ActionEvent event){
-				/*String com = sComm.getText();
-				//System.out.println(".." + com + "..");
-				if (model == null) showEmpty();
-				else if (!com.equals(model.txComm)) {
-						model.txComm = com;
-						db.editAlgorithm(model);
-					    //String text = "Вибрано підстановку  " + r + " з " + all + " підстановок  алгоритму " + model.nmAlgo +".";
-					    //JOptionPane.showMessageDialog(ShowProgram.this,text);
-				} */
-				JOptionPane.showMessageDialog(ShowDescription.this,"sComm....");
-			}	
-		}
+				} else{
+					text = "Арність - додатнє ціле число ! ";
+					JOptionPane.showMessageDialog(ShowDescription.this,text);
+					showModel();
+				}
+			}
+			//JOptionPane.showMessageDialog(ShowDescription.this,"iRank....");
+		}	
+	}
+	class LsComm implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String com = sComm.getText();
+			//System.out.println(".." + com + "..");
+			if (model == null) showEmpty();
+			else if (!com.equals(model.descr)) {
+					model.descr = com;
+					db.editModel(type,model);
+				    //String text = "Вибрано підстановку  " + r + " з " + all + " підстановок  алгоритму " + model.nmAlgo +".";
+				    //JOptionPane.showMessageDialog(ShowProgram.this,text);
+			} 
+			//JOptionPane.showMessageDialog(ShowDescription.this,"sComm....");
+		}	
+	}
 		
-		public void setModel(Model model) {
-		    this.model = model;	
-		    if (model == null) showEmpty( );
-		    else showModel();
-		}
-		
-		private void showModel() {
-			Algorithm algo = (Algorithm)model;
-			sName.setText(algo.name);
-			txtNumb.setText("Номер " + algo.id);
-			sMain.setText(algo.main);
-			sAdd.setText(algo.add);
-			isNumeric.setSelected(algo.isNumeric);
-			iRank.setText(((Integer)algo.rank).toString());
-			txtRank.setVisible(algo.isNumeric);
-			iRank.setVisible(algo.isNumeric);
-			sComm.setText(algo.descr);
-		}
-		private void showEmpty() {
-			sName.setText("");
-			txtNumb.setText("-----");
-			sMain.setText("");
-			sAdd.setText("");
-			isNumeric.setSelected(true);
-			iRank.setText("2");
-			txtRank.setVisible(true);
-			iRank.setVisible(true);
-			sComm.setText("");
-		}
-	
+	public void setModel(String type,Model model) {
+		this.type = type;
+	    this.model = model;	
+	    if (model == null) showEmpty( );
+	    else showModel();
+	}
+	private void showModel() {
+		Algorithm algo = (Algorithm)model;
+		sName.setText(algo.name);
+		txtNumb.setText("Номер " + algo.id);
+		sMain.setText(algo.main);
+		sAdd.setText(algo.add);
+		isNumeric.setSelected(algo.isNumeric);
+		iRank.setText(((Integer)algo.rank).toString());
+		txtRank.setVisible(algo.isNumeric);
+		iRank.setVisible(algo.isNumeric);
+		sComm.setText(algo.descr);
+	}
+	private void showEmpty() {
+		sName.setText("");
+		txtNumb.setText("-----");
+		sMain.setText("");
+		sAdd.setText("");
+		isNumeric.setSelected(true);
+		iRank.setText("2");
+		txtRank.setVisible(true);
+		iRank.setVisible(true);
+		sComm.setText("");
+	}
 }

@@ -1,10 +1,10 @@
 package main;
 
-public class Rule {
+public class Rule extends Command  {
 	private String sLeft = "";
 	private String sRigth = "";
 	private boolean isEnd = false;
-	private String txComm = "";
+	//private String txComm = "";
     public String show(){
       String s = sLeft + " ->" ;
       if (isEnd) s = s+".";
@@ -13,8 +13,10 @@ public class Rule {
       return s;
     }
     public Rule(String sLeft, String sRigth, boolean isEnd, String txComm) {
+    	super(txComm);
     	this.sLeft = sLeft; this.sRigth = sRigth;
-    	this.isEnd = isEnd; this.txComm = txComm;
+    	this.isEnd = isEnd; 
+    	//this.txComm = txComm;
     }
     public String getsLeft() {return sLeft;}
     public String getsRigth() {return sRigth;}

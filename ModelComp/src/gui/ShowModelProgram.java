@@ -11,22 +11,28 @@ import javax.swing.border.*;
 
 
 public class ShowModelProgram extends JPanel {
-	DbAccess db;
+	private DbAccess db;
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!
+	private ShowModels showMain;
+	//private ShowModelAll showMain;
 	private String type = "Algorithm";
-	private int idModel;
-	private ShowModelTable table;
+	private Model model = null;
 	
-	ShowModelProgram(DbAccess  db, Frame owner){
+	private int idModel = 0;  ///????????????
+	private ShowModelTable table;
+	private ShowCommandButtons buttons;
+	
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	ShowModelProgram(DbAccess  db, ShowModels owner){
+	//ShowModelProgram(DbAccess  db, ShowModelAll owner, ShowMenu frame){
 		
 		//сформувати необхідні gui-елементи 
-		//JLabel label = new JLabel("Підстановки алгоритма");
-		//label.setHorizontalAlignment(label.CENTER);
-		//JButton table = new JButton("This is place for table");
-		ShowCommandButtons buttons = new ShowCommandButtons(db);
-		table = new ShowModelTable(db,owner);
-		//JPanel buttons = new JPanel();
-		
+		table = new ShowModelTable(db);
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		buttons = new ShowCommandButtons(db,table, owner);	
+		//buttons = new ShowCommandButtons(db,table, owner, frame);	
 		this.db = db; 
+		showMain = owner;
 		//=================================
 		// формуємо розміщення
 		setLayout(new BorderLayout());
@@ -58,11 +64,13 @@ public class ShowModelProgram extends JPanel {
 		workRule = new WorkRule(owner); */
 	}
 
-	public void setModel(Model model){
-	//	this.model = model;
-		idModel = model.id;
-	//	db.setModel(algo);
-		table.showTable(type, idModel);
+	public void setModel(String type, Model model){
+		this.type = type;
+		this.model = model;
+		if (model == null )idModel = 0; else idModel = model.id;
+		table.showModel(type, model);
+		buttons.setModel(type, model);
+		
 	}
 	
 	

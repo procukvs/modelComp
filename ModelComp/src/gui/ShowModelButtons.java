@@ -1,31 +1,48 @@
 package gui;
 
 import db.*;
+import main.*;
 
 import java.awt.*;
 import java.awt.event.*;
+
 //import javax.swing.border.*;
 import javax.swing.*;
 
 public class ShowModelButtons extends JPanel {
-	DbAccess db;
+	JFileChooser fc = new JFileChooser();
+	private DbAccess db;
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	private ShowModels showMain;
+	//private ShowModelAll showMain;
+	private String type = "Algorithm";
+	private Model model = null;
+	ShowWork showWork; 
+	private JTextField nmFile;
 	
-	ShowModelButtons(DbAccess db){
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	ShowModelButtons(DbAccess db, ShowModels showMain){
+	//ShowModelButtons(DbAccess db, ShowModelAll showMain, ShowMenu frame){
 		//сформувати необхідні gui-елементи 
 		JButton add = new JButton("Новий");
 		JButton addBase = new JButton("Новий на основі");
 		JButton report = new JButton("Звіти");
 		JButton delete = new JButton("Вилучити");
 		JButton file = new JButton("Файл ...");
-		JTextField nmFile = new JTextField(70);
+		nmFile = new JTextField(70);
 		nmFile.setMaximumSize(new Dimension(300,100));
 		nmFile.setMinimumSize(new Dimension(50,100));
 		JButton work = new JButton("Рoбота з алгоритмом");
 		JButton output = new JButton("Вивести алгоритм в файл");
 		JButton input = new JButton("Ввести алгоритм з файлу");
 		JButton quit = new JButton("Вийти");
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		showWork = new ShowWork(showMain);
+		//showWork = new ShowWork(frame);
 		
 		this.db = db;
+		this.showMain = showMain;
+		
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -71,13 +88,18 @@ public class ShowModelButtons extends JPanel {
 		quit.addActionListener(new Quit());
 	}
 	
+	public void setModel(String type, Model model) {
+		this.type = type;
+		this.model = model; 
+	}
+	
 	//описуємо класи - слухачі !!!!!!
 	class Add implements ActionListener  {
 		// 
 		public void actionPerformed(ActionEvent e) {
-			//Algorithm newModel = db.newAlgorithm(); 
-		   	//if (newModel != null) showModel.showLast();
-		   	JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
+			int idModel = db.newModel(type); 
+			showMain.showModel(type, idModel);
+		   	//JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
 		}	
 	}
 	class AddAs implements ActionListener  {
@@ -94,15 +116,15 @@ public class ShowModelButtons extends JPanel {
 	class SetNameFile implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			                               //UIManager.put("JFileChooser.cancelButtonText", "+++");
-			//fc.setDialogTitle("Select file");
-			//fc.setApproveButtonText("Вибрати файл");
+			fc.setDialogTitle("Select file");
+			fc.setApproveButtonText("Вибрати файл");
 			                              //fc.setApproveButtonToolTipText("++++");
-			//fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			//int res = fc.showOpenDialog(ShowModel.this);
-			//if (res==JFileChooser.APPROVE_OPTION ) 
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int res = fc.showOpenDialog(ShowModelButtons.this);
+			if (res==JFileChooser.APPROVE_OPTION ) 
 				
-			//	nmFile.setText(fc.getSelectedFile().getAbsolutePath());
-			JOptionPane.showMessageDialog(ShowModelButtons.this,"SetNameFile..." ); // fc.getSelectedFile());
+			nmFile.setText(fc.getSelectedFile().getAbsolutePath());
+			//JOptionPane.showMessageDialog(ShowModelButtons.this,"SetNameFile..." ); // fc.getSelectedFile());
 		}	
 	}
 	
@@ -158,8 +180,9 @@ public class ShowModelButtons extends JPanel {
 	class Quit implements ActionListener  {
 		// закінчуємо всю роботу ---- закриваємо базу даних
 		public void actionPerformed(ActionEvent e) {
-		   	db.disConnect();  
-            System.exit(0);
+		   //	db.disConnect();  
+           // System.exit(0);
+			showMain.showModel("NoModel", 0);
 		}	
 	}
 	class ModelReport implements ActionListener  {
@@ -191,14 +214,15 @@ public class ShowModelButtons extends JPanel {
 	class ModelWork implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 		//	Algorithm model = showModel.getAlgorithm();
-		//	if (model != null){
-		//		workAlgo.setModel(model);
-		//		workAlgo.show();
+			if (model != null){
+				showWork.setModel(type, model);
+				showWork.show();
 				//(showModel.work).show();
 			
-		//	}	
-			JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelWork...");		
-		}	
+			}	
+			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelWork...");		
+		}
 	}	
+
 
 }

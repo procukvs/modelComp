@@ -86,7 +86,7 @@ public class ModelTable extends AbstractTableModel {
 	public void setDataSource(ArrayList dataIn){
 		data.clear();
 		//System.out.println("setDateSourse : " + dataIn.size() + "...");
-		//if ((dataIn != null) && (dataIn.size() > 0)) {
+		if (dataIn != null) {
 			for (int i = 0; i < dataIn.size(); i++){
 				//System.out.println("size = " + dataIn.size() + " i =   " + i);
 				synchronized(data){
@@ -97,7 +97,7 @@ public class ModelTable extends AbstractTableModel {
 			}
 		//} else {
 	//		fireTableStructureChanged();
-	//	}
+		}
 	}
 	
 }
