@@ -19,6 +19,8 @@ public class ShowModels extends JFrame {
 	private ShowModelOne showModel;
 	private ShowModelButtons modelButtons;
 	
+	private ShowTesting sTest;
+	
 	public ShowModels(DbAccess db){
 		super("mAlgorithm");
 		this.db = db;
@@ -45,9 +47,14 @@ public class ShowModels extends JFrame {
 		getContentPane().add(showModel, BorderLayout.CENTER);
 		getContentPane().add(modelButtons, BorderLayout.SOUTH);
 		setVisiblePane(false);
-		//label.setVisible(false);
-		//showModel.setVisible(false);
-		//modelButtons.setVisible(false);
+				//label.setVisible(false);
+				//showModel.setVisible(false);
+				//modelButtons.setVisible(false);
+		
+		
+		//sTest =new ShowTesting();
+		//getContentPane().add(sTest, BorderLayout.NORTH);
+		
 		setSize(800,500);
 		//pack();
 	}	

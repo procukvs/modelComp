@@ -9,23 +9,23 @@ public class Machine extends Model {
 	public int rank = 1;
 	public String init = "@a0";
 	public String fin = "@zz";
-	public ArrayList <String> stAll = null;
+	//public ArrayList <String> stAll = null;
 		
 	public Machine(int id, String name) {
 		super(id,name);
-		stAll = new ArrayList();
-		stAll.add(new String(init));
-		stAll.add(new String(fin));
+		//stAll = new ArrayList();
+		//stAll.add(new String(init));
+		//stAll.add(new String(fin));
 	}
 	
-	public boolean isState(String st) {
+	/*public boolean isState(String st) {
 		boolean go = true;
 		int i = 0;
 		while ((i < stAll.size()) && go){
 			go = !st.equals(stAll.get(i)); i++;
 		}
 		return !go;
-	}
+	} */
 	
 	// додає стан в програму --- всі переходи - НЕВИЗНАЧЕНІ!
 	public void addStateGoing(String st) {
@@ -36,6 +36,33 @@ public class Machine extends Model {
 			going.add(new Move(c, c, st, '.'));
 		}
 		insertCommand(new Going(st,going,"1"));
+	}
+	
+	// знаходить команду для стану st 
+	public int findCommand(String st) {
+		int cnt = -1;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ )
+				if(st.equals(((Going)program.get(i)).getState())) cnt = i;
+		}
+		return cnt;
+	}
+	
+	//
+	public void updateCommand(String st, Move mv){
+		String allCh = "_" + main + add + no;
+		char in = mv.getIn();
+		int i = findCommand(st);
+		if (i == -1) addStateGoing(st);
+		i = findCommand(st);
+		if (i >= 0){
+			int pos = allCh.indexOf(in);
+			if (pos >= 0) {
+				((Going)(program.get(i))).getGoing().remove(pos);
+				((Going)(program.get(i))).getGoing().add(pos, mv);
+			}
+		}
+		
 	}
 
 	// вставляє команду/змінює going в програмі машини	
@@ -60,11 +87,13 @@ public class Machine extends Model {
 			program.add(going);
 		}
 		else if (comp == 0){
+			// заміна існуючої команди для даного стану
 			//System.out.println("Is going " + i + " " +  ((Going)program.get(i)).show());
 			program.remove(i);
 			program.add(i, going);
 		}
 		else if (comp < 0) {
+			// додаємо стан, котрий більше всіх, що входять в програму  
 			//System.out.println("All lest: max =  " + i + " " + 
 			//			((Going)program.get(program.size()-1)).show());
 			program.add(going);
@@ -80,10 +109,10 @@ public class Machine extends Model {
 		maSt = "Machine " + name + " (" + id + ") \n";
 		maSt = maSt + "  Alphabets: <" + main + "><" + add + "><" + no + ">\n";
 		maSt = maSt + "  States: init: " + init + " fin : " + fin +  " \n";
-		maSt = maSt + "  Program = \n ";
+		maSt = maSt + "  Program = \n";
 		if (program != null) {
 			for(int i = 0; i < program.size(); i++) {
-				maSt = maSt + "  " + i + ": " + ((Going)program.get(i)).show() + "\n"; 
+				maSt = maSt + i + ": " + ((Going)program.get(i)).show() + "\n"; 
 			}
 		}  // else maSt = maSt + "[]";	
 		return maSt;

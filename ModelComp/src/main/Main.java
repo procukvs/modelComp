@@ -26,13 +26,8 @@ public class Main {
 	        gui.setVisible(true);
 	    } 
 	    else System.out.println("No connection to DB Model.db");
-	 /*   
-	    Model m = new Machine(5, "Test1");
-	    System.out.println(m.show());
-	    ((Machine)m).addStateGoing("@s0");
-	    ((Machine)m).addStateGoing("@h0"); 
-	    ((Machine)m).addStateGoing("@z0");
-	    System.out.println(m.show()); */
+	
+	    Testing.formMachine();
 	}
 	
 	public static void main(String[] args) {
