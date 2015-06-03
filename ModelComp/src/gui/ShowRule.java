@@ -98,7 +98,7 @@ public class ShowRule extends JPanel {
 		sComm.setText(rule.gettxComm());
 		comAlfa = StringWork.isAlfa("",algo.main);
 		comAlfa = comAlfa + StringWork.isAlfa(comAlfa,algo.add);
-		System.out.println(".." + comAlfa + "..");
+		//System.out.println(".." + comAlfa + "..");
 		sLeft.requestFocus();
 	}
 	

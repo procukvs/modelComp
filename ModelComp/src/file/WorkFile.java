@@ -1,5 +1,7 @@
 package file;
 
+import java.util.ArrayList;
+
 import main.*;
 
 public class WorkFile {
@@ -99,12 +101,14 @@ public class WorkFile {
 		//boolean isNumeric = false;
 		//int rank = 2;
 		Rule r;
+		ArrayList rules = new ArrayList();
 		if (lex == 4) {txComm = valueLex; get();} 
 		exam(20,"службове слово Algorithm");
 		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя алгоритму");
 		if (errorText.isEmpty()) {
 			model = new Algorithm(0,valuePrev);
 			model.descr = txComm;
+			model.program = rules;
 			exam(21,"службове слово Alphabet");
 			if (errorText.isEmpty()) exam(2, "рядок - основний алфавіт");
 		}

@@ -83,6 +83,7 @@ public class DbAccess {
 		return cnt;
 	}
 	
+	// знаходить id моделі типа type, яка по порядку order
 	public int getNumber(String type, int order){
 		int number = 0;
 		int i=1; 
@@ -95,6 +96,25 @@ public class DbAccess {
 	        	i++; 
 	        }
 	        if (rs != null) number = rs.getInt(1);	       
+		}catch (Exception e){
+			System.out.println("ERROR: getNumber :" + sql);
+			System.out.println(">>> " + e.getMessage());
+		}
+		return number;
+	}
+	
+	// знаходить порядковий номер моделі типа type з номером id
+	public int getOrder(String type, int id){
+		int number = 0;
+		boolean go = true;
+		sql = "select id from " + tableModel(type) + " order by id";
+		try{ 
+			s.execute(sql);
+	        ResultSet rs = s.getResultSet();
+	        while((rs!=null) && (rs.next()) && go) {
+	        	number++;	
+	        	go = !(rs.getInt(1) == id); 
+	        }
 		}catch (Exception e){
 			System.out.println("ERROR: getNumber :" + sql);
 			System.out.println(">>> " + e.getMessage());
@@ -142,6 +162,16 @@ public class DbAccess {
 		return name;
 	}
 	
+	// додає введену з файлу модель model типа type (включаючи її програму)
+	public int addModel(String type, Model model) {
+		int idModel = 0;
+		switch(type){
+		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
+		}	
+		return idModel;
+	}
+	
+	
 	public void editModel(String type, Model model) {
 		switch(type){
 		case "Algorithm" : dbAlgo.editAlgorithm((Algorithm)model); break;
@@ -152,6 +182,20 @@ public class DbAccess {
 		int idModel = 0;
 		switch(type){
 		case "Algorithm" : idModel = dbAlgo.newAlgorithm(); break;
+		}	
+		return idModel;
+	}
+	
+	public void deleteModel(String type, Model model) {
+		switch(type){
+		case "Algorithm" : dbAlgo.deleteAlgorithm((Algorithm)model); break;
+		}	
+	}
+	
+	public int newModelAs(String type, Model model) {
+		int idModel = 0;
+		switch(type){
+		case "Algorithm" : idModel = dbAlgo.newAlgorithmAs((Algorithm)model); break;
 		}	
 		return idModel;
 	}

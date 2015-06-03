@@ -1,7 +1,5 @@
 package db;
 
-
-
 import java.sql.*;
 import java.util.*;
 
@@ -42,6 +40,8 @@ class DbAlgorithm {
 		return model;
 	}
 	
+	
+	
 	// створює новий порожній алгоритм
 	public int newAlgorithm() {
 		//Algorithm model= null;
@@ -59,6 +59,58 @@ class DbAlgorithm {
 			System.out.println(">>> " + e.getMessage());
 		}
 		return cnt;
+	}
+	
+	// створює новий алгоритм на основі алгоритму з model (включаючи всі підстановки)
+	public int newAlgorithmAs(Algorithm model){
+		//Algorithm newModel= null;
+		String name = db.findName("Algorithm", model.name);
+		int cnt = db.maxNumber("Algorithm")+1;
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into mRule select " + cnt + ", id, sLeft, sRigth, isEnd, txComm " +
+						" from mRule where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "insert into mAlgorithm select " + cnt + ",'" + name + "', sMain, sAdd, " + 
+						"isNumeric, Rank, descr from mAlgorithm where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				if (rows == 0) cnt =0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: newAlgorithmAs :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}
+	
+	public void deleteAlgorithm(Algorithm model){
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "delete from mRule where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from mAlgorithm where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: deleteAlgorithm :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
 	
 	// модифікує відредагований алгоритм
@@ -80,6 +132,41 @@ class DbAlgorithm {
 			System.out.println(">>> " + e.getMessage());
 		}
 	}	
+	
+	// додає введений з файлу алгоритм model (включаючи всі підстановки)
+	public int addAlgorithm(Algorithm model){
+		String name = model.name;
+		int cnt = db.maxNumber("Algorithm")+1;
+		int rows;
+		Rule r;
+		if (db.isModel("Algorithm",name)) name = db.findName("Algorithm", model.name);
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				int isNumeric = (model.isNumeric?1:0); 
+				sql = "insert into mAlgorithm values(" + cnt + ",'" + name + "','" + model.main + "','" +
+						model.add + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					r = (Rule)model.program.get(i);
+					sql = "insert into mRule values(" + cnt + "," + (i+1) + ",'" + r.getsLeft() +
+							"','" + r.getsRigth() + "'," + (r.getisEnd()?1:0) + ",'" + r.gettxComm() + "')";
+					rows=rows + db.s.executeUpdate(sql);
+				}
+				if (rows != model.program.size() + 1) cnt = 0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: addAlgorithm :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}		
 	
 	public void editRule(int algo, int row, Rule rule) {
 		 try{	int isEnd = (rule.getisEnd()?1:0); 
