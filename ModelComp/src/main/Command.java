@@ -5,7 +5,10 @@ public class Command {
 	Command(String txComm) {
 		this.txComm = txComm;
 	}
-	 public String show(){
+	public String show(){
 		 return "Command-show";
-	 }
+	}
+	public String show(String st){
+		 return "Command-show";
+	}
 }

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 
+
 //import java.text.*;
 //import java.util.*;
 import org.sqlite.*;
@@ -21,6 +22,7 @@ public class DbAccess {
 	// nameDB = "" + "Is driver" + "No driver" + nameDB
   	private String nameDB = "";
   	private DbAlgorithm dbAlgo;
+  	private DbMachine dbMach;
   	
 	public DbAccess(){ 
 		try
@@ -29,6 +31,7 @@ public class DbAccess {
 		  Class.forName("org.sqlite.JDBC");
 		  nameDB = "Is driver";
 		  dbAlgo = new DbAlgorithm(this);
+		  dbMach = new DbMachine(this);
 	     }
 		catch(Exception ex)
         {
@@ -201,8 +204,10 @@ public class DbAccess {
 	}
 	
 	public Model getModel(String type, int id){
+		System.out.println(" getModel :" + type + " " + id);
 		switch(type){
 		case "Algorithm" : return dbAlgo.getAlgorithm(id);
+		case "Machine": return dbMach.getMachine(id); 
 		default: return null;
 		}
 	}

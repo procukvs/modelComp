@@ -27,18 +27,42 @@ public class Machine extends Model {
 		return !go;
 	} */
 	
+	public ArrayList getDataSource(int idModel) {
+		ArrayList data = new ArrayList();
+		ArrayList row;
+		State st;
+		String allCh = "_" + main + add + no;
+		//char[] typeInfo = {'S','S',...,'S','I','I'}; 
+		//System.out.println("getDataSource : " + name + " " + idModel + " " +  program.size() );
+		for (int i = 0; i < program.size(); i++){
+			row = new ArrayList();
+			st = (State)program.get(i);
+			row.add(st.getState());
+			for(int j=0; j < allCh.length(); j++){
+			  row.add(st.getGoing().get(j));
+			}
+			row.add(st.gettxComm());
+			row.add(st.getId());
+			row.add(idModel);
+			data.add(row);
+        } 
+        return data;
+	}
+	
+	
+	
 	// додаЇ стан в програму --- вс≥ переходи - Ќ≈¬»«Ќј„≈Ќ≤!
 	public void addStateGoing(String st) {
-		ArrayList <Move> going = new ArrayList();
+		ArrayList <String> going = new ArrayList();
 		String allCh = "_" + main + add + no;
 		for( int i = 0; i < allCh.length(); i++){
 			char c = allCh.charAt(i);
-			going.add(new Move(c, c, st, '.'));
+			going.add("");
 		}
-		insertCommand(new State(st,0,going,"1"));
+		insertCommand(new State(st,0,going,"---"));
 	}
 	
-	// знаходить команду дл€ стану st 
+	// знаходить команду дл€ стану st за ≥менем стану st 
 	public int findCommand(String st) {
 		int cnt = -1;
 		if ((program != null) && (program.size() > 0)) {
@@ -48,10 +72,20 @@ public class Machine extends Model {
 		return cnt;
 	}
 	
-	//
-	public void updateCommand(String st, Move mv){
+	// знаходить команду дл€ стану за номером стану num в баз≥ даних 
+	public int findCommand(int num) {
+		int cnt = -1;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ )
+				if(num == (((State)program.get(i)).getId())) cnt = i;
+		}
+		return cnt;
+	}
+	
+	//зм≥нюЇ перех≥д пов€заний з символом in в стан≥ st за ≥менем стану st 
+	public void updateCommand(String st, char in, String move){
 		String allCh = "_" + main + add + no;
-		char in = mv.getIn();
+		//char in = mv.getIn();
 		int i = findCommand(st);
 		if (i == -1) addStateGoing(st);
 		i = findCommand(st);
@@ -59,10 +93,23 @@ public class Machine extends Model {
 			int pos = allCh.indexOf(in);
 			if (pos >= 0) {
 				((State)(program.get(i))).getGoing().remove(pos);
-				((State)(program.get(i))).getGoing().add(pos, mv);
+				((State)(program.get(i))).getGoing().add(pos, move);
 			}
 		}
 		
+	}
+	
+	//зм≥нюЇ перех≥д пов€заний з символом in в стан≥  за номером стану num в баз≥ даних
+	public void updateCommand(int num, char in, String move){
+		String allCh = "_" + main + add + no;
+		int i = findCommand(num);
+		if (i >= 0){
+			int pos = allCh.indexOf(in);
+			if (pos >= 0) {
+				((State)(program.get(i))).getGoing().remove(pos);
+			((State)(program.get(i))).getGoing().add(pos, move);
+			}
+		}
 	}
 
 	// вставл€Ї команду/зм≥нюЇ going в програм≥ машини	
@@ -106,15 +153,16 @@ public class Machine extends Model {
 	
 	public String show() {
 		String maSt = "";
+		String alfa = "_" + main + add + no;
 		maSt = "Machine " + name + " (" + id + ") \n";
 		maSt = maSt + "  Alphabets: <" + main + "><" + add + "><" + no + ">\n";
 		maSt = maSt + "  States: init: " + init + " fin : " + fin +  " \n";
 		maSt = maSt + "  Program = \n";
 		if (program != null) {
 			for(int i = 0; i < program.size(); i++) {
-				maSt = maSt + i + ": " + ((State)program.get(i)).show() + "\n"; 
+				maSt = maSt + i + ": " + ((State)program.get(i)).show(alfa) + "\n"; 
 			}
-		}  // else maSt = maSt + "[]";	
+		} 	
 		return maSt;
 	}	
 }

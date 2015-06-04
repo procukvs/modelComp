@@ -126,9 +126,9 @@ public class ShowModelTable extends JPanel {
 	
 	public void showModel(String type, Model model){
 		this.type = type; this.model = model;
-		//setTableStructure(); 
+						//setTableStructure(); 
 		showTable(true, table.getSelectedRow() + 1);
-		//showTable(true, 0);
+						//showTable(true, 0);
 	}
 	
 	private void showTable(boolean update, int selected){
@@ -136,9 +136,10 @@ public class ShowModelTable extends JPanel {
 		if (update) {
 			ArrayList ds = null;
 			if(model != null) ds = model.getDataSource(model.id);
-			//System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
+			System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
+			setTableStructure();
 			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
-			else setTableStructure();
+			//else 	setTableStructure();
 		}
 		int all = dbm.getRowCount();
 		if (selected > 0){ 
@@ -150,6 +151,7 @@ public class ShowModelTable extends JPanel {
 	
 	private void setTableStructure() {
 		dbm.setDataSource(null);
+		dbm.setInitialModel(findInform(type));
 		dbm.fireTableStructureChanged();
 		setColumnWidth();
 		//System.out.println("setTableStructure ");
@@ -157,10 +159,69 @@ public class ShowModelTable extends JPanel {
 	
 	private void setColumnWidth() {
 		TableColumn column = null;
-		int[] widthCol = {10,100,100,10,400,10};
+		int[] widthCol = findWidth(); //{10,100,100,10,400,10};
 	    for (int i = 0; i < widthCol.length; i++) {
 	        column = table.getColumnModel().getColumn(i);
 	        column.setPreferredWidth(widthCol[i]); 
 	    }     
 	}
+	
+	private int[] findWidth(){
+		int [] w = null;
+		switch(type){
+		case "Algorithm" : w = new int[]{10,100,100,10,400,10}; break;
+		case "Machine": 
+			if (model != null) {
+				Machine m = (Machine)model;
+				int l = m.main.length() + m.add.length() + m.no.length() + 1;
+				w = new int[l+4];
+				w[0] = 10;
+				for(int i = 1; i <= l; i++) w[i] = 30;
+				w[l+1] = 600 - l*30;
+				w[l+2] = 10; w[l+3] = 10;
+			} else w = new int[]{10,30,30,30,510, 10,10};	
+			break;
+		default: return null;
+		}
+		return w;
+	}
+	
+	private String[][] findInform(String type){
+		String[][] info = null;
+		switch(type){
+		case "Algorithm" : 
+			info = new String[][]{
+									{"№","I","N"},
+									{"Ліва частина підстановки","S","E"},
+									{"Права частина підстановки","S","E"},
+									{"Заключна ?","B","E"},
+									{"Коментар","S","E"},
+									{"№Ал","I","N"}
+								}; break;
+		case "Machine": 
+			int l;
+			String allS;
+			if (model != null) {
+				Machine m = (Machine)model;
+				l = m.main.length() + m.add.length() + m.no.length() + 1;
+				allS = "_" + m.main + m.add + m.no;
+			}
+			else {
+				l = 3; allS = "_|#";
+			}
+			info = new String[l+4][3];
+			info[0][0] = "State"; info[0][1] ="S"; info[0][2] ="N";
+			for(int i = 1; i <= l; i++){
+				info[i][0] = allS.substring(i-1,i); info[i][1] ="S"; info[i][2] ="N";
+			}
+			info[l+1][0] = "Коментар"; info[l+1][1] ="S"; info[l+1][2] ="N";
+			info[l+2][0] = "№Ст"; info[l+2][1] ="I"; info[l+2][2] ="N";
+			info[l+3][0] = "№М"; info[l+3][1] ="I"; info[l+3][2] ="N";
+			break;
+		}
+		
+		
+		return info;
+	}
+	
 }

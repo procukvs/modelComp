@@ -33,7 +33,7 @@ BEGIN TRANSACTION;
 DELETE FROM tMachine;
 INSERT INTO tMachine VALUES(1,'Right','#|','','@z0','@zz',0,1,' *?1..1_ => ?1..1*_');
 INSERT INTO tMachine VALUES(2,'NoExist','#|','','@a0','@ag',1,1,' *x_ y=> *x_yx <a0..ag>');
-INSERT INTO tMachine VALUES(3,'Left','|','abc','@z0','@zz',0,1,' _X..X*? => *_X..X?');
+INSERT INTO tMachine VALUES(3,'Left','|','bc','@z0','@zz',0,1,' _X..X*? => *_X..X?');
 
 DELETE FROM tProgram;
 INSERT INTO tProgram VALUES(1,1,'@z0',' r ');
