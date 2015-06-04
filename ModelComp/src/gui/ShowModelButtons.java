@@ -21,21 +21,27 @@ public class ShowModelButtons extends JPanel {
 	ShowWork showWork; 
 	private JTextField nmFile;
 	
+	private JButton add;
+	private JButton addBase;
+	private JButton work ;
+	private JButton output;
+	private JButton input ;
+	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ShowModelButtons(DbAccess db, ShowModels showMain){
 	//ShowModelButtons(DbAccess db, ShowModelAll showMain, ShowMenu frame){
 		//сформувати необхідні gui-елементи 
-		JButton add = new JButton("Новий");
-		JButton addBase = new JButton("Новий на основі");
+		add = new JButton("Новий");
+		addBase = new JButton("Новий на основі");
 		JButton report = new JButton("Звіти");
 		JButton delete = new JButton("Вилучити");
 		JButton file = new JButton("Файл ...");
 		nmFile = new JTextField(70);
 		nmFile.setMaximumSize(new Dimension(300,100));
 		nmFile.setMinimumSize(new Dimension(50,100));
-		JButton work = new JButton("Рoбота з алгоритмом");
-		JButton output = new JButton("Вивести алгоритм в файл");
-		JButton input = new JButton("Ввести алгоритм з файлу");
+		work = new JButton("Рoбота з алгоритмом");
+		output = new JButton("Вивести алгоритм в файл");
+		input = new JButton("Ввести алгоритм з файлу");
 		JButton quit = new JButton("Вийти");
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		showWork = new ShowWork(showMain);
@@ -92,6 +98,12 @@ public class ShowModelButtons extends JPanel {
 	public void setModel(String type, Model model) {
 		this.type = type;
 		this.model = model; 
+		// встановити надписи на кнопках
+		add.setText(Model.title(type, 7));
+		addBase.setText(Model.title(type, 7) + " на основі");
+		work.setText("Рoбота з " + Model.title(type, 5));
+		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
+		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
 	}
 	
 	//описуємо класи - слухачі !!!!!!
@@ -146,7 +158,7 @@ public class ShowModelButtons extends JPanel {
 					//}
 					WorkFile wf = new WorkFile();
 					text = wf.outputAlgorithm(name,(Algorithm)model);
-					if(text.isEmpty()) text = "Модель " + model.name + " виведено в файл " + name + "!";
+					if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
 				}	
 				JOptionPane.showMessageDialog(ShowModelButtons.this,text);
 			}
@@ -168,11 +180,12 @@ public class ShowModelButtons extends JPanel {
 					int idModel = db.addModel("Algorithm", model);
 					if (idModel > 0) {
 						showMain.showModel(type, idModel);
-						text = "Алгоритм " + model.name + " з файлу " + name + "  введено!";
+						text = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
 					}
-					else text = "Алгоритм " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
+					else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 				}
 				else text = wf.getErrorText();
+				JOptionPane.showMessageDialog(ShowModelButtons.this,text);
 			}	
 			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelInput..."); // text);
 		}	

@@ -15,9 +15,17 @@ public class ShowDescription extends JPanel {
 	//private ShowModelAll showMain;
 	private String type = "Algorithm";
 	private Model model;
+	private Algorithm algo; 
+	private Machine mach;
 	
 	private JTextField sName;
 	private JLabel txtNumb;
+	
+	private JLabel txtInit;
+	private JTextField sInit;
+	private JLabel txtFin;
+	private JTextField sFin;
+	
 	private JCheckBox isNumeric;
 	private JLabel txtRank;
 	private JTextField iRank;
@@ -25,12 +33,21 @@ public class ShowDescription extends JPanel {
 	private JTextField sAdd;
 	private JTextField sComm;
 	
+	
 	ShowDescription(boolean isEdit){
 		//сформувати необхідні gui-елементи 
 		JLabel txtAlgo = new JLabel("Алгоритм ");
 		sName = new JTextField(10);
 		sName.setMaximumSize(new Dimension(30,100));
 		txtNumb = new JLabel("--------");
+		
+		txtInit = new JLabel("Початковий стан");
+		sInit = new JTextField(3);
+		sInit.setMaximumSize(new Dimension(5,100));
+		txtFin = new JLabel("Заключний стан");
+		sFin = new JTextField(3);
+		sFin.setMaximumSize(new Dimension(5,100));
+		
 		JLabel txtNumeric = new JLabel("Функція ");
 		isNumeric = new JCheckBox();
 		isNumeric.setSelected(true);
@@ -60,6 +77,15 @@ public class ShowDescription extends JPanel {
 		headBox.add(sName);
 		headBox.add(Box.createHorizontalStrut(5));
 		headBox.add(txtNumb);
+		headBox.add(Box.createGlue());
+		headBox.add(Box.createHorizontalStrut(5));
+		headBox.add(txtInit);
+		headBox.add(Box.createHorizontalStrut(5));
+		headBox.add(sInit);
+		headBox.add(Box.createHorizontalStrut(5));
+		headBox.add(txtFin);
+		headBox.add(Box.createHorizontalStrut(5));
+		headBox.add(sFin);
 		headBox.add(Box.createGlue());
 		headBox.add(Box.createHorizontalStrut(5));
 		headBox.add(txtNumeric);
@@ -112,6 +138,12 @@ public class ShowDescription extends JPanel {
 		iRank.setEnabled(isEdit);
 		sComm.setEnabled(isEdit);
 		
+		sInit.setEnabled(isEdit);
+		sFin.setEnabled(isEdit);
+		txtInit.setVisible(false);
+		sInit.setVisible(false);
+		txtFin.setVisible(false);
+		sFin.setVisible(false);
 	}
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -272,26 +304,54 @@ public class ShowDescription extends JPanel {
 	}
 		
 	public void setModel(String type,Model model) {
+		boolean isVisible = type.equals("Machine");
 		this.type = type;
 	    this.model = model;	
 	    if (model == null) showEmpty( );
 	    else showModel();
+	    
+		txtInit.setVisible(isVisible);
+		sInit.setVisible(isVisible);
+		txtFin.setVisible(isVisible);
+		sFin.setVisible(isVisible);
 	}
 	private void showModel() {
-		Algorithm algo = (Algorithm)model;
-		sName.setText(algo.name);
-		txtNumb.setText("Номер " + algo.id);
-		sMain.setText(algo.main);
-		sAdd.setText(algo.add);
-		isNumeric.setSelected(algo.isNumeric);
-		iRank.setText(((Integer)algo.rank).toString());
-		txtRank.setVisible(algo.isNumeric);
-		iRank.setVisible(algo.isNumeric);
-		sComm.setText(algo.descr);
+		
+		sName.setText(model.name);
+		txtNumb.setText("Номер " + model.id);
+		
+		sComm.setText(model.descr);
+		switch (type) {
+		
+		case "Algorithm" :
+			algo = (Algorithm)model;
+			sMain.setText(algo.main);
+			sAdd.setText(algo.add);
+			isNumeric.setSelected(algo.isNumeric);
+			iRank.setText(((Integer)algo.rank).toString());
+			txtRank.setVisible(algo.isNumeric);
+			iRank.setVisible(algo.isNumeric);
+			break;
+		case "Machine" : 
+			mach = (Machine)model;
+			sInit.setText(mach.init);
+			sFin.setText(mach.fin);
+			sMain.setText(mach.main);
+			sAdd.setText(mach.add);
+			isNumeric.setSelected(mach.isNumeric);
+			iRank.setText(((Integer)mach.rank).toString());
+			txtRank.setVisible(mach.isNumeric);
+			iRank.setVisible(mach.isNumeric);
+			break;
+			
+		}
+		
 	}
 	private void showEmpty() {
 		sName.setText("");
 		txtNumb.setText("-----");
+		sInit.setText("@z0");
+		sFin.setText("@zz");
 		sMain.setText("");
 		sAdd.setText("");
 		isNumeric.setSelected(true);

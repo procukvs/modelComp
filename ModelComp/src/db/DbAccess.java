@@ -252,6 +252,7 @@ public class DbAccess {
 	private String tableModel(String type){
 		switch(type){
 		case "Computer" : return "mComputer";
+		case "Machine": return "tMachine";
 		default: return "mAlgorithm";
 		}
 	}

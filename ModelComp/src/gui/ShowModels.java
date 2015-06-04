@@ -1,5 +1,4 @@
 package gui;
-import gui.ShowModelButtons.Quit;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,7 +13,6 @@ public class ShowModels extends JFrame {
 	private DbAccess db;
 	private String type = "Algorithm";
 	private Model model = null;
-	
 	private JLabel label;
 	private ShowModelOne showModel;
 	private ShowModelButtons modelButtons;
@@ -22,7 +20,7 @@ public class ShowModels extends JFrame {
 	private ShowTesting sTest;
 	
 	public ShowModels(DbAccess db){
-		super("mAlgorithm");
+		super("Models of computation");
 		this.db = db;
 		//  сформувати необхідні gui-елементи 
 		JMenuBar  menuBar = new JMenuBar();
@@ -66,27 +64,21 @@ public class ShowModels extends JFrame {
 	}
 	
 	public void showModel(String type, int id) {
-		/*if (type.equals("NoModel")) {
-			label.setVisible(false);
-			showModel.setVisible(false);
-			modelButtons.setVisible(false);
-		} else{
-			label.setVisible(true);
-			showModel.setVisible(true);
-			modelButtons.setVisible(true);
-		} */
 		//System.out.println("ShowModel start ..." + type + "  " + id + " " + this.type);
 		setVisiblePane(!type.equals("NoModel"));
 		if (!type.equals(this.type)) {
+			// set label !!!!!!!!
+			String text = Model.title(type, 1);
+			if (text.isEmpty()) text = "Not realise " + type + " !";
+			label.setText(text);
+			this.type = type;
+			/*
 			String text;
 			switch(type){
 			case "Algorithm" : text = "Нормальні алгоритми Маркова"; break;
-			case "Machine" : text = "Machine"; break;
+			case "Machine" : text = "Машини Тьюрінга"; break;
 			default: text = "Not realise " + type + " !";
-			}
-			label.setText(text);
-			this.type = type;
-			// set label !!!!!!!!
+			} */
 		}
 		if (id == 0) model = null; else model = db.getModel(type, id);
 		showModel.setModel(type,model);
@@ -96,31 +88,30 @@ public class ShowModels extends JFrame {
 	private JMenu createModelMenu () {
 		// створюємо випадаюче меню, що містить звичайні елементи меню
 		JMenu model= new JMenu("Модель обчислень");
-		JMenuItem algorithm = new JMenuItem(new AlgorithmAction()); // ("Open", new ImageIcon("images\\icon_arrow.gif"));
 		// елемент меню - команда
-		//JMenuItem machine = new JMenuItem(new MachineAction()); 	   //(new ExitAction());
-		JMenuItem machine = new JMenuItem("Machina Turing"); 
-		model.add(algorithm);
+		JMenuItem algorithm = new JMenuItem(new AlgorithmAction()); // ("Open", new ImageIcon("images\\icon_arrow.gif"));
+		JMenuItem machine = new JMenuItem(Model.title("Machine", 1));  //("Машини Тьюрінга"); 
 		machine.addActionListener(new LsMachine());
-		// розподільник
-		//file.addSeparator();
+		
+		model.add(algorithm);
 		model.add(machine);
 		return model;
+		// розподільник
+		//file.addSeparator();
 	}
+	
 	class AlgorithmAction extends AbstractAction {
-		AlgorithmAction() {putValue(NAME,"Нормальні алгоритми Маркова");}
+		AlgorithmAction() {putValue(NAME,Model.title("Algorithm", 1));}   //"Нормальні алгоритми Маркова"
 		public void actionPerformed(ActionEvent e) {
-			//System.out.println("Algo visible !!");
-		  	//JOptionPane.showMessageDialog(ShowModels.this,"Algorithm..");
 			showModel("Algorithm",0);
 		}
 	}
-	class MachineAction extends AbstractAction {
-		MachineAction() {putValue(NAME,"Машини Тьюрінга");}
+	class LsMachine implements ActionListener  {
+		// 
 		public void actionPerformed(ActionEvent e) {
 			showModel("Machine",0);
-			  //	JOptionPane.showMessageDialog(ShowModels.this,"Machine..");
-		}
+		  // JOptionPane.showMessageDialog(ShowModels.this,"Machine.");
+		}	
 	}
 	
 	class Quit implements ActionListener  {
@@ -131,11 +122,15 @@ public class ShowModels extends JFrame {
 		}	
 	}
 	
-	class LsMachine implements ActionListener  {
-		// 
+	/*class MachineAction extends AbstractAction {
+		MachineAction() {putValue(NAME,Model.title("Machine", 1));}  // "Машини Тьюрінга"
 		public void actionPerformed(ActionEvent e) {
-		   JOptionPane.showMessageDialog(ShowModels.this,"Machine.");
-		}	
-	}
+			showModel("Machine",0);
+			  //	JOptionPane.showMessageDialog(ShowModels.this,"Machine..");
+		}
+	} */
+	
+	
+
 
 }

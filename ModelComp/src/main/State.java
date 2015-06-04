@@ -1,16 +1,19 @@
 package main;
 
-import java.util.*;
+import java.util.ArrayList;
 
-public class Going extends Command  {
+public class State extends Command {
 	private String state;
+	private int id; // внутр≥шн≥й номер в баз≥ даних (кл€ч разом з id модел≥) 
 	private ArrayList <Move> going;
 		
-	public Going(String state, ArrayList <Move> going, String txComm) {
-		super(txComm);
-		this.state = state; this.going = going;
+	public State(String state, int id, ArrayList <Move> going, String txComm) {
+		super(txComm); 
+		this.state = state; this.id = id; 
+		this.going = going;
 	}
 	public String getState() { return state;}
+	public int getId() { return id;}
 	public ArrayList <Move> getGoing() { return going;};
 	
 	public String show() {
@@ -21,5 +24,4 @@ public class Going extends Command  {
 		}
 		return "\"" + state + "\" -> [" + goSt + "]";
 	}
-
 }

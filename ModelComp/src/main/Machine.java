@@ -35,7 +35,7 @@ public class Machine extends Model {
 			char c = allCh.charAt(i);
 			going.add(new Move(c, c, st, '.'));
 		}
-		insertCommand(new Going(st,going,"1"));
+		insertCommand(new State(st,0,going,"1"));
 	}
 	
 	// знаходить команду для стану st 
@@ -43,7 +43,7 @@ public class Machine extends Model {
 		int cnt = -1;
 		if ((program != null) && (program.size() > 0)) {
 			for(int i = 0; i < program.size(); i++ )
-				if(st.equals(((Going)program.get(i)).getState())) cnt = i;
+				if(st.equals(((State)program.get(i)).getState())) cnt = i;
 		}
 		return cnt;
 	}
@@ -58,23 +58,23 @@ public class Machine extends Model {
 		if (i >= 0){
 			int pos = allCh.indexOf(in);
 			if (pos >= 0) {
-				((Going)(program.get(i))).getGoing().remove(pos);
-				((Going)(program.get(i))).getGoing().add(pos, mv);
+				((State)(program.get(i))).getGoing().remove(pos);
+				((State)(program.get(i))).getGoing().add(pos, mv);
 			}
 		}
 		
 	}
 
 	// вставляє команду/змінює going в програмі машини	
-	public void insertCommand(Going going) {
+	public void insertCommand(State going) {
 		boolean go = true;
 		int i = 0;
 		int comp = -1;
 		String stNew = going.getState();
-		Going work;
+		State work;
 		if (program != null) {
 			while ((i < program.size()) && go){
-				work =(Going)program.get(i);
+				work =(State)program.get(i);
 				comp = work.getState().compareTo(stNew);
 				//System.out.println( comp + " ; " +  work.getState() + " ? " + stNew);
 				if (comp < 0) i++; else go = false;
@@ -112,7 +112,7 @@ public class Machine extends Model {
 		maSt = maSt + "  Program = \n";
 		if (program != null) {
 			for(int i = 0; i < program.size(); i++) {
-				maSt = maSt + i + ": " + ((Going)program.get(i)).show() + "\n"; 
+				maSt = maSt + i + ": " + ((State)program.get(i)).show() + "\n"; 
 			}
 		}  // else maSt = maSt + "[]";	
 		return maSt;

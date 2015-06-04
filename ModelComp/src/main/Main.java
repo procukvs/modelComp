@@ -27,7 +27,7 @@ public class Main {
 	    } 
 	    else System.out.println("No connection to DB Model.db");
 	
-	    Testing.formMachine();
+	   // Testing.formMachine();
 	}
 	
 	public static void main(String[] args) {
