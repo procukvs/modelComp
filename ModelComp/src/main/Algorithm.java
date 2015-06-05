@@ -12,6 +12,18 @@ public class Algorithm extends Model {
 		super(id,name);
 	}
 
+	//-----------------------------------------------
+	public String getMain() {return main;}
+	public String getAdd() {return add;}
+	public boolean getIsNumeric() {return isNumeric;}
+	public int getRank() {return rank;}
+	public void setMain(String main) {this.main = main; }
+	public void setAdd(String add) {this.add = add; }
+	public void setIsNumeric(boolean isNumeric) {this.isNumeric = isNumeric; }
+	public void setRank(int rank){this.rank = rank;}
+	//----------------------------------------------
+	
+	
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -39,7 +51,7 @@ public class Algorithm extends Model {
         return data;
 	}
 	
-	public String[] testingRules(){
+	public String[] iswfModel(){
 		String noLeft;
 		String noRigth;
 		String allNoAlfa = "";

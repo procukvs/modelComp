@@ -15,8 +15,8 @@ public class ShowDescription extends JPanel {
 	//private ShowModelAll showMain;
 	private String type = "Algorithm";
 	private Model model;
-	private Algorithm algo; 
-	private Machine mach;
+	//private Algorithm algo; 
+	//private Machine mach;
 	
 	private JLabel txtAlgo;
 	private JTextField sName;
@@ -188,19 +188,25 @@ public class ShowDescription extends JPanel {
 			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {
+				/*
 				boolean isNum = true;
 				String main = "|#";
 				switch(type){
 				case "Algorithm": isNum = algo.isNumeric; main = algo.main; break;
 				case "Machine": isNum = mach.isNumeric; main = mach.main;break;
 				}
-				if (!com.equals(main)) {
-					if (isNum) {
+				*/
+				if (!com.equals(model.getMain())) {
+					if (model.getIsNumeric()) {
 						text = "Основний алфавіт у функції завжди |# !";
 						sAdd.setText(StringWork.unionAlfa(sAdd.getText(), com));
 						sMain.setText("|#");
 						JOptionPane.showMessageDialog(ShowDescription.this,text);	
-					} 
+					}
+					model.setMain(sMain.getText());
+					model.setAdd(sAdd.getText());
+					String[] text1 = model.iswfModel();
+					/*
 					String[] text1 = {""};
 					switch(type){
 					case "Algorithm":
@@ -215,7 +221,7 @@ public class ShowDescription extends JPanel {
 						db.editModel(type,mach);
 						text1 = mach.testingRules();
 						break;	
-					}	
+					} */	
 					if (text1 != null)
 						JOptionPane.showMessageDialog(ShowDescription.this,text1);
 				} 
@@ -229,11 +235,12 @@ public class ShowDescription extends JPanel {
 			String com = sAdd.getText();
 			if (model == null) showEmpty();
 			else {
-				Algorithm algo = (Algorithm)model;
-				if (!com.equals(algo.add)) {
-				    algo.add = com;
-					db.editModel(type,algo);
-				    String[] text= algo.testingRules();
+				//Algorithm algo = (Algorithm)model;
+				if (!com.equals(model.getAdd())) {
+				    model.setAdd(com);
+					db.editModel(type,model);
+				    String[] text= model.iswfModel();
+				   // System.out.println(type + ".." + text[0] + "..");
 				    if (text != null)
 				    	 JOptionPane.showMessageDialog(ShowDescription.this,text);
 				}
@@ -245,35 +252,34 @@ public class ShowDescription extends JPanel {
 	class LsisNumeric implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			Boolean isNew;
-			//String text = "";
-			//System.out.println(".." + com + "..");
 			if (model != null){
-				Algorithm algo = (Algorithm)model;
+				//Algorithm algo = (Algorithm)model;
 				isNew = isNumeric.isSelected();
 				if(isNew){
-					if(!algo.isNumeric){
+					if(!model.getIsNumeric()){
 						// зробили модель функцією !!!!!
-						algo.isNumeric = true;
+						model.setIsNumeric(true);
 						txtRank.setVisible(true);
 						iRank.setVisible(true);
-						algo.add = algo.add + StringWork.isAlfa(algo.add +"|#", algo.main);
-						algo.main = "|#";
+						//algo.add = algo.add + StringWork.isAlfa(algo.add +"|#", algo.main);
+						model.setAdd(model.getAdd() + StringWork.isAlfa(model.getAdd() +"|#", model.getMain()));;
+						model.setMain("|#");
 						sMain.setText("|#");
-						sAdd.setText(algo.add);
+						sAdd.setText(model.getAdd());
 						//db.editAlgorithm(model);
-						db.editModel(type,algo);
+						db.editModel(type,model);
 						//text = db.testingRules(model.algo, model.main+model.add);
-						String[] text= algo.testingRules();
+						String[] text= model.iswfModel();
 						if (text != null)
 							JOptionPane.showMessageDialog(ShowDescription.this,text);
 					}
 				} else{
-					if(algo.isNumeric){
+					if(model.getIsNumeric()){
 						// зробили модель НЕ функцією!!
-						algo.isNumeric = false;
+						model.setIsNumeric(false);
 						txtRank.setVisible(false);
 						iRank.setVisible(false);
-						db.editModel(type,algo);
+						db.editModel(type,model);
 					}
 				}
 				sComm.requestFocus();
@@ -325,7 +331,7 @@ public class ShowDescription extends JPanel {
 		boolean isVisible = type.equals("Machine");
 		this.type = type;
 	    this.model = model;
-	    algo = null;  mach = null;
+	   // algo = null;  mach = null;
 	  	txtAlgo.setText(Model.title(type, 2)); 
 		txtComm.setText("Опис " + Model.title(type, 3));
 	    if (model == null) showEmpty( );
@@ -341,6 +347,13 @@ public class ShowDescription extends JPanel {
 		sName.setText(model.name);
 		txtNumb.setText("Номер " + model.id);
 		sComm.setText(model.descr);
+		sMain.setText(model.getMain());
+		sAdd.setText(model.getAdd());
+		isNumeric.setSelected(model.getIsNumeric());
+		iRank.setText(((Integer)model.getRank()).toString());
+		txtRank.setVisible(model.getIsNumeric());
+		iRank.setVisible(model.getIsNumeric());
+		/*
 		switch (type) {
 		case "Algorithm" :
 			algo = (Algorithm)model;
@@ -363,8 +376,7 @@ public class ShowDescription extends JPanel {
 			txtRank.setVisible(mach.isNumeric);
 			iRank.setVisible(mach.isNumeric);
 			break;
-			
-		}
+		} */
 		
 	}
 	private void showEmpty() {

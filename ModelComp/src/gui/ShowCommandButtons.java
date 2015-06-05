@@ -75,7 +75,7 @@ public class ShowCommandButtons extends JPanel {
 	class LsTesting implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				String[] text= model.testingRules();
+				String[] text= model.iswfModel();
 				if (text != null) JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
 			}
 		}	

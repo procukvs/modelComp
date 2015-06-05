@@ -7,6 +7,18 @@ public class Model {
 	public String descr;
 	public ArrayList program;
 	
+	//-----------------------------------------------
+	public String getMain() {return "";}
+	public String getAdd() {return "";}
+	public boolean getIsNumeric() {return true;}
+	public int getRank() {return 2;}
+	public void setMain(String main) { }
+	public void setAdd(String add) { }
+	public void setIsNumeric(boolean isNumeric) { }
+	public void setRank(int rank){}
+	//----------------------------------------------	
+	
+	
 	private static String[][] titles = { 
 			{"Algorithm", "Нормальні алгоритми Маркова","Алгоритм","алгоритму","Підстановки алгоритму",
 										"алгоритмом","алгоритм","Новий", "Алгоритм"}, 
@@ -24,7 +36,7 @@ public class Model {
 		return null;
 	}
 	
-	public String[] testingRules(){
+	public String[] iswfModel(){
 		return null;
 	}
 	

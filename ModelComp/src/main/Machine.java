@@ -18,6 +18,18 @@ public class Machine extends Model {
 		//stAll.add(new String(fin));
 	}
 	
+	//-----------------------------------------------
+	public String getMain() {return main;}
+	public String getAdd() {return add;}
+	public boolean getIsNumeric() {return isNumeric;}
+	public int getRank() {return rank;}
+	public void setMain(String main) {this.main = main; }
+	public void setAdd(String add) {this.add = add; }
+	public void setIsNumeric(boolean isNumeric) {this.isNumeric = isNumeric; }
+	public void setRank(int rank){this.rank = rank;}
+	//----------------------------------------------
+	
+	
 	/*public boolean isState(String st) {
 		boolean go = true;
 		int i = 0;
@@ -26,6 +38,60 @@ public class Machine extends Model {
 		}
 		return !go;
 	} */
+	
+	public String[] iswfModel(){
+		String allNoAlfa = "";  // символи в переходах не із обєднаного алфавіту
+		String states = "";
+		String badMoves = ""; 
+		State state;
+		String move;
+		String noChar = "";
+		String allCh = "_" + main + add + no;
+		String goodCh = "_" + main + add;
+		System.out.println(name + ".." + id + ".."+ program.size());
+		for(int i = 0; i < program.size(); i++) {
+			state = (State)program.get(i);
+			//noLeft = StringWork.isAlfa(main+add,rule.getsLeft());
+        	//noRigth = StringWork.isAlfa(main+add,rule.getsRigth());
+        	//if(!noLeft.isEmpty()) noRigth = StringWork.unionAlfa(noLeft, noRigth);
+			for(int j = 0; j < state.getGoing().size(); j++){
+				String c = allCh.substring(j,j) ;
+				move = state.getGoing().get(j);
+				if(!move.isEmpty()){
+					if (iswfMove(move)) {
+						noChar = StringWork.isAlfa(allCh,c + move.substring(3,3));
+						if (!noChar.isEmpty()) {
+							states = states + "," + state.getState();
+							if (allNoAlfa.isEmpty()) allNoAlfa = noChar;
+							else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noChar);
+						}	
+					} else badMoves = badMoves + ", (" + state.getState() + "." + c + ")";
+				}	
+			}
+		}
+		if (!states.isEmpty()) 
+			if (badMoves.isEmpty())
+				return new String[] {"В станах " + states.substring(1),
+								" використовуються символи " + allNoAlfa,
+								" що не входять в об\"єднаний алфавіт _" + main+add + " !"};
+			else
+				return new String[] {"Некоректні переходи " + badMoves.substring(1) + ".", 
+								"В станах " + states.substring(1),
+								" використовуються символи " + allNoAlfa,
+								" що не входять в об\"єднаний алфавіт _" + main+add + " !"};
+		else if (badMoves.isEmpty()) return new String[] {"==="};
+			else
+				return new String[] {"Некоректні переходи " + badMoves.substring(1) + "."};
+	}
+	
+	private boolean iswfMove(String move) {
+		boolean res = true;
+		// наступний стан - @XX, де X - довільний не проміжок 
+		res = res || (move.charAt(0) != '@') || (move.charAt(1) == ' ') || (move.charAt(2) == ' ');
+		res = res || (move.charAt(3) == ' ');
+		res = res || !((move.charAt(4) == '.') || (move.charAt(4) == '<') || (move.charAt(4) == '>'));
+		return res;
+	}
 	
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();

@@ -45,6 +45,12 @@ public class StringWork {
 		//Pattern pnum = Pattern.compile("tt");
 		return Pattern.matches("[a-zA-Z][0-9a-zA-Z_]*", s);
 	}
+	
+	public static boolean isMove(String s) {
+		//Pattern pnum = Pattern.compile("tt");
+		return Pattern.matches("@[^ ][^ ][^ ][<>.]", s);
+	}
+	
 	public static String isAlfa(String alfa, String s) {
 	// вибирає з s всі РІЗНІ символи, що не водять в алфавіт alfa
 		String noAlfa = "";
