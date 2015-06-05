@@ -34,18 +34,20 @@ public class Machine extends Model {
 		String allCh = "_" + main + add + no;
 		//char[] typeInfo = {'S','S',...,'S','I','I'}; 
 		//System.out.println("getDataSource : " + name + " " + idModel + " " +  program.size() );
-		for (int i = 0; i < program.size(); i++){
-			row = new ArrayList();
-			st = (State)program.get(i);
-			row.add(st.getState());
-			for(int j=0; j < allCh.length(); j++){
-			  row.add(st.getGoing().get(j));
-			}
-			row.add(st.gettxComm());
-			row.add(st.getId());
-			row.add(idModel);
-			data.add(row);
-        } 
+		if (program != null) {
+			for (int i = 0; i < program.size(); i++){
+				row = new ArrayList();
+				st = (State)program.get(i);
+				row.add(st.getState());
+				for(int j=0; j < allCh.length(); j++){
+					row.add(st.getGoing().get(j));
+				}
+				row.add(st.gettxComm());
+				row.add(st.getId());
+				row.add(idModel);
+				data.add(row);
+			} 
+		}
         return data;
 	}
 	

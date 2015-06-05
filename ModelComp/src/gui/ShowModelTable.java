@@ -59,16 +59,6 @@ public class ShowModelTable extends JPanel {
 		add(select, BorderLayout.SOUTH);
 		
 		// встановлюємо параметри таблиці включаючи модель колонок
-		String[][] inform = {
-				{"№","I","N"},
-				{"Ліва частина підстановки","S","E"},
-				{"Права частина підстановки","S","E"},
-				{"Заключна ?","B","E"},
-				{"Коментар","S","E"},
-				{"№Ал","I","N"}
-		};
-		dbm.setInitialModel(inform);
-		//setColumnWidth();
 		setTableStructure();
 		
 		table.addMouseListener(new SelectRow());
@@ -136,10 +126,9 @@ public class ShowModelTable extends JPanel {
 		if (update) {
 			ArrayList ds = null;
 			if(model != null) ds = model.getDataSource(model.id);
-			System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
+			//System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
 			setTableStructure();
 			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
-			//else 	setTableStructure();
 		}
 		int all = dbm.getRowCount();
 		if (selected > 0){ 
@@ -175,17 +164,18 @@ public class ShowModelTable extends JPanel {
 				Machine m = (Machine)model;
 				int l = m.main.length() + m.add.length() + m.no.length() + 1;
 				w = new int[l+4];
-				w[0] = 10;
+				w[0] = 20;
 				for(int i = 1; i <= l; i++) w[i] = 30;
-				w[l+1] = 600 - l*30;
+				if(490 > l*30) w[l+1] = 590 - l*30; else w[l+1] = 100;
 				w[l+2] = 10; w[l+3] = 10;
 			} else w = new int[]{10,30,30,30,510, 10,10};	
 			break;
-		default: return null;
+		default:  w = new int[]{10,100,100,10,400,10}; 
 		}
 		return w;
 	}
 	
+	// інформація про колонки = назва + тип + редагуємість	
 	private String[][] findInform(String type){
 		String[][] info = null;
 		switch(type){
@@ -210,7 +200,7 @@ public class ShowModelTable extends JPanel {
 				l = 3; allS = "_|#";
 			}
 			info = new String[l+4][3];
-			info[0][0] = "State"; info[0][1] ="S"; info[0][2] ="N";
+			info[0][0] = "Стан"; info[0][1] ="S"; info[0][2] ="N";
 			for(int i = 1; i <= l; i++){
 				info[i][0] = allS.substring(i-1,i); info[i][1] ="S"; info[i][2] ="N";
 			}
@@ -218,10 +208,28 @@ public class ShowModelTable extends JPanel {
 			info[l+2][0] = "№Ст"; info[l+2][1] ="I"; info[l+2][2] ="N";
 			info[l+3][0] = "№М"; info[l+3][1] ="I"; info[l+3][2] ="N";
 			break;
+		default: 	info = new String[][]{
+				{"№","I","N"},
+				{"Ліва частина підстановки","S","E"},
+				{"Права частина підстановки","S","E"},
+				{"Заключна ?","B","E"},
+				{"Коментар","S","E"},
+				{"№Ал","I","N"}
+			};
+			
 		}
-		
-		
 		return info;
 	}
 	
+	/*
+	  String[][] inform = {
+				{"№","I","N"},
+				{"Ліва частина підстановки","S","E"},
+				{"Права частина підстановки","S","E"},
+				{"Заключна ?","B","E"},
+				{"Коментар","S","E"},
+				{"№Ал","I","N"}
+		};
+		dbm.setInitialModel(inform);
+		 */
 }

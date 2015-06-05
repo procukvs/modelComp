@@ -18,6 +18,7 @@ public class ShowDescription extends JPanel {
 	private Algorithm algo; 
 	private Machine mach;
 	
+	private JLabel txtAlgo;
 	private JTextField sName;
 	private JLabel txtNumb;
 	
@@ -31,12 +32,13 @@ public class ShowDescription extends JPanel {
 	private JTextField iRank;
 	private JTextField sMain;
 	private JTextField sAdd;
+	private JLabel txtComm;
 	private JTextField sComm;
 	
 	
 	ShowDescription(boolean isEdit){
 		//сформувати необхідні gui-елементи 
-		JLabel txtAlgo = new JLabel("Алгоритм ");
+		txtAlgo = new JLabel("Алгоритм ");
 		sName = new JTextField(10);
 		sName.setMaximumSize(new Dimension(30,100));
 		txtNumb = new JLabel("--------");
@@ -61,7 +63,7 @@ public class ShowDescription extends JPanel {
 		JLabel txtAdd = new JLabel("Алфавіт додатковий");
 		sAdd = new JTextField(10); 
 		sAdd.setMaximumSize(new Dimension(20,100));
-		JLabel txtComm = new JLabel("Опис алгоритму");
+		txtComm = new JLabel("Опис алгоритму");
 		sComm = new JTextField(50); 
 		sComm.setMaximumSize(new Dimension(100,100));
 		 
@@ -162,9 +164,10 @@ public class ShowDescription extends JPanel {
 			if (model == null) showEmpty();
 			else {
 				if(!name.equals(model.name)) {
-					if(!StringWork.isIdentifer(name)) text = "Ім\"я алгоритму " + name + " - не ідентифікатор!";
+					if(!StringWork.isIdentifer(name))
+						text = "Ім\"я " + Model.title(type, 3) + " " + name + " - не ідентифікатор!";
 					if((text.isEmpty()) && (db.isModel(type,  name)))
-						text = "Алгоритм з іменем " + name + " вже існує !";
+						text = Model.title(type, 2) + " з іменем " + name + " вже існує !";
 					if(text.isEmpty()) {
 						model.name = name;
 						db.editModel(type,model);
@@ -185,19 +188,34 @@ public class ShowDescription extends JPanel {
 			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {
-				Algorithm algo = (Algorithm)model;
-				if (!com.equals(algo.main)) {
-					if (algo.isNumeric) {
+				boolean isNum = true;
+				String main = "|#";
+				switch(type){
+				case "Algorithm": isNum = algo.isNumeric; main = algo.main; break;
+				case "Machine": isNum = mach.isNumeric; main = mach.main;break;
+				}
+				if (!com.equals(main)) {
+					if (isNum) {
 						text = "Основний алфавіт у функції завжди |# !";
 						sAdd.setText(StringWork.unionAlfa(sAdd.getText(), com));
 						sMain.setText("|#");
 						JOptionPane.showMessageDialog(ShowDescription.this,text);	
 					} 
-					algo.main = sMain.getText();
-					algo.add = sAdd.getText();
-					db.editModel(type,algo);
-					//text = db.testingRules(model.algo, com + model.add);
-					String[] text1 = algo.testingRules();
+					String[] text1 = {""};
+					switch(type){
+					case "Algorithm":
+						algo.main = sMain.getText();
+						algo.add = sAdd.getText();
+						db.editModel(type,algo);
+						text1 = algo.testingRules();
+						break;
+					case "Machine":
+						mach.main = sMain.getText();
+						mach.add = sAdd.getText();
+						db.editModel(type,mach);
+						text1 = mach.testingRules();
+						break;	
+					}	
 					if (text1 != null)
 						JOptionPane.showMessageDialog(ShowDescription.this,text1);
 				} 
@@ -306,7 +324,10 @@ public class ShowDescription extends JPanel {
 	public void setModel(String type,Model model) {
 		boolean isVisible = type.equals("Machine");
 		this.type = type;
-	    this.model = model;	
+	    this.model = model;
+	    algo = null;  mach = null;
+	  	txtAlgo.setText(Model.title(type, 2)); 
+		txtComm.setText("Опис " + Model.title(type, 3));
 	    if (model == null) showEmpty( );
 	    else showModel();
 	    
@@ -319,10 +340,8 @@ public class ShowDescription extends JPanel {
 		
 		sName.setText(model.name);
 		txtNumb.setText("Номер " + model.id);
-		
 		sComm.setText(model.descr);
 		switch (type) {
-		
 		case "Algorithm" :
 			algo = (Algorithm)model;
 			sMain.setText(algo.main);
@@ -331,6 +350,7 @@ public class ShowDescription extends JPanel {
 			iRank.setText(((Integer)algo.rank).toString());
 			txtRank.setVisible(algo.isNumeric);
 			iRank.setVisible(algo.isNumeric);
+			
 			break;
 		case "Machine" : 
 			mach = (Machine)model;

@@ -178,6 +178,7 @@ public class DbAccess {
 	public void editModel(String type, Model model) {
 		switch(type){
 		case "Algorithm" : dbAlgo.editAlgorithm((Algorithm)model); break;
+		case "Machine" : dbMach.editMachine((Machine)model); break;
 		}	
 	}
 	
@@ -204,7 +205,7 @@ public class DbAccess {
 	}
 	
 	public Model getModel(String type, int id){
-		System.out.println(" getModel :" + type + " " + id);
+		//System.out.println(" getModel :" + type + " " + id);
 		switch(type){
 		case "Algorithm" : return dbAlgo.getAlgorithm(id);
 		case "Machine": return dbMach.getMachine(id); 

@@ -82,7 +82,7 @@ public class ShowModels extends JFrame {
 		}
 		if (id == 0) model = null; else model = db.getModel(type, id);
 		//System.out.println("showModelstart ..." + type + "  " + id );
-		if (model != null )	System.out.println(model.show());
+		//if (model != null )	System.out.println(model.show());
 		showModel.setModel(type,model);
 		modelButtons.setModel(type,model);
 	}
