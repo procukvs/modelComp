@@ -350,7 +350,7 @@ public class Machine extends Model {
 			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
 			if (isNumeric) wr = wr + " Numerical " + rank + ";";
 			out.output(wr);
-			wr = " Initial  \"" + init + "\";  Final \"" + fin + "\"";
+			wr = " Initial  \"" + init + "\";  Final \"" + fin + "\";";
 			out.output(wr);
 			for (int i = 0; i < program.size(); i++){
 				st = (State)program.get(i);
