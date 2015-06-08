@@ -17,6 +17,7 @@ public class WorkFile {
 	private String errorText;
 	
 	public String getErrorText() {return errorText;}
+	public OutputText getOut() {return out;}
 	
 	public String testingInput(String name) {
 		String s = "";
@@ -46,6 +47,9 @@ public class WorkFile {
 		return s;
 	}
 	
+	public String outputModel(String name, Model model){
+		return model.output(name, out); 
+	}
 	public String outputAlgorithm(String name, Algorithm model) {
 		String res = "";
 		String wr;

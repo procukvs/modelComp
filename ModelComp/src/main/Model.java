@@ -1,6 +1,8 @@
 package main;
 import java.util.*;
 
+import file.OutputText;
+
 public class Model {
 	public int id;
 	public String name;
@@ -58,6 +60,8 @@ public class Model {
 	public String show(){
 		 return "Model-show";
 	}
+	
+	public String output(String name, OutputText out) {return "outputModel";};
 	
 	static public String title(String type, int num) {
 		String rs = "";

@@ -1,6 +1,8 @@
 package main;
 
 import java.util.*;
+
+import file.OutputText;
 public class Machine extends Model {
 	public String main = "|#";
 	public String add = "";
@@ -336,9 +338,33 @@ public class Machine extends Model {
         return data;
 	}
 	
-	
-	
-	
+	public String output(String name, OutputText out) {
+		String allCh = "_" + main + add + no;
+		String res = "";
+		String wr;
+		State st;
+		if(out.open(name)) {
+			System.out.println("File " + name + " is open..");
+			if (!descr.isEmpty()) out.output("'" + descr);
+			out.output("Machine " + this.name);
+			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
+			if (isNumeric) wr = wr + " Numerical " + rank + ";";
+			out.output(wr);
+			wr = " Initial  \"" + init + "\";  Final \"" + fin + "\"";
+			out.output(wr);
+			for (int i = 0; i < program.size(); i++){
+				st = (State)program.get(i);
+				wr = st.output(allCh);
+				if (!(st.txComm.isEmpty())) wr = wr + " '" + st.txComm;
+			    out.output(wr);
+			}
+			out.output("end " + this.name);
+			out.close();
+			System.out.println("File " + name + " is close.."); 
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}	
+		
 	//змінює перехід повязаний з символом in в стані st за іменем стану st 
 	public void updateCommand(String st, char in, String move){
 		String allCh = "_" + main + add + no;

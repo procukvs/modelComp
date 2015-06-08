@@ -25,4 +25,15 @@ public class State extends Command {
 		}
 		return "\"" + state + "\" -> [" + goSt + "]      '" + txComm;
 	}
+	
+	public String output(String alfa) {
+		String goSt = "\"" + state + "\" ";
+		String move;
+		for(int i = 0; i < going.size(); i++){
+			move = going.get(i);
+			if(!move.isEmpty())
+				goSt = goSt + ": \"" + alfa.charAt(i) + "\" -> \"" + move + "\"";
+		}
+		return goSt + ";";
+	}
 }

@@ -2,6 +2,8 @@ package main;
 
 import java.util.*;
 
+import file.*;
+
 public class Algorithm extends Model {
 	public String main = "|#";
 	public String add = "";
@@ -163,4 +165,28 @@ public class Algorithm extends Model {
 		else res = "*" + r.getsLeft() + "*" + res.substring(l);
 		return res;
 	}
+	
+	public String output(String name, OutputText out) {
+		String res = "";
+		String wr;
+		Rule r;
+		if(out.open(name)) {
+			System.out.println("File " + name + " is open..");
+			if (!descr.isEmpty()) out.output("'" + descr);
+			out.output("Algorithm " + this.name);
+			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
+			if (isNumeric) wr = wr + " Numerical " + rank + ";";
+			out.output(wr); 
+			for (int i = 0; i < program.size(); i++){
+				r = (Rule)program.get(i);
+				wr = r.output();
+				if (!(r.txComm.isEmpty())) wr = wr + " '" + r.txComm;
+			    out.output(wr);
+			}
+			out.output("end " + this.name);
+			out.close();
+			System.out.println("File " + name + " is close.."); 
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}	
 }

@@ -22,4 +22,11 @@ public class Rule extends Command  {
     public String getsRigth() {return sRigth;}
     public boolean getisEnd() {return isEnd;}
     public String gettxComm() {return txComm;}
+    
+    public String output() {
+    	String wr = "  \"" + sLeft + "\" ->";
+		if (isEnd) wr = wr + ".";
+		wr = wr + " \"" + sRigth + "\";";
+    	return wr;
+   };
 }

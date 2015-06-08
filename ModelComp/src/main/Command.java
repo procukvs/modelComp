@@ -12,4 +12,5 @@ public class Command {
 		 return "Command-show";
 	}
 	///public String gettxComm() {return txComm;};
+
 }

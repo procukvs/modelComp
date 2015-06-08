@@ -157,7 +157,8 @@ public class ShowModelButtons extends JPanel {
 					//	wr[i] = r.getsLeft() + "->" + r.getsRigth();
 					//}
 					WorkFile wf = new WorkFile();
-					text = wf.outputAlgorithm(name,(Algorithm)model);
+					text = model.output(name, (wf.getOut()));
+					//text = wf.outputAlgorithm(name,(Algorithm)model);
 					if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
 				}	
 				JOptionPane.showMessageDialog(ShowModelButtons.this,text);
