@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -82,7 +83,32 @@ public class ShowSteps extends JPanel {
 		cInter.addActionListener(new TestInter());
 	}
 	
-	public void setShowSteps(String type, Model model, ArrayList subList) {
+	public void setShowSteps(String type,  Model model, ArrayList sl){
+		ArrayList ds = null;
+		boolean visible = false;
+		this.model = model;
+		this.type = type;
+		this.sl = sl;
+		//cInter.setSelected(model.getIsNumeric());
+		//cInter.setVisible(model.getIsNumeric());
+		//lInter.setVisible(model.getIsNumeric());
+		if(type.equals("Algorithm")) visible = model.getIsNumeric();
+		cInter.setSelected(visible);
+		cInter.setVisible(visible);
+		lInter.setVisible(visible);
+		ds = model.getStepSource(sl, true);
+		dbm.setDataSource(null);
+		dbm.setInitialModel(findInform(type));
+		dbm.fireTableStructureChanged();
+		setColumnWidth();
+		if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);	
+	}
+	
+	
+	
+	
+	
+	public void setShowSteps2(String type, Model model, ArrayList subList) {
 		this.model = model;
 		this.type = type;
 		algo = (Algorithm) model;
@@ -91,8 +117,8 @@ public class ShowSteps extends JPanel {
 		lInter.setVisible(algo.isNumeric);
 		sl = subList;
 		formDataSource(true);
-		//dbm.fireTableStructureChanged();
-		dbm.setDataSource(dataIn);
+															//dbm.fireTableStructureChanged();
+		dbm.setDataSource(dataIn);   // dbm.setDataSource(getStepSource(sl, true));
 	}
 	
 	private void formDataSource(boolean internal) {
@@ -113,8 +139,17 @@ public class ShowSteps extends JPanel {
 	
 	class TestInter implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			formDataSource(cInter.isSelected());
-			dbm.setDataSource(dataIn);
+			//formDataSource(cInter.isSelected());
+			//dbm.setDataSource(dataIn);
+			dbm.setDataSource(model.getStepSource(sl, cInter.isSelected()));
+			/*ArrayList ds = null;
+			ds = model.getStepSource(sl, cInter.isSelected());
+			JOptionPane.showMessageDialog(ShowSteps.this,"testInter " + cInter.isSelected() +" " + (sl== null) + " ds " + ds.size());
+			dbm.setDataSource(null);
+			dbm.setInitialModel(findInform(type));
+			dbm.fireTableStructureChanged();
+			setColumnWidth();
+			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);	*/
 		}	
 	}
 	/*
@@ -124,6 +159,52 @@ public class ShowSteps extends JPanel {
 			hide();
 		}	
 	} */
+	// інформація про колонки = назва + тип + редагуємість	
+	private String[][] findInform(String type){
+		String[][] info = null;
+		switch(type){
+		case "Algorithm" : 
+			info = new String[][]{
+					{"Крок","I","N"},
+					{"№ підст.","I","N"},
+					{"До підстановки","S","N"},
+					{"Пiсля підстановки","S","N"}
+				}; break;
+		case "Machine": 
+			info = new String[][]{
+					{"Крок","I","N"},
+					{"Конфігурація","S","N"},
+					{"Скорочене представлення конфігурації","S","N"}
+				}; break;		
+		default: 	info = new String[][]{
+				{"Крок","I","N"},
+				{"№ підст.","I","N"},
+				{"До підстановки","S","N"},
+				{"Пiсля підстановки","S","N"}
+			};
+			
+		}
+		return info;
+	}
+	
+	private void setColumnWidth() {
+		TableColumn column = null;
+		int[] widthCol = findWidth(); //{10,100,100,10,400,10};
+	    for (int i = 0; i < widthCol.length; i++) {
+	        column = table.getColumnModel().getColumn(i);
+	        column.setPreferredWidth(widthCol[i]); 
+	    }     
+	}
+	
+	private int[] findWidth(){
+		int [] w = null;
+		switch(type){
+		case "Algorithm" : w = new int[]{100,75,300,300}; break;
+		case "Machine":  w = new int[]{75,350,350}; break;
+		default:  w = new int[]{100,75,300,300}; 
+		}
+		return w;
+	}
 	
 
 }

@@ -17,6 +17,7 @@ public class Algorithm extends Model {
 	public String getAdd() {return add;}
 	public boolean getIsNumeric() {return isNumeric;}
 	public int getRank() {return rank;}
+	public String getAllChar() {return  main + add;}
 	public void setMain(String main) {this.main = main; }
 	public void setAdd(String add) {this.add = add; }
 	public void setIsNumeric(boolean isNumeric) {this.isNumeric = isNumeric; }
@@ -110,6 +111,35 @@ public class Algorithm extends Model {
 		}
 		return sl;
 	}
+	
+	public String takeResult(ArrayList sl, int nodef){
+		String text = "";
+		text = ((Substitution)(sl.get(sl.size()- 1))).str;
+		if (isNumeric) text = StringWork.transNumeric(text);
+		if (sl.size() == nodef + 1) text = "Невизначено";
+		return text;
+	}
+	
+	public ArrayList getStepSource(ArrayList sl, boolean internal) {
+		ArrayList data = new ArrayList();
+		ArrayList row;
+		Substitution sb;
+		if (sl != null) {
+			for(int i = 0; i < sl.size(); i++ ){
+				sb = (Substitution)sl.get(i);
+				row = new ArrayList();
+				row.add(i+1);
+				row.add(sb.rule);
+				if (internal) row.add(extractPrev( sb));
+				else row.add(StringWork.transNumeric(extractPrev( sb)));
+				if (internal) row.add(extract(sb));
+				else row.add(StringWork.transNumeric(extract( sb)));
+				data.add(row);
+			}
+		}
+	    return data;
+	}
+	
 	
 	public String extract(Substitution sub) {
 		// виділяє в результаті підстановки sub, що підставлено *..*! 

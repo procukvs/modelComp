@@ -92,14 +92,14 @@ public class ShowEval extends JPanel {
 	}
 	
 	public void setModel(String type, Model model) {
-		Algorithm algo = (Algorithm) model;
-		rank = algo.rank;
-		main = algo.main;
+		//Algorithm algo = (Algorithm) model;
+		rank = model.getRank();
+		main = model.getMain();
 		for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
-    	lInit.setVisible(!algo.isNumeric);
-    	tInit.setVisible(!algo.isNumeric);
-    	lParam.setVisible(algo.isNumeric);
-    	if(algo.isNumeric){
+    	lInit.setVisible(!model.getIsNumeric());
+    	tInit.setVisible(!model.getIsNumeric());
+    	lParam.setVisible(model.getIsNumeric());
+    	if(model.getIsNumeric()){
 	    	for(int i = 0; i < rank; i++){
 	    		tParam[i].setVisible(true);
 	    		tParam[i].setText("");
@@ -141,6 +141,7 @@ public class ShowEval extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			String sInit = tInit.getText();
 			String noAlfa = StringWork.isAlfa(main, sInit);
+			//System.out.println("init=" + sInit+ " main="+main + " noAlfa="+noAlfa);
 			tResult.setText("");
 			tStep.setText("");
 			owner.show.setEnabled(false);

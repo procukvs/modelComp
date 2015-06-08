@@ -26,6 +26,7 @@ public class DbMachine {
 						"sInitial = '" + model.init + "', sFinal = '" + model.fin + "', " +
 						"descr  = '" + model.descr + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
+			//System.out.println("rows = " + rows + " sql=" + sql);
 			if (rows == 0)
 				System.out.println("editMachine: Не змінило відредагований " + model.name + "!");
 			//System.out.println("rows = " + rows + " sql=" + sql);
@@ -68,6 +69,90 @@ public class DbMachine {
 		//System.out.println(">>>get>> " + id + " row = " + model.program.size());
 		//System.out.println("DbMachine: getMachine :" + id + " " + model.name);
 		return model;
+	}
+	
+	public void newState(Machine mach, int id, State st){
+		String allCh = "_" + mach.main + mach.add + mach.no;
+		String move = "";
+		String inCh = "";
+		try {
+			db.conn.setAutoCommit(false);
+			try{	
+				sql = "insert into tProgram values(" + mach.id + "," + id + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+				db.s.execute(sql);
+				for(int i = 0; i < st.getGoing().size(); i++) {
+					move = st.getGoing().get(i);
+					if (!move.isEmpty()) {
+						if(i < allCh.length()) inCh = allCh.substring(i,i+1); else inCh = " ";
+					    sql = "insert into tMove values(" + mach.id + "," + id + ",'" + inCh + "','" + move.substring(3,4)
+					    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
+					    db.s.execute(sql);	 
+					}
+				}
+				db.conn.commit();
+			} catch (Exception e) {     //SQLException e
+				System.out.println("ERROR: newRule: Could not newRule.");
+				System.out.println(">>> " + e.getMessage());
+				db.conn.rollback();
+			} 
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}		
+	}
+	
+	public void editState(Machine mach, int id, State st){
+		String allCh = "_" + mach.main + mach.add + mach.no;
+		String move = "";
+		String inCh = "";
+		try {
+			db.conn.setAutoCommit(false);
+			try{	
+				sql = "update tProgram set txComm = '" + st.gettxComm() + "' where idModel = " + mach.id + " and id = " + id;
+				//System.out.println("editState " + sql);
+				db.s.execute(sql);
+				sql = "delete from tMove where idModel = " + mach.id + " and id = " + id;
+				//System.out.println("editState " + sql);
+				db.s.execute(sql);	
+				for(int i = 0; i < st.getGoing().size(); i++) {
+					move = st.getGoing().get(i);
+					if (!move.isEmpty()) {
+						if(i < allCh.length()) inCh = allCh.substring(i,i+1); else inCh = " ";
+					    sql = "insert into tMove values(" + mach.id + "," + id + ",'" + inCh + "','" + move.substring(3,4)
+					    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
+					   // System.out.println("editState " + sql);
+					    db.s.execute(sql);	 
+					}
+				}
+				db.conn.commit();
+			} catch (Exception e) {     //SQLException e
+				System.out.println("ERROR: editState: mach = " + mach.id);
+				System.out.println(">>> " + e.getMessage());
+				db.conn.rollback();
+			} 
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}		
+	}
+	
+	
+	public void deleteState(int mach, int row){
+		try {
+			db.conn.setAutoCommit(false);
+			try{	
+				//int cnt = cntRule(algo);
+				sql = "delete from tMove where idModel = " + mach + " and id = " + row;
+				db.s.execute(sql);
+				sql = "delete from tProgram where idModel = " + mach + " and id = " + row;
+				db.s.execute(sql);	
+				db.conn.commit();
+			}	catch (Exception e) {
+				System.out.println("ERROR: deleteState: Could not delete State.");
+				System.out.println(">>> " + e.getMessage());
+				db.conn.rollback();
+			}  
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
 	
 	private String findNo(String alfa, int mach ) {
@@ -152,6 +237,7 @@ public class DbMachine {
 		return going;
 	}
 	
+		
 	/*
 	private ArrayList <State> getAllStates(int mach) {
 		ArrayList <State> states = new ArrayList();

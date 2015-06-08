@@ -1,8 +1,8 @@
 package db;
 
 import java.sql.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.*;
+import java.util.*;
 
 
 
@@ -125,6 +125,24 @@ public class DbAccess {
 		return number;
 	}
 	
+	// знаходить список всіх моделей даного типу 
+	public ArrayList <String> getAllModel(String type){
+		ArrayList <String> all = new ArrayList <String> ();
+		//boolean go = true;
+		sql = "select name from " + tableModel(type) + " order by name";
+		try{ 
+			s.execute(sql);
+	        ResultSet rs = s.getResultSet();
+	        while((rs!=null) && (rs.next())) {
+	        	all.add(new String (rs.getString(1)));
+		    }
+		}catch (Exception e){
+			System.out.println("ERROR: getAllModel :" + sql);
+			System.out.println(">>> " + e.getMessage());
+		}
+		return all;
+	}
+	
 	//знаходить найбільший номер у існуючих моделей типа type 
 	public int maxNumber(String type){
 		int i = 0;
@@ -213,16 +231,18 @@ public class DbAccess {
 		}
 	}
 	
-	public void editCommand(String type, int idModel, int id, Command cmd){
+	public void editCommand(String type, Model model, int id, Command cmd){
 		switch(type){
-		case "Algorithm" : dbAlgo.editRule(idModel, id, (Rule)cmd); break;
+		case "Algorithm" : dbAlgo.editRule(model.id, id, (Rule)cmd); break;
+		case "Machine": dbMach.editState((Machine)model, id, (State)cmd); break;
 		default: System.out.println(">>> Not realise editCommand for: " + type + "!");
 		}
 	}
 	
-	public void newCommand(String type, int idModel, int id, Command cmd){
+	public void newCommand(String type, Model model, int id, Command cmd){
 		switch(type){
-		case "Algorithm" : dbAlgo.newRule(idModel, id, (Rule)cmd); break;
+		case "Algorithm" : dbAlgo.newRule(model.id, id, (Rule)cmd); break;
+		case "Machine": dbMach.newState((Machine)model, id, (State)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}
@@ -230,6 +250,7 @@ public class DbAccess {
 	public void deleteCommand(String type, int idModel, int id){
 		switch(type){
 		case "Algorithm" : dbAlgo.deleteRule(idModel, id); break;
+		case "Machine": dbMach.deleteState(idModel, id); break;
 		default: System.out.println(">>> Not realise deleteCommand for: " + type + "!");
 		}
 	}

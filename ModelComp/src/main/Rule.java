@@ -5,7 +5,7 @@ public class Rule extends Command  {
 	private String sRigth = "";
 	private boolean isEnd = false;
 	//private String txComm = "";
-    public String show(){
+    public String show(String dummy){
       String s = sLeft + " ->" ;
       if (isEnd) s = s+".";
       s = s + " " + sRigth;

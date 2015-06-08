@@ -85,12 +85,14 @@ public class ShowWork extends JDialog {
 	}	
 	
 	public void setModel(String type,Model model) {
-		Algorithm algo = (Algorithm)model; 
+		//Algorithm algo = (Algorithm)model; 
 		this.type = type;
 	    this.model = model;
-	    isNumeric = algo.isNumeric;
-	    rank = algo.rank;
-	    main = algo.main;
+	    isNumeric = model.getIsNumeric();
+	    rank = model.getRank();
+	    main = model.getMain();
+	    lWhat.setText("Робота з " + Model.title(type, 12));
+	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
 	    
 	    showDescription.setModel(type, model);
 	    showEval.setModel(type, model);
@@ -125,26 +127,18 @@ public class ShowWork extends JDialog {
 			}
 			if(text.isEmpty()) {
 				//=================================
-				//ArrayList sl;
-				Substitution sb;
 				int nodef = new Integer(showEval.tNodef.getText());
 				//System.out.println("Eval begin:" + input + " " + nodef);
 				sl = model.eval(input, nodef);
-				text = ((Substitution)(sl.get(sl.size()- 1))).str;
-			/*	for(int i = 0; i < sl.size(); i++ ){
-					sb = (Substitution)sl.get(i);
-					System.out.println("step:" + i + " rule: " + sb.rule + " prev: " + 
-								model.extractPrev( sb) + " next: " + model.extract(sb));
-				} */
-				if (isNumeric) text = StringWork.transNumeric(text);
-				if (sl.size() == nodef + 1) text = "Невизначено";
-				//tResult.setText("=" + sl.size() + ".." + text);
+				//text = ((Substitution)(sl.get(sl.size()- 1))).str;
+				//if (isNumeric) text = StringWork.transNumeric(text);
+				//if (sl.size() == nodef + 1) text = "Невизначено";
+				text = model.takeResult(sl, nodef);
 				showEval.tResult.setText(text);
 				showEval.tStep.setText(sl.size()+""); 
 				show.setEnabled(true);
 			}  else {
 				show.setEnabled(false);
-				//showSteps.setVisible(false);
 			}
 			//System.out.println("eval......panel");
 			showSteps.setVisible(false);
@@ -154,13 +148,9 @@ public class ShowWork extends JDialog {
 	}
 	class LsShow implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-					//showTest.workCol();
-			//showTest.setShowTest(type,model,sl);
-			//showTest.show();
-			//JOptionPane.showMessageDialog(ShowWork.this,"Show");
 			show.setEnabled(false);
 			showSteps.setShowSteps(type, model, sl);
-			//System.out.println("show......panel");
+											//System.out.println("show......panel");
 			showSteps.setVisible(true);
 			pack();
 		}	

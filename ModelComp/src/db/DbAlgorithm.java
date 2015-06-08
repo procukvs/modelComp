@@ -188,15 +188,15 @@ class DbAlgorithm {
 			try{	
 				int cnt = cntRule(algo);
 				int isEnd = (rule.getisEnd()?1:0); 
-				if (row < cnt) {
+				if (row <= cnt) {
 					// звільнити місце для нового правила 
-					for(int r = cnt; r > row; r--) {
+					for(int r = cnt; r >= row; r--) {
 						sql = "update mRule set id = id+1" + "	where idModel = " + algo + " and id = " + r;
 						//System.out.println("1:" + sql);
 						db.s.execute(sql);	 
 					}
 				}
-				sql = "insert into mRule values(" + algo + "," + (row+1) +	",'" + rule.getsLeft() + "','"
+				sql = "insert into mRule values(" + algo + "," + (row) +	",'" + rule.getsLeft() + "','"
 					 	+ rule.getsRigth() + "'," + isEnd + ",'" + rule.gettxComm() + "')";
 				// System.out.println("1:" + sql);
 				db.s.execute(sql);

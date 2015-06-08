@@ -23,6 +23,6 @@ public class State extends Command {
 			if (i>0) goSt = goSt + ", ";
 			goSt = goSt + "'" + alfa.charAt(i) + "' -> \"" + going.get(i) + "\"";
 		}
-		return "\"" + state + "\" -> [" + goSt + "]";
+		return "\"" + state + "\" -> [" + goSt + "]      '" + txComm;
 	}
 }

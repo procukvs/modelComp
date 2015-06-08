@@ -41,10 +41,10 @@ INSERT INTO tProgram VALUES(1,2,'@z1', ' _->!, |->>  ');
 INSERT INTO tProgram VALUES(1,3,'@zz', '');
 
 DELETE FROM tMove;
-INSERT INTO tMove VALUES(1,1,'_','_','@z1','>');
-INSERT INTO tMove VALUES(1,1,'|','|','@z1','>');
-INSERT INTO tMove VALUES(1,2,'_','_','@zz','.');
-INSERT INTO tMove VALUES(1,2,'|','|','@z1','>');
+INSERT INTO tMove VALUES(1,1,'_','_','@1 ','>');
+INSERT INTO tMove VALUES(1,1,'|','|','@  ','>');
+INSERT INTO tMove VALUES(1,2,'_','_','zz ','.');
+INSERT INTO tMove VALUES(1,2,'|','|','@z1','=');
 
 INSERT INTO tProgram VALUES(2,1,'@a0',' 0.. ');
 INSERT INTO tProgram VALUES(2,2,'@a1', ' _ ');
@@ -62,7 +62,7 @@ INSERT INTO tProgram VALUES(2,13,'@ac', ' r ');
 INSERT INTO tProgram VALUES(2,14,'@ad', 'Left _1..1*? => *_1..1?  l');
 INSERT INTO tProgram VALUES(2,15,'@ae',' L    _->!, |-><');
 INSERT INTO tProgram VALUES(2,16,'@af', 'r');
-INSERT INTO tProgram VALUES(2,17,'@agb', '');
+INSERT INTO tProgram VALUES(2,17,'@ag', '');
 
 INSERT INTO tMove VALUES(2,1,'_','_','@ad','.');
 INSERT INTO tMove VALUES(2,1,'|','|','@a1','.');
@@ -77,12 +77,17 @@ INSERT INTO tProgram VALUES(3,3,'@zz', '');
 INSERT INTO tMove VALUES(3,1,'_','_','@z1','<');
 INSERT INTO tMove VALUES(3,1,'|','|','@z1','<');
 INSERT INTO tMove VALUES(3,1,'a','a','@z1','<');
-INSERT INTO tMove VALUES(3,1,'b','b','@z1','<');
+INSERT INTO tMove VALUES(3,1,'b','y','@z1',' ');
 INSERT INTO tMove VALUES(3,1,'c','c','@z1','<');
 INSERT INTO tMove VALUES(3,2,'_','_','@zz','.');
-INSERT INTO tMove VALUES(3,2,'|','|','@z1','<');
-INSERT INTO tMove VALUES(3,2,'a','a','@z1','<');
+INSERT INTO tMove VALUES(3,2,'d','|','@z1','<');
+INSERT INTO tMove VALUES(3,2,'a','a','zjj','<');
 INSERT INTO tMove VALUES(3,2,'b','b','@z1','<');
-INSERT INTO tMove VALUES(3,2,'c','c','@z1','<');
-
+INSERT INTO tMove VALUES(3,2,'c','c','@1','<');
+INSERT INTO tMove VALUES(3,3,'c','c','@1','<');
+INSERT INTO tMove VALUES(2,4,'u','c','@1','<');
+INSERT INTO tMove VALUES(2,6,'c','c','@1','<');
+INSERT INTO tMove VALUES(2,7,'c','c','@1==','<');
+INSERT INTO tMove VALUES(2,10,'c','c','@zzz1','<');
+INSERT INTO tMove VALUES(2,9,'c','c','@1','<');
 COMMIT;

@@ -14,7 +14,7 @@ public class ShowCommand extends JDialog  {
 	Command command = null;
 	
 	ShowCommand(Frame owner){
-		super(owner, "mRule");
+		super(owner, "Command");
 		setModal(true);
 		
 		//сформувати необхідні gui-елементи
@@ -49,10 +49,14 @@ public class ShowCommand extends JDialog  {
 	//описуємо класи - слухачі !!!!!!
 	class LsYes implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			//	JOptionPane.showMessageDialog(ShowCommand.this,"Yes !");
-			command = new Rule(showRule.sLeft.getText(),showRule.sRigth.getText(),
-							showRule.checkEnd.isSelected(),showRule.sComm.getText());
-			hide();
+			
+			String text = showRule.testAllCommand();
+			if (text.isEmpty()) {
+				command = showRule.getCommand();
+				//command = new Rule(showRule.sLeft.getText(),showRule.sRigth.getText(),
+				//				showRule.checkEnd.isSelected(),showRule.sComm.getText());
+				hide();
+			} else JOptionPane.showMessageDialog(ShowCommand.this,text);;
 		}	
 	}
 	class LsCancel implements ActionListener  {
@@ -62,10 +66,10 @@ public class ShowCommand extends JDialog  {
 			hide();
 		}	
 	}
-	public void setCommand(String what, Model model,  int id){
+	public void setCommand(String what, String type, Model model,  int id){
 		command = null;
-		if (what == "Add") lWhat.setText("Нова"); else lWhat.setText("Редагувати");
-		showRule.setRule((Algorithm)model, id);
+		if (what == "Add") lWhat.setText(Model.title(type, 9)); else lWhat.setText("Редагувати");
+		showRule.setRule(type, model, id, what);
 	}
 	public Command getCommand() { return command;}
 		

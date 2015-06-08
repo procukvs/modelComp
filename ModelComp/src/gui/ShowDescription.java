@@ -132,6 +132,8 @@ public class ShowDescription extends JPanel {
 			isNumeric.addActionListener(new LsisNumeric());
 			iRank.addActionListener(new LsiRank());
 			sComm.addActionListener(new LsComm());
+			sInit.addActionListener(new LssInit());
+			sFin.addActionListener(new LssFin());
 		}
 		sName.setEnabled(isEdit);
 		sMain.setEnabled(isEdit);
@@ -160,6 +162,7 @@ public class ShowDescription extends JPanel {
 		public void actionPerformed(ActionEvent event){
 			String name = sName.getText();
 			String text="";
+			boolean go = true;
 			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {
@@ -171,13 +174,21 @@ public class ShowDescription extends JPanel {
 					if(text.isEmpty()) {
 						model.name = name;
 						db.editModel(type,model);
-						sMain.requestFocus();
+						//showMain.showModel(type, model.id);
+						if (type.equals("Machine")) sInit.requestFocus();
+						else sMain.requestFocus();
 					} else {
 						JOptionPane.showMessageDialog(ShowDescription.this,text);		
 						showModel();
+						go = false;
 					}
 				}	
+				if (go) {
+					if (type.equals("Machine")) sInit.requestFocus();
+					else sMain.requestFocus();
+				}	
 			}
+			
 			//JOptionPane.showMessageDialog(ShowDescription.this,"sName....");
 		}	
 	}
@@ -205,6 +216,8 @@ public class ShowDescription extends JPanel {
 					}
 					model.setMain(sMain.getText());
 					model.setAdd(sAdd.getText());
+					db.editModel(type,model);
+					showMain.showModel(type, model.id);
 					String[] text1 = model.iswfModel();
 					/*
 					String[] text1 = {""};
@@ -239,6 +252,7 @@ public class ShowDescription extends JPanel {
 				if (!com.equals(model.getAdd())) {
 				    model.setAdd(com);
 					db.editModel(type,model);
+					showMain.showModel(type, model.id);
 				    String[] text= model.iswfModel();
 				   // System.out.println(type + ".." + text[0] + "..");
 				    if (text != null)
@@ -262,12 +276,13 @@ public class ShowDescription extends JPanel {
 						txtRank.setVisible(true);
 						iRank.setVisible(true);
 						//algo.add = algo.add + StringWork.isAlfa(algo.add +"|#", algo.main);
+						model.setAdd(StringWork.isAlfa("|#", model.getAdd()));
 						model.setAdd(model.getAdd() + StringWork.isAlfa(model.getAdd() +"|#", model.getMain()));;
 						model.setMain("|#");
 						sMain.setText("|#");
 						sAdd.setText(model.getAdd());
-						//db.editAlgorithm(model);
 						db.editModel(type,model);
+						showMain.showModel(type, model.id);
 						//text = db.testingRules(model.algo, model.main+model.add);
 						String[] text= model.iswfModel();
 						if (text != null)
@@ -280,6 +295,7 @@ public class ShowDescription extends JPanel {
 						txtRank.setVisible(false);
 						iRank.setVisible(false);
 						db.editModel(type,model);
+						//showMain.showModel(type, model.id);
 					}
 				}
 				sComm.requestFocus();
@@ -302,6 +318,7 @@ public class ShowDescription extends JPanel {
 					if (algo.rank != rank) {
 						algo.rank = rank;
 						db.editModel(type,algo);
+						//showMain.showModel(type, model.id);
 					}
 				} else{
 					text = "Арність - додатнє ціле число ! ";
@@ -320,18 +337,59 @@ public class ShowDescription extends JPanel {
 			else if (!com.equals(model.descr)) {
 					model.descr = com;
 					db.editModel(type,model);
-				    //String text = "Вибрано підстановку  " + r + " з " + all + " підстановок  алгоритму " + model.nmAlgo +".";
-				    //JOptionPane.showMessageDialog(ShowProgram.this,text);
+					//showMain.showModel(type, model.id);
 			} 
 			//JOptionPane.showMessageDialog(ShowDescription.this,"sComm....");
 		}	
 	}
 		
+	class LssInit implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String init = sInit.getText();
+			String text="";
+			if (model == null) showEmpty();
+			else {
+				if (!init.equals(model.getInit())) {
+					if (StringWork.isState(init)){
+						model.setInit(init);
+						db.editModel(type,model);
+					}
+					else  text = "Формат стану - @STT. Стан \"" + init + "\" не коректний !";
+				}
+				if (!text.isEmpty()){
+					JOptionPane.showMessageDialog(ShowDescription.this, text); 
+					showModel();
+				}
+				else sFin.requestFocus();
+			}
+		}	
+	}
+	
+	class LssFin implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String fin = sFin.getText();
+			String text="";
+			if (model == null) showEmpty();
+			else {
+				if (!fin.equals(model.getFin())) {
+					if (StringWork.isState(fin)){
+						model.setFin(fin);
+						db.editModel(type,model);
+					}
+					else  text = "Формат стану - @STT. Стан \"" + fin + "\" не коректний !";
+				}
+				if (!text.isEmpty()){
+					JOptionPane.showMessageDialog(ShowDescription.this, text); 
+					showModel();
+				}
+				else sMain.requestFocus();
+			}
+		}	
+	}
 	public void setModel(String type,Model model) {
 		boolean isVisible = type.equals("Machine");
 		this.type = type;
 	    this.model = model;
-	   // algo = null;  mach = null;
 	  	txtAlgo.setText(Model.title(type, 2)); 
 		txtComm.setText("Опис " + Model.title(type, 3));
 	    if (model == null) showEmpty( );
@@ -353,6 +411,8 @@ public class ShowDescription extends JPanel {
 		iRank.setText(((Integer)model.getRank()).toString());
 		txtRank.setVisible(model.getIsNumeric());
 		iRank.setVisible(model.getIsNumeric());
+		sInit.setText(model.getInit());
+		sFin.setText(model.getFin());
 		/*
 		switch (type) {
 		case "Algorithm" :

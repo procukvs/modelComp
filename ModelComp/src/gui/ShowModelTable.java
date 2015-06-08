@@ -16,6 +16,7 @@ import main.*;
 
 public class ShowModelTable extends JPanel {
 	private DbAccess db;
+	private TitledBorder border;
 	private ModelTable  dbm;
 	private JTable table;
 	private JLabel selection;
@@ -45,7 +46,9 @@ public class ShowModelTable extends JPanel {
 		//=================================
 		// формуємо розміщення
 		setLayout(new BorderLayout());
-		setBorder(new TitledBorder("Підстановки алгоритму"));
+		border = new TitledBorder("Підстановки алгоритму");
+		setBorder(border); //new TitledBorder("Підстановки алгоритму"));
+		
 		//-----------------------------------
 		Box select = Box.createHorizontalBox();
 		select.add(Box.createHorizontalStrut(5));
@@ -92,13 +95,31 @@ public class ShowModelTable extends JPanel {
 			selection.setText((table.getSelectedRow() + 1)  + " : " + dbm.getRowCount());
 		}
 	}
-		
-	// методи, що змінюють підстановки -- можливо переставляють і т. і.
-	public int selectedRule() {
+	
+	public String selectedName() {
 		// номер виділеної підстановки або 0 !!
 		int r = table.getSelectedRow();
+		String name = "";
+		if (r >= 0) {
+			name = (String)dbm.getValueAt(r,0);
+		}
+		return name;
+	}
+	
+	// методи, що змінюють підстановки -- можливо переставляють і т. і.
+	public int selectedRule() {
+		// номер в БД виділеної підстановки/команди  або 0 !!
+		int r = table.getSelectedRow();
 		int rule = 0;
-		if (r >= 0) rule = (Integer)dbm.getValueAt(r,0);
+		if (r >= 0) {
+			int col = 0;
+			if(type.equals("Machine")){
+				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
+				//System.out.println(col);
+			}
+			
+			rule = (Integer)dbm.getValueAt(r,col);
+		}
 		return rule;
 	}
 	public void showPrevRow(boolean update){
@@ -110,13 +131,19 @@ public class ShowModelTable extends JPanel {
 		//System.out.println(" table.getSelectedRow() + 2 = " + table.getSelectedRow() + 2);
 		showTable(update, table.getSelectedRow() + 2);
 	}
+	
 	public void showFirstRow(boolean update){
 		showTable(update, 1);
 	}		
 	
+	public void showRow(boolean update, int row){
+		showTable(update, row);
+	}		
+	
 	public void showModel(String type, Model model){
 		this.type = type; this.model = model;
-						//setTableStructure(); 
+		border.setTitle(Model.title(type, 4));
+							//setTableStructure(); 
 		showTable(true, table.getSelectedRow() + 1);
 						//showTable(true, 0);
 	}
