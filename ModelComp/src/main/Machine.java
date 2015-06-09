@@ -29,6 +29,7 @@ public class Machine extends Model {
 	public String getInit() {return init;}
 	public String getFin() {return fin;}
 	public String getAllChar() {return "_" + main + add + no;}
+	public String getType() {return "Machine";}
 	public void setMain(String main) {this.main = main; }
 	public void setAdd(String add) {this.add = add; }
 	public void setIsNumeric(boolean isNumeric) {this.isNumeric = isNumeric; }

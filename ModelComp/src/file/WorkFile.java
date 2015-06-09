@@ -15,9 +15,12 @@ public class WorkFile {
 	private int lex;
 	private String valueLex, valuePrev;
 	private String errorText;
+	private String type = "Algorithm";
 	
+	public void setType(String type) {this.type = type;}
 	public String getErrorText() {return errorText;}
 	public OutputText getOut() {return out;}
+	
 	
 	public String testingInput(String name) {
 		String s = "";
@@ -76,6 +79,35 @@ public class WorkFile {
 		return res;
 	}
 	
+	public Model inputModel(String name) {
+		Model model = null;
+		String txComm = "";
+		errorText = "";
+		if(in.open(name)) {
+			System.out.println("File " + name + " is open.."); 
+			type = "Model";
+		    line = ""; nLine = 0; nextChar = 1;
+		    getChar(); get();
+		    // можливо обробляємо коментар
+		    if (lex == 4) {txComm = valueLex; get();} 
+		    if (lex == 1) {
+		    	type = valueLex; lex = 20;
+		    	switch (type){
+		    	case "Algorithm": model = algorithm(txComm); break;
+		    	case "Machine" : model = machine(txComm); break;
+		    	default: errorText = "Очікується тип моделі Algorithm/Machine !";	
+		    	}
+		    	
+		    } else errorText = "Очікується тип моделі Algorithm/Machine !";
+		   // model = algorithm();
+		  	in.close();
+			System.out.println("File " + name + " is close.."); 
+			if (!errorText.isEmpty()) errorText = "." + nLine + ": " + errorText;
+		} else errorText = "Not open input file " + name + "!"; 
+		return model;		
+	}
+	
+	
 	public Algorithm inputAlgorithm(String name) {
 		Algorithm model = null;
 		errorText = "";
@@ -83,7 +115,7 @@ public class WorkFile {
 			System.out.println("File " + name + " is open.."); 
 		    line = ""; nLine = 0; nextChar = 1;
 		    getChar(); get();
-		    model = algorithm();
+		    model = algorithm1();
 		  	in.close();
 			System.out.println("File " + name + " is close.."); 
 			if (!errorText.isEmpty()) errorText = "." + nLine + ": " + errorText;
@@ -99,14 +131,18 @@ public class WorkFile {
 		return null;
 	}
 	
-	private Algorithm algorithm () {
-		Algorithm model = null;
+	private Algorithm algorithm1 () {
 		String txComm = "";
-		//boolean isNumeric = false;
-		//int rank = 2;
+		if (lex == 4) {txComm = valueLex; get();} 
+		return algorithm (txComm);
+	}
+	
+	private Algorithm algorithm (String txComm) {
+		Algorithm model = null;
 		Rule r;
 		ArrayList rules = new ArrayList();
-		if (lex == 4) {txComm = valueLex; get();} 
+		//if (lex == 4) {txComm = valueLex; get();} 
+		//System.out.println("init algorithm: lex =" + lex + " valueLex ="+ valueLex);
 		exam(20,"службове слово Algorithm");
 		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя алгоритму");
 		if (errorText.isEmpty()) {
@@ -174,6 +210,139 @@ public class WorkFile {
 		} else return null;
 	}
 	
+	private Machine machine (String txComm) {
+		Machine model = null;
+		State st;
+		int idSt =0;
+		ArrayList states = new ArrayList();
+		exam(20,"службове слово Machine");
+		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя машини");
+		if (errorText.isEmpty()) {
+			model = new Machine(0,valuePrev);
+			model.no = "";
+			model.descr = txComm;
+			model.program = states;
+			exam(21,"службове слово Alphabet");
+			if (errorText.isEmpty()) exam(2, "рядок - основний алфавіт");
+		}
+		if (errorText.isEmpty()) {
+			model.main = StringWork.isAlfa("", valuePrev);
+			exam(12,"символ ,");
+			if (errorText.isEmpty()) exam(2, "рядок - додатковий алфавіт");
+		}
+		if (errorText.isEmpty()) {
+			model.add = StringWork.isAlfa(model.main, valuePrev);
+			exam(13,"символ ;"); 
+			if (lex == 22){
+				model.isNumeric = true; get(); 
+				exam(3,"ціле число - арність функції");
+				if (errorText.isEmpty()) {
+					model.rank = new Integer(valuePrev);
+					exam(13,"символ ;"); 
+				}
+			} else model.isNumeric = false;
+		}
+		if (errorText.isEmpty()) {
+			exam(24,"службове слово Initial");
+			if (errorText.isEmpty()) exam(2, "рядок - початковий стан");
+			if (errorText.isEmpty()){
+				if (StringWork.isState(valuePrev)) {
+					model.init = valuePrev; 
+					exam(13,"символ ;"); 
+				} else errorText = "Формат початкового стану - @STT. Стан \"" + valuePrev + "\" не коректний !";
+			}
+		}
+		if (errorText.isEmpty()) {
+			exam(25,"службове слово Final");
+			if (errorText.isEmpty()) exam(2, "рядок - заключний стан");
+			if (errorText.isEmpty()){
+				if (StringWork.isState(valuePrev)) {
+					model.fin = valuePrev; 
+					exam(13,"символ ;"); 
+				} else errorText = "Формат заключного стану - @STT. Стан \"" + valuePrev + "\" не коректний !";
+			}
+		}
+		
+		while ((errorText.isEmpty()) && (lex != 23)){
+			idSt++;
+			st = state(model,idSt);
+			if (st != null){
+				//System.out.println(st.show("_" + model.main + model.add + model.no));
+				model.program.add(st);
+			}
+			//get();
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 23){
+				get();
+				exam(1, "ідентифікатор - імя машини");
+				if (errorText.isEmpty()) {
+					if (!(model.name.equals(valuePrev)))
+						errorText = "Заключне імя " + valuePrev  + " не співпадає з іменем машини " + model.name + "!";
+				}
+			} else errorText = "Очікується службове слово end !";
+		}	
+		if (errorText.isEmpty()) 
+			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		if (!errorText.isEmpty()) model = null; 
+		//if (model != null) model.show();
+		return model;		
+	}	
+
+	private State state(Machine model, int id) {
+		String inSym = "_" + model.main + model.add + model.no;
+		State st = null;
+		String nameSt = "";
+		ArrayList <String> going = new ArrayList();
+		String txComm = "";
+		String inCh = "";
+		String go = "";
+		String[] goingA = new String[100];
+		for(int i = 0; i < 100; i++)  goingA[i] = "";  
+		exam(2, "рядок - ім'я стану");
+		if (errorText.isEmpty()) {
+			nameSt = valuePrev ;
+			if (!StringWork.isState(nameSt)) errorText = "Формат стану - @TT. Стан \"" + nameSt + "\" не коректний !";
+			while ((errorText.isEmpty()) && (lex == 15)){
+				get();
+				exam(2, "рядок - вхідний символ переходу");
+				if (errorText.isEmpty()) {
+					inCh = valuePrev;
+					if(inCh.length() != 1) errorText = "Рядок - вхідний символ переходу " + inCh  + " повинен складатися з одного символа !";
+					else exam(14,"символи ->");
+				}
+				if (errorText.isEmpty()) {
+					exam(2, "рядок - перехід");
+					if (errorText.isEmpty()) {
+						go = valuePrev;
+						if ((!go.isEmpty()) && (!StringWork.isMove(go))) errorText = "Формат переходу - @TTSM. Перехід \"" + go + "\" не коректний !";
+						// add new going inCh -> go !!!!!!!!
+						int pos = inSym.indexOf(inCh.charAt(0));
+						if (pos < 0) {
+							pos = inSym.length(); model.no = model.no + inCh; inSym = inSym + inCh;
+						} 
+						if(goingA[pos].isEmpty()) goingA[pos] = go;
+						else errorText = "Для стану " + nameSt + " і вхідного символ переходу " + inCh  + " вказано більше одного визначеного переходу !";
+					}
+				}
+			}
+			if (errorText.isEmpty()) exam (13,"символ ;");
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 4) {txComm = valueLex; get();}
+			// forming State st !!!!!!
+			for(int i = 0; i < inSym.length(); i++) going.add(goingA[i]) ;  
+			st = new State(nameSt,id, going, txComm);
+		} 
+		return st;
+	}
+	
+	
+	
+	
+	
+	
+	
 	private void exam(int lx, String what) {
 		if (lex == lx) {
 			valuePrev = valueLex;
@@ -221,10 +390,13 @@ public class WorkFile {
 					valueLex = valueLex + next; getChar();
 				} while (StringWork.isIden(next));
 				switch (valueLex){
-					case "Algorithm": lex = 20; break;
+					case "Algorithm": if(type.equals("Algorithm")) lex = 20; break;
 					case "Alphabet": lex = 21; break;
 					case "Numerical": lex = 22; break;
 					case "end": lex = 23; break;
+					case "Machine": if(type.equals("Machine"))lex = 20; break;
+					case "Initial": if(type.equals("Machine"))lex = 24; break;
+					case "Final": if(type.equals("Machine"))lex = 25; break;
 				}
 			} else if (StringWork.isDigit(next)) {
 				lex = 3;
@@ -239,6 +411,7 @@ public class WorkFile {
 					case ';': lex = 13; getChar(); break;
 					case '-': getChar(); 
 						if (next == '>') {lex = 14; getChar();}	break;
+					case ':': if(type.equals("Machine")) lex = 15; getChar(); break;
 					//case '\n':	
 					default: getChar();	
 				}

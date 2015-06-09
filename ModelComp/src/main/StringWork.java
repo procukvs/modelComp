@@ -48,11 +48,11 @@ public class StringWork {
 	
 	public static boolean isMove(String s) {
 		//Pattern pnum = Pattern.compile("tt");
-		return Pattern.matches("@[a-zA-Z][0-9a-zA-Z][^ ][<>.]", s);
+		return Pattern.matches("@[0-9a-zA-Z][0-9a-zA-Z][^ ][<>.]", s);
 	}
 	public static boolean isState(String s) {
 		//Pattern pnum = Pattern.compile("tt");
-		return Pattern.matches("@[a-zA-Z][0-9a-zA-Z]", s);
+		return Pattern.matches("@[0-9a-zA-Z][0-9a-zA-Z]", s);
 	}
 	
 	public static String isAlfa(String alfa, String s) {

@@ -18,6 +18,7 @@ public class Model {
 	public int getRank() {return 2;}
 	public String getInit() {return "";}
 	public String getFin() {return "";}
+	public String getType() {return "Algorithm";}     // "Model"
 	public void setMain(String main) { }
 	public void setAdd(String add) { }
 	public void setIsNumeric(boolean isNumeric) { }
@@ -26,15 +27,18 @@ public class Model {
 	public void setFin(String fin) { }
 	//----------------------------------------------	
 	
+	//-----work DB ------- 
+	//public void delete(){}
+	
 	
 	
 	private static String[][] titles = { 
 			{"Algorithm", "Нормальні алгоритми Маркова","Алгоритм","алгоритму","Підстановки алгоритму",	"алгоритмом",
 								"алгоритм","Новий", "Алгоритм", "Нова","Підстановка",
 								"підстановку","нормальним алгоритмом"}, 
-			{"Machine", "Машини Тьюрінга","Машина","машини","Програма машини (Таблиця переходів)", "машиною", 
+			{"Machine", "Машини Тюрінга","Машина","машини","Програма машини (Таблиця переходів)", "машиною", 
 								"машину","Нова", "Машину", "Новий","Стан",
-								"стан", "машиною Тьюрінга"} };
+								"стан", "машиною Тюрінга"} };
 				
 	Model(int id, String name) {
 		this.id = id; this.name = name;

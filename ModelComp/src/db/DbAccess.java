@@ -4,8 +4,6 @@ import java.sql.*;
 import java.text.*;
 import java.util.*;
 
-
-
 //import java.text.*;
 //import java.util.*;
 import org.sqlite.*;
@@ -188,6 +186,7 @@ public class DbAccess {
 		int idModel = 0;
 		switch(type){
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
+		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
 		}	
 		return idModel;
 	}
@@ -211,6 +210,7 @@ public class DbAccess {
 	public void deleteModel(String type, Model model) {
 		switch(type){
 		case "Algorithm" : dbAlgo.deleteAlgorithm((Algorithm)model); break;
+		case "Machine" : dbMach.deleteMachine((Machine)model); break;
 		}	
 	}
 	

@@ -170,15 +170,18 @@ public class ShowModelButtons extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			String text = "Файл для введення не вказано !";
 			String name = nmFile.getText();
-			Algorithm model;
+			//Algorithm model;
+			Model model;
 			if (!name.isEmpty()) {
 				//text = "Ввести модель з файлу " 
 				//		+ fc.getSelectedFile().getAbsolutePath() + "...";
 				WorkFile wf = new WorkFile();
-				model = wf.inputAlgorithm(name);
+				//model = wf.inputAlgorithm(name);
+				model = wf.inputModel(name);
 				if (model != null) {
+					type = model.getType();
 					String nameIn = model.name;
-					int idModel = db.addModel("Algorithm", model);
+					int idModel = db.addModel(type, model);
 					if (idModel > 0) {
 						showMain.showModel(type, idModel);
 						text = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
@@ -186,7 +189,7 @@ public class ShowModelButtons extends JPanel {
 					else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 				}
 				else text = wf.getErrorText();
-				JOptionPane.showMessageDialog(ShowModelButtons.this,text);
+				JOptionPane.showMessageDialog(ShowModelButtons.this,text + " ??");
 			}	
 			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelInput..."); // text);
 		}	
@@ -209,7 +212,7 @@ public class ShowModelButtons extends JPanel {
 	class ModelDelete implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null){ 
-				String text = "Вилучити алгоритм "+ model.name + " з номером " + model.id + " ?";
+				String text = "Вилучити " + Model.title(type, 6) + " "+ model.name + " з номером " + model.id + " ?";
 				UIManager.put("OptionPane.yesButtonText", "Так");
 				UIManager.put("OptionPane.noButtonText", "Ні");
 				int res = JOptionPane.showConfirmDialog(ShowModelButtons.this,text,"Вилучити ?",JOptionPane.YES_NO_OPTION );

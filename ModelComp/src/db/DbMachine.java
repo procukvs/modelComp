@@ -71,6 +71,81 @@ public class DbMachine {
 		return model;
 	}
 	
+	// додає введену з файлу машину Тюрінга model (включаючи всі стани)
+	public int addMachine(Machine model){
+		String allCh = "_" + model.main + model.add + model.no;
+		String name = model.name;
+		int cnt = db.maxNumber("Machine")+1;
+		int rows;
+		State st;
+		String move = "";
+		String inCh = "";
+		if (db.isModel("Machine",name)) name = db.findName("Machine", model.name);
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				int isNumeric = (model.isNumeric?1:0); 
+				sql = "insert into tMachine values(" + cnt + ",'" + name + "','" + model.main + "','" +
+						model.add + "','" + model.init + "','" + model.fin + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
+				//System.out.println(">>> " + sql);
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					st = (State)model.program.get(i);
+					sql = "insert into tProgram values(" + cnt + "," + st.getId() + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+					//System.out.println(">>> " + sql);
+					rows=rows + db.s.executeUpdate(sql);
+					for(int j = 0; j < st.getGoing().size(); j++) {
+						move = st.getGoing().get(j);
+						if (!move.isEmpty()) {
+							if(j < allCh.length()) {
+								inCh = allCh.substring(j,j+1);                        ///else inCh = " ";
+							    sql = "insert into tMove values(" + cnt + "," + st.getId() + ",'" + inCh + "','" + move.substring(3,4)
+						    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
+							    //System.out.println(">>> " + sql);
+							    db.s.execute(sql);
+							}    
+						}
+					}
+				}
+				if (rows != model.program.size() + 1) cnt = 0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: addMachine :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}		
+	
+	public void deleteMachine(Machine model){
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "delete from tMove where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from tProgram where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from tMachine where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: deleteMachine :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+	}
+	
 	public void newState(Machine mach, int id, State st){
 		String allCh = "_" + mach.main + mach.add + mach.no;
 		String move = "";
