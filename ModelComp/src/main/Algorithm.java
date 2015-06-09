@@ -3,7 +3,7 @@ package main;
 import java.util.*;
 
 import file.*;
-//import db.*;
+import db.*;
 
 public class Algorithm extends Model {
 	public String main = "|#";
@@ -29,7 +29,9 @@ public class Algorithm extends Model {
 	//----------------------------------------------
 	
 	//-----work DB ------- 
-	//public void delete() {dbAlgo.deleteAlgorithm(this);}
+	public void dbDelete() {
+		 DbAccess.getDbAlgorithm().deleteAlgorithm(this);
+	}
 	
 	
 	public ArrayList getDataSource(int idModel) {

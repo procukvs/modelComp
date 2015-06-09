@@ -71,6 +71,57 @@ public class DbMachine {
 		return model;
 	}
 	
+	// створюЇ новий порожн≥й алгоритм
+	public int newAlgorithm() {
+		//Algorithm model= null;
+		String name = db.findName("Algorithm","Algorithm");
+		int cnt = db.maxNumber("Algorithm")+1;
+		int rows;
+		try{
+			sql = "insert into mAlgorithm values(" + cnt + ",'" + name + "','|#','',1,2,'new')";
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0) cnt = 0;
+		}
+		catch (Exception e) {
+			//System.out.println(e.getMessage());
+			System.out.println("ERROR: newAlgorithm :" + sql);
+			System.out.println(">>> " + e.getMessage());
+		}
+		return cnt;
+	}
+		
+	// створюЇ нову машину “юр≥нга на основ≥ машини з model (включаючи вс≥ стани)
+	public int newAlgorithmAs(Algorithm model){
+		//Algorithm newModel= null;
+		String name = db.findName("Machine", model.name);
+		int cnt = db.maxNumber("Machine")+1;
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				
+				
+				sql = "insert into mRule select " + cnt + ", id, sLeft, sRigth, isEnd, txComm " +
+						" from mRule where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "insert into mAlgorithm select " + cnt + ",'" + name + "', sMain, sAdd, " + 
+						"isNumeric, Rank, descr from mAlgorithm where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				if (rows == 0) cnt =0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: newAlgorithmAs :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}
+	
 	// додаЇ введену з файлу машину “юр≥нга model (включаючи вс≥ стани)
 	public int addMachine(Machine model){
 		String allCh = "_" + model.main + model.add + model.no;

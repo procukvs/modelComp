@@ -1,7 +1,8 @@
 package main;
 import java.util.*;
 
-import file.OutputText;
+import db.*;
+import file.*;
 
 public class Model {
 	public int id;
@@ -28,8 +29,15 @@ public class Model {
 	//----------------------------------------------	
 	
 	//-----work DB ------- 
-	//public void delete(){}
-	
+	public void dbDelete(){} //
+	public int getDbOrder(){
+		System.out.println(getTypeModel());
+		return DbAccess.getDbAccess().getOrder(getTypeModel(), id); 
+	}
+	public int getDbNumber(int id){
+		System.out.println(getTypeModel());
+		return DbAccess.getDbAccess().getNumber(getTypeModel(), id); 
+	}
 	
 	
 	private static String[][] titles = { 
@@ -83,4 +91,9 @@ public class Model {
 	}
 	
 	public int findCommand(int num) {return num-1;}
+	
+	private String getTypeModel(){
+		return this.getClass().getName().substring(5);
+	}
+	
 }

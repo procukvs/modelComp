@@ -217,9 +217,12 @@ public class ShowModelButtons extends JPanel {
 				UIManager.put("OptionPane.noButtonText", "Ні");
 				int res = JOptionPane.showConfirmDialog(ShowModelButtons.this,text,"Вилучити ?",JOptionPane.YES_NO_OPTION );
 				if (res == JOptionPane.YES_OPTION) {
-					int newId = db.getOrder(type, model.id);
-					db.deleteModel(type, model);
-					newId = db.getNumber(type, newId-1);
+						//int newId = db.getOrder(type, model.id);
+						//db.deleteModel(type, model);
+						//newId = db.getNumber(type, newId-1);
+					int newId = model.getDbOrder();
+					model.dbDelete();
+					newId = model.getDbNumber(newId-1);
 					showMain.showModel(type, newId);
 				}
 			}
@@ -229,6 +232,7 @@ public class ShowModelButtons extends JPanel {
 	class ModelWork implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null){
+				//System.out.println(model.getDbOrder());
 				showWork.setModel(type, model);
 				showWork.show();
 			}	

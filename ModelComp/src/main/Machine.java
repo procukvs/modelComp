@@ -2,6 +2,7 @@ package main;
 
 import java.util.*;
 
+import db.DbAccess;
 import file.OutputText;
 public class Machine extends Model {
 	public String main = "|#";
@@ -37,7 +38,11 @@ public class Machine extends Model {
 	public void setInit(String init) {this.init = init; }
 	public void setFin(String fin) {this.fin = fin; }
 	//----------------------------------------------
-	
+	//-----work DB ------- 
+	public void dbDelete() {
+		 DbAccess.getDbMachine().deleteMachine(this);
+	}
+
 	
 	/*public boolean isState(String st) {
 		boolean go = true;

@@ -19,7 +19,8 @@ public class DbAccess {
 	private  ResultSet rs;
 	// nameDB = "" + "Is driver" + "No driver" + nameDB
   	private String nameDB = "";
-  	private DbAlgorithm dbAlgo;
+  	//=========================================================
+  	/*private DbAlgorithm dbAlgo;
   	private DbMachine dbMach;
   	
 	public DbAccess(){ 
@@ -37,7 +38,37 @@ public class DbAccess {
             System.out.println("ERROR: Could not form DataBase .");
 			System.out.println(">>> " + ex.getMessage());
         } 	
+	} */
+	//=========================================================
+  	// realizy singleton !!!
+	private static DbAccess db;
+	private static DbAlgorithm dbAlgo;
+  	private static DbMachine dbMach;
+	private DbAccess(){ 
+		try
+	    {
+		 // Class.forName("com.mysql.jdbc.Driver");
+		  Class.forName("org.sqlite.JDBC");
+		  nameDB = "Is driver";
+		  dbAlgo = new DbAlgorithm(this);
+		  dbMach = new DbMachine(this);
+	     }
+		catch(Exception ex)
+        {
+ 			nameDB = "No driver";
+            System.out.println("ERROR: Could not form DataBase .");
+			System.out.println(">>> " + ex.getMessage());
+        } 	
 	}
+	public static DbAccess getDbAccess() {
+		if(db == null) db = new DbAccess();
+		return db;
+	}
+	public static DbAlgorithm getDbAlgorithm() { return dbAlgo;}
+	public static DbMachine getDbMachine() { return dbMach;}
+	//======================================================
+	
+	
 	public Connection getConnection(){
 		return conn;
 	}
@@ -206,14 +237,14 @@ public class DbAccess {
 		}	
 		return idModel;
 	}
-	
+/*	
 	public void deleteModel(String type, Model model) {
 		switch(type){
 		case "Algorithm" : dbAlgo.deleteAlgorithm((Algorithm)model); break;
 		case "Machine" : dbMach.deleteMachine((Machine)model); break;
 		}	
 	}
-	
+*/	
 	public int newModelAs(String type, Model model) {
 		int idModel = 0;
 		switch(type){

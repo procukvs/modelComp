@@ -13,7 +13,11 @@ public class Main {
 	//ShowMenu gui;
 	
 	Main(){
-		db  = new  DbAccess ();
+		//=====================
+		//db  = new  DbAccess ();
+		//======================
+		db = DbAccess.getDbAccess();
+		//====================
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		gui = new ShowModels(db);
 		//gui = new ShowMenu(db);

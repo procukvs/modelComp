@@ -5,7 +5,7 @@ import java.util.*;
 
 import main.*;
 
-class DbAlgorithm {
+public class DbAlgorithm {
 	private DbAccess db;
 	private String sql;
 	private  ResultSet rs;
