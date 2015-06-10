@@ -162,7 +162,7 @@ public class ShowCommandButtons extends JPanel {
 		public void actionPerformed(ActionEvent event){
 		if (model != null) {
 			int row = table.selectedRule();
-			System.out.println(row);
+			//System.out.println(row);
 			if (row > 0){
 				/*Rule rule = (Rule)model.program.get(row-1);
 				String text1;
@@ -171,7 +171,7 @@ public class ShowCommandButtons extends JPanel {
 				String text2 = "Коментар: \"" + rule.gettxComm() + "\"";
 				String [] text = new String[] {"Вилучити підстановку з номером  " + row + "..",  text1, text2} ; */
 				int row1 = (type.equals("Algorithm")? row-1: ((Machine)model).findCommand(row)) ;
-				System.out.println(row1);
+				//System.out.println(row1);
 				
 				Command c = (Command) model.program.get(row1);
 				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + "..",  c.show(model.getAllChar())} ;
@@ -182,7 +182,8 @@ public class ShowCommandButtons extends JPanel {
 				if (response == JOptionPane.YES_OPTION) { 
 					db.deleteCommand(type, model.id, row);
 					showMain.showModel(type, model.id);
-					table.showPrevRow(false);
+					//table.showPrevRow(false);
+					table.showRow(false,row1);
 				} 	
 			}
 		}
@@ -218,7 +219,6 @@ public class ShowCommandButtons extends JPanel {
 	}
  	
  	class LsRename implements ActionListener  {
- 		
  		String init;
  		JTextField newState;
 		public void actionPerformed(ActionEvent event){
@@ -238,12 +238,15 @@ public class ShowCommandButtons extends JPanel {
 					 int res = JOptionPane.showOptionDialog(ShowCommandButtons.this, panel, "Переіменування стану",
 							 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
 					 if (res == JOptionPane.OK_OPTION){
-						 String name1 = newState.getText();
+						String name1 = newState.getText();
 						if (!((Machine)model).isState(name1)) {
 							//db.moveUp(type, model.id, row);
 							//showMain.showModel(type, model.id);
 							//table.showPrevRow(false);
-							JOptionPane.showMessageDialog(ShowCommandButtons.this, "Rename.." + name1);
+							model.dbRenameState(name, name1);
+							showMain.showModel(type, model.id);
+							table.showRow(false,model.findCommand(name1)+1);
+							//JOptionPane.showMessageDialog(ShowCommandButtons.this, "Rename.." + name + " -> " + name1);
 						}
 						else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
 					 }
@@ -251,7 +254,6 @@ public class ShowCommandButtons extends JPanel {
 				}
 			} 
 		}
-				
 		// клас-обробник введення інформації в полі  newState
 		class LsText implements ActionListener  {
 			public void actionPerformed(ActionEvent event){
@@ -276,6 +278,7 @@ public class ShowCommandButtons extends JPanel {
 					table.showPrevRow(false);
 				}
 			} */
+			String text;
 			ArrayList <String> all = db.getAllModel(type);
 			String name1;
 			int j;
@@ -286,15 +289,16 @@ public class ShowCommandButtons extends JPanel {
 				if(!name1.equals(model.name)) {values[j] = name1; j++;}
 			}
 			//ImageIcon icon = new ImageIcon("c:\\iconimage\\msg_admin.gif");
-			UIManager.put("OptionPane.okButtonText", "Вставити");
+			UIManager.put("OptionPane.okButtonText", "Так");
 			UIManager.put("OptionPane.cancelButtonText", "Вийти");
 			Object res = 
 					JOptionPane.showInputDialog(ShowCommandButtons.this, 
 							"Вставити програму машини", "Вибір програми", JOptionPane.QUESTION_MESSAGE, null,  values, values[0]);
 			//res = JOptionPane.showInputDialog
 			//JOptionPane.showMessageDialog(InputDialogs.this,res);
-
-			JOptionPane.showMessageDialog(ShowCommandButtons.this,"Insert..."+ res + "..");
+			text = model.dbInsertModel((String)res);	
+			if (text.isEmpty()) showMain.showModel(type, model.id);
+			else JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
 		}	
 	}
 	

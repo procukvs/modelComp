@@ -32,7 +32,9 @@ public class Algorithm extends Model {
 	public void dbDelete() {
 		 DbAccess.getDbAlgorithm().deleteAlgorithm(this);
 	}
-	
+	public int dbNewAs() { 
+		return DbAccess.getDbAlgorithm().newAlgorithmAs(this);
+	}
 	
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();

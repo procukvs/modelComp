@@ -229,11 +229,11 @@ public class DbAccess {
 		case "Machine" : dbMach.editMachine((Machine)model); break;
 		}	
 	}
-	
 	public int newModel(String type) {
 		int idModel = 0;
 		switch(type){
 		case "Algorithm" : idModel = dbAlgo.newAlgorithm(); break;
+		case "Machine" : idModel = dbMach.newMachine(); break;
 		}	
 		return idModel;
 	}
@@ -245,13 +245,14 @@ public class DbAccess {
 		}	
 	}
 */	
+	/*
 	public int newModelAs(String type, Model model) {
 		int idModel = 0;
 		switch(type){
 		case "Algorithm" : idModel = dbAlgo.newAlgorithmAs((Algorithm)model); break;
 		}	
 		return idModel;
-	}
+	} */
 	
 	public Model getModel(String type, int id){
 		//System.out.println(" getModel :" + type + " " + id);

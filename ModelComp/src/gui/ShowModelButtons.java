@@ -110,7 +110,7 @@ public class ShowModelButtons extends JPanel {
 	class Add implements ActionListener  {
 		// 
 		public void actionPerformed(ActionEvent e) {
-			int idModel = db.newModel(type); 
+			int idModel = Model.dbNew(type);  // db.newModel(type); 
 			showMain.showModel(type, idModel);
 		   	//JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
 		}	
@@ -119,7 +119,7 @@ public class ShowModelButtons extends JPanel {
 		// 
 		public void actionPerformed(ActionEvent e) {
 			if (model != null) {
-				int idModel = db.newModelAs(type, model); 
+				int idModel = model.dbNewAs(); //db.newModelAs(type, model); 
 				showMain.showModel(type, idModel);
 			}
 		   	//JOptionPane.showMessageDialog(ShowModelButtons.this,"AddAs..");

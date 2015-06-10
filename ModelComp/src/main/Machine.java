@@ -42,8 +42,16 @@ public class Machine extends Model {
 	public void dbDelete() {
 		 DbAccess.getDbMachine().deleteMachine(this);
 	}
-
-	
+	public int dbNewAs() { 
+		return DbAccess.getDbMachine().newMachineAs(this);
+	}
+	public void dbRenameState(String in,String out) {
+		 DbAccess.getDbMachine().renameState(this, in, out);
+	}
+	public String dbInsertModel(String nmInsert) {
+		DbAccess.getDbMachine().insertMachine(this, nmInsert);
+		return "";
+	}
 	/*public boolean isState(String st) {
 		boolean go = true;
 		int i = 0;
@@ -467,4 +475,28 @@ public class Machine extends Model {
 			}
 		return "";
 	}
+	// будує k нових імен станів ще НЕ використаних a0..a9,aa..az,b0..b9,ba..bz,...,z0..z9,za..zz
+	public String[] newArState(int k){
+		String first = "abcdefghijklmnopqrstuvwxyz";
+		String second = "0123456789abcdefghijklmnopqrstuvwxyz";
+		String[] res = new String[k];
+		String name;
+		String maxSt = "@a0";
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0;	(i < program.size()); i++ ) {
+				name = ((State)program.get(i)).getState();
+				if(name.compareTo(maxSt) > 0) maxSt = name;
+			}
+		}
+		int i = first.indexOf(maxSt.substring(1,2));
+		int j = second.indexOf(maxSt.substring(2)) + 1;
+		if (j == 36) {i++; j = 0;} 
+		for (int l = 0; l < k; l++ ){
+			if (i < 26) res[l] = "@" + first.substring(i,i+1) + second.substring(j,j+1) ; else res[l] = "@00";
+			j++;
+			if (j == 36) {i++; j = 0;} 
+		}
+		return res;
+	}
+	
 }

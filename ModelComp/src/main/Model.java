@@ -31,13 +31,19 @@ public class Model {
 	//-----work DB ------- 
 	public void dbDelete(){} //
 	public int getDbOrder(){
-		System.out.println(getTypeModel());
+		//System.out.println(getTypeModel());
 		return DbAccess.getDbAccess().getOrder(getTypeModel(), id); 
 	}
 	public int getDbNumber(int id){
-		System.out.println(getTypeModel());
+		//System.out.println(getTypeModel());
 		return DbAccess.getDbAccess().getNumber(getTypeModel(), id); 
 	}
+	static public int dbNew(String type){
+		return DbAccess.getDbAccess().newModel(type);
+	}
+	public int dbNewAs() { return 1;}
+	public void dbRenameState(String in,String out) {}
+	public String dbInsertModel(String nmInsert) { return "";}
 	
 	
 	private static String[][] titles = { 
@@ -91,6 +97,7 @@ public class Model {
 	}
 	
 	public int findCommand(int num) {return num-1;}
+	public int findCommand(String key) {return 0;}
 	
 	private String getTypeModel(){
 		return this.getClass().getName().substring(5);
