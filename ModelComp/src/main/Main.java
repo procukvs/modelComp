@@ -8,10 +8,8 @@ import gui.*;
 
 public class Main {
 	DbAccess db;
-	//!!!!!!!!!!!!!!!!!!!
 	ShowModels gui;
-	//ShowMenu gui;
-	
+		
 	Main(){
 		//=====================
 		//db  = new  DbAccess ();
@@ -20,11 +18,9 @@ public class Main {
 		//====================
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		gui = new ShowModels(db);
-		//gui = new ShowMenu(db);
 		System.out.println("Forming GUI");
 	    if (db.connectionDb("Model.db")) { 
-	    	//System.out.println("Is connection to DB Algo");
-	    	// після встановлення звязку з БД створюємо обробник запитів opr
+	       	// після встановлення звязку з БД створюємо обробник запитів opr
 	        gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        gui.addWindowListener(new EndWork());
 	        gui.setVisible(true);

@@ -157,6 +157,49 @@ public class ShowDescription extends JPanel {
 		showMain = owner;		
 	}
 	
+	public void setModel(String type,Model model) {
+		boolean isVisible = type.equals("Machine");
+		this.type = type;
+	    this.model = model;
+	  	txtAlgo.setText(Model.title(type, 2)); 
+		txtComm.setText("Опис " + Model.title(type, 3));
+	    if (model == null) showEmpty( );
+	    else showModel();
+	    
+		txtInit.setVisible(isVisible);
+		sInit.setVisible(isVisible);
+		txtFin.setVisible(isVisible);
+		sFin.setVisible(isVisible);
+	}
+	private void showModel() {
+		sName.setText(model.name);
+		txtNumb.setText("Номер " + model.id);
+		sComm.setText(model.descr);
+		sMain.setText(model.getMain());
+		sAdd.setText(model.getAdd());
+		isNumeric.setSelected(model.getIsNumeric());
+		iRank.setText(((Integer)model.getRank()).toString());
+		txtRank.setVisible(model.getIsNumeric());
+		iRank.setVisible(model.getIsNumeric());
+		sInit.setText(model.getInit());
+		sFin.setText(model.getFin());
+	}
+	
+	private void showEmpty() {
+		sName.setText("");
+		txtNumb.setText("-----");
+		sInit.setText("@z0");
+		sFin.setText("@zz");
+		sMain.setText("");
+		sAdd.setText("");
+		isNumeric.setSelected(true);
+		iRank.setText("2");
+		txtRank.setVisible(true);
+		iRank.setVisible(true);
+		sComm.setText("");
+	}
+	
+	
 	// Класи слухачі 
 	class LssName implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
@@ -386,33 +429,8 @@ public class ShowDescription extends JPanel {
 			}
 		}	
 	}
-	public void setModel(String type,Model model) {
-		boolean isVisible = type.equals("Machine");
-		this.type = type;
-	    this.model = model;
-	  	txtAlgo.setText(Model.title(type, 2)); 
-		txtComm.setText("Опис " + Model.title(type, 3));
-	    if (model == null) showEmpty( );
-	    else showModel();
-	    
-		txtInit.setVisible(isVisible);
-		sInit.setVisible(isVisible);
-		txtFin.setVisible(isVisible);
-		sFin.setVisible(isVisible);
-	}
-	private void showModel() {
-		
-		sName.setText(model.name);
-		txtNumb.setText("Номер " + model.id);
-		sComm.setText(model.descr);
-		sMain.setText(model.getMain());
-		sAdd.setText(model.getAdd());
-		isNumeric.setSelected(model.getIsNumeric());
-		iRank.setText(((Integer)model.getRank()).toString());
-		txtRank.setVisible(model.getIsNumeric());
-		iRank.setVisible(model.getIsNumeric());
-		sInit.setText(model.getInit());
-		sFin.setText(model.getFin());
+
+	
 		/*
 		switch (type) {
 		case "Algorithm" :
@@ -438,18 +456,6 @@ public class ShowDescription extends JPanel {
 			break;
 		} */
 		
-	}
-	private void showEmpty() {
-		sName.setText("");
-		txtNumb.setText("-----");
-		sInit.setText("@z0");
-		sFin.setText("@zz");
-		sMain.setText("");
-		sAdd.setText("");
-		isNumeric.setSelected(true);
-		iRank.setText("2");
-		txtRank.setVisible(true);
-		iRank.setVisible(true);
-		sComm.setText("");
-	}
+
+	
 }

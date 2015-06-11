@@ -1,6 +1,7 @@
 package main;
 
 import java.util.regex.Pattern;
+import java.util.*;
 
 public class StringWork {
 	public boolean isNumber(String s) {
@@ -22,7 +23,7 @@ public class StringWork {
 	
 	public static boolean isPosNumber(String s) {
 		//Pattern pnum = Pattern.compile("tt");
-		return Pattern.matches("[0-9]*[1-9]", s);
+		return Pattern.matches("[0-9]*[1-9][0-9]*", s);
 	}
 	
 	public static boolean isNatur(String s) {
@@ -73,6 +74,21 @@ public class StringWork {
 		return alfa + isAlfa(alfa,beta);
 	}
 	
+	public static String extract(String s, String what) {
+		String alfa = "";
+		String var = "";
+		int i = 0;
+		while(i < s.length()){
+			if(s.charAt(i) == '@'){
+				i++;
+				if(i == s.length()) var = var + " ";
+				else var = var + s.substring(i,i+1);
+			} else alfa = alfa + s.substring(i,i+1);
+			i++;	
+		}
+		if (what.equals("Var")) return var; else return alfa;
+	}
+	
 	static String substitution(String bs, String wh, int b, int l){
 		//Підстановка в рядок bs рядка wh замісто підрядка, що починається з позиції b довжиною l символів
 		if (l==0) return wh.concat(bs);   // only on begin of bs ==> b ==0  ...wh+bs
@@ -119,6 +135,10 @@ public class StringWork {
 		return res;
 	}
 			
-	
+	public static String[] transferToArray(ArrayList <String> al){
+		String[] res = new String[al.size()];
+		for(int i=0; i < al.size(); i++) res[i] = al.get(i); 
+		return res;
+	}
 }
 

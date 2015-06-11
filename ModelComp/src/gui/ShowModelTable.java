@@ -71,7 +71,33 @@ public class ShowModelTable extends JPanel {
 		last.addActionListener(new SelectLast());
 		
 	}
+
+	public void showModel(String type, Model model){
+		this.type = type; this.model = model;
+		border.setTitle(Model.title(type, 4));
+							//setTableStructure(); 
+		showTable(true, table.getSelectedRow() + 1);
+						//showTable(true, 0);
+	}
 	
+	private void showTable(boolean update, int selected){
+		//System.out.println(" showTable : ShowModelTable " + update + " "  + ((model == null)?0:model.id));
+		if (update) {
+			ArrayList ds = null;
+			if(model != null) ds = model.getDataSource(model.id);
+			//System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
+			setTableStructure();
+			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
+		}
+		int all = dbm.getRowCount();
+		if (selected > 0){ 
+			if (selected > all) selected = all;
+			table.getSelectionModel().setSelectionInterval(selected - 1, selected - 1);
+			selection.setText(selected  + " : " + all);
+		}	else selection.setText("0  :  " + all); 
+	}
+
+
 	// класи - слухачі виділення (selection...)
 	class SelectFirst implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
@@ -139,32 +165,7 @@ public class ShowModelTable extends JPanel {
 	public void showRow(boolean update, int row){
 		showTable(update, row);
 	}		
-	
-	public void showModel(String type, Model model){
-		this.type = type; this.model = model;
-		border.setTitle(Model.title(type, 4));
-							//setTableStructure(); 
-		showTable(true, table.getSelectedRow() + 1);
-						//showTable(true, 0);
-	}
-	
-	private void showTable(boolean update, int selected){
-		//System.out.println(" showTable : ShowModelTable " + update + " "  + ((model == null)?0:model.id));
-		if (update) {
-			ArrayList ds = null;
-			if(model != null) ds = model.getDataSource(model.id);
-			//System.out.println(" showTable : ShowModelTable:ds " +  ((ds == null)?-1:ds.size()));
-			setTableStructure();
-			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
-		}
-		int all = dbm.getRowCount();
-		if (selected > 0){ 
-			if (selected > all) selected = all;
-			table.getSelectionModel().setSelectionInterval(selected - 1, selected - 1);
-			selection.setText(selected  + " : " + all);
-		}	else selection.setText("0  :  " + all); 
-	}
-	
+		
 	private void setTableStructure() {
 		dbm.setDataSource(null);
 		dbm.setInitialModel(findInform(type));
@@ -186,6 +187,7 @@ public class ShowModelTable extends JPanel {
 		int [] w = null;
 		switch(type){
 		case "Algorithm" : w = new int[]{10,100,100,10,400,10}; break;
+		case "Post" : w = new int[]{10,10,100,100,390,10,10}; break;
 		case "Machine": 
 			if (model != null) {
 				Machine m = (Machine)model;
@@ -209,12 +211,22 @@ public class ShowModelTable extends JPanel {
 		case "Algorithm" : 
 			info = new String[][]{
 									{"№","I","N"},
-									{"Ліва частина підстановки","S","E"},
-									{"Права частина підстановки","S","E"},
-									{"Заключна ?","B","E"},
-									{"Коментар","S","E"},
+									{"Ліва частина підстановки","S","N"},
+									{"Права частина підстановки","S","N"},
+									{"Заключна ?","B","N"},
+									{"Коментар","S","N"},
 									{"№Ал","I","N"}
 								}; break;
+		case "Post" : 
+			info = new String[][]{
+									{"№","I","N"},
+									{"Аксіома ?","B","N"},
+									{"Ліва частина правила","S","N"},
+									{"Права частина правила","S","N"},
+									{"Коментар","S","N"},
+									{"№Пр","I","N"},
+									{"№С","I","N"}
+								}; break;								
 		case "Machine": 
 			int l;
 			String allS;

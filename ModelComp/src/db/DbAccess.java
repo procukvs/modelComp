@@ -44,6 +44,7 @@ public class DbAccess {
 	private static DbAccess db;
 	private static DbAlgorithm dbAlgo;
   	private static DbMachine dbMach;
+	private static DbPost dbPost;
 	private DbAccess(){ 
 		try
 	    {
@@ -52,13 +53,13 @@ public class DbAccess {
 		  nameDB = "Is driver";
 		  dbAlgo = new DbAlgorithm(this);
 		  dbMach = new DbMachine(this);
+		  dbPost = new DbPost(this);
 	     }
 		catch(Exception ex)
         {
  			nameDB = "No driver";
-            System.out.println("ERROR: Could not form DataBase .");
-			System.out.println(">>> " + ex.getMessage());
-        } 	
+            System.out.println("ERROR: Could not form DataBase " + ex.getMessage());
+	     } 	
 	}
 	public static DbAccess getDbAccess() {
 		if(db == null) db = new DbAccess();
@@ -148,7 +149,7 @@ public class DbAccess {
 	        	go = !(rs.getInt(1) == id); 
 	        }
 		}catch (Exception e){
-			System.out.println("ERROR: getNumber :" + sql);
+			System.out.println("ERROR: getOrder :" + sql);
 			System.out.println(">>> " + e.getMessage());
 		}
 		return number;
@@ -259,6 +260,7 @@ public class DbAccess {
 		switch(type){
 		case "Algorithm" : return dbAlgo.getAlgorithm(id);
 		case "Machine": return dbMach.getMachine(id); 
+		case "Post": return dbPost.getPost(id); 
 		default: return null;
 		}
 	}
@@ -312,6 +314,7 @@ public class DbAccess {
 		switch(type){
 		case "Computer" : return "mComputer";
 		case "Machine": return "tMachine";
+		case "Post" : return "pPost";
 		default: return "mAlgorithm";
 		}
 	}

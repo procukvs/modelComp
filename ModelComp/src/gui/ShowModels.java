@@ -2,9 +2,7 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 import db.*;
 import main.*;
 
@@ -25,11 +23,26 @@ public class ShowModels extends JFrame {
 		//  сформувати необхідні gui-елементи 
 		JMenuBar  menuBar = new JMenuBar();
 		JButton quit = new JButton("Вийти з програми");
-		menuBar.add(createModelMenu());
+		// створюємо випадаюче меню, що містить звичайні елементи меню
+		JMenu mModel= new JMenu("Модель обчислень");
+		// елемент меню - команда
+		JMenuItem algorithm = new JMenuItem(Model.title("Algorithm", 1));	//(new AlgorithmAction()); // 
+		JMenuItem machine = new JMenuItem(Model.title("Machine", 1));  		//("Машини Тьюрінга"); 
+		JMenuItem post = new JMenuItem(Model.title("Post", 1));
+		
+		mModel.add(algorithm);
+		mModel.add(machine);
+		mModel.add(post);
+		menuBar.add(mModel);
+		//menuBar.add(createModelMenu());
 		menuBar.add(quit);
-		quit.addActionListener(new Quit());
 		setJMenuBar(menuBar);
 		
+		algorithm.addActionListener(new LsAlgorithm());
+		machine.addActionListener(new LsMachine());
+		post.addActionListener(new LsPost());
+		quit.addActionListener(new LsQuit());
+				
 		label = new JLabel("Нормальні алгоритми Маркова");
 		label.setHorizontalAlignment(label.CENTER);
 		label.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,20));
@@ -45,14 +58,6 @@ public class ShowModels extends JFrame {
 		getContentPane().add(showModel, BorderLayout.CENTER);
 		getContentPane().add(modelButtons, BorderLayout.SOUTH);
 		setVisiblePane(false);
-				//label.setVisible(false);
-				//showModel.setVisible(false);
-				//modelButtons.setVisible(false);
-		
-		
-		//sTest =new ShowTesting();
-		//getContentPane().add(sTest, BorderLayout.NORTH);
-		
 		setSize(800,500);
 		//pack();
 	}	
@@ -72,13 +77,6 @@ public class ShowModels extends JFrame {
 			if (text.isEmpty()) text = "Not realise " + type + " !";
 			label.setText(text);
 			this.type = type;
-			/*
-			String text;
-			switch(type){
-			case "Algorithm" : text = "Нормальні алгоритми Маркова"; break;
-			case "Machine" : text = "Машини Тьюрінга"; break;
-			default: text = "Not realise " + type + " !";
-			} */
 		}
 		if (id == 0) model = null; else model = db.getModel(type, id);
 		//System.out.println("showModelstart ..." + type + "  " + id );
@@ -87,7 +85,28 @@ public class ShowModels extends JFrame {
 		modelButtons.setModel(type,model);
 	}
 	
-	private JMenu createModelMenu () {
+	class LsAlgorithm implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {showModel("Algorithm",0);	}	
+	}
+	
+	class LsMachine implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {showModel("Machine",0);	}	
+	}
+	
+	class LsPost implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {showModel("Post",0);	}	
+	}
+	
+	class LsQuit implements ActionListener  {
+		// закінчуємо всю роботу ---- закриваємо базу даних
+		public void actionPerformed(ActionEvent e) {
+		   	db.disConnect();  
+            System.exit(0);
+		}	
+	}
+	
+	/*
+	 private JMenu createModelMenu () {
 		// створюємо випадаюче меню, що містить звичайні елементи меню
 		JMenu model= new JMenu("Модель обчислень");
 		// елемент меню - команда
@@ -101,30 +120,14 @@ public class ShowModels extends JFrame {
 		// розподільник
 		//file.addSeparator();
 	}
-	
-	class AlgorithmAction extends AbstractAction {
+	 class AlgorithmAction extends AbstractAction {
 		AlgorithmAction() {putValue(NAME,Model.title("Algorithm", 1));}   //"Нормальні алгоритми Маркова"
 		public void actionPerformed(ActionEvent e) {
 			showModel("Algorithm",0);
 		}
-	}
-	class LsMachine implements ActionListener  {
-		// 
-		public void actionPerformed(ActionEvent e) {
-			showModel("Machine",0);
-		  // JOptionPane.showMessageDialog(ShowModels.this,"Machine.");
-		}	
-	}
-	
-	class Quit implements ActionListener  {
-		// закінчуємо всю роботу ---- закриваємо базу даних
-		public void actionPerformed(ActionEvent e) {
-		   	db.disConnect();  
-            System.exit(0);
-		}	
-	}
-	
-	/*class MachineAction extends AbstractAction {
+	} 
+	  
+	  class MachineAction extends AbstractAction {
 		MachineAction() {putValue(NAME,Model.title("Machine", 1));}  // "Машини Тьюрінга"
 		public void actionPerformed(ActionEvent e) {
 			showModel("Machine",0);

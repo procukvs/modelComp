@@ -2,8 +2,8 @@ package db;
 
 import java.sql.*;
 import java.util.*;
-
 import main.*;
+
 public class DbMachine {
 	private DbAccess db;
 	//private Connection con;
@@ -15,28 +15,6 @@ public class DbMachine {
 	DbMachine(DbAccess db){
 		this.db = db; 
 	}
-
-	// модифікує відредаговану машину Тьюрінга
-	public void editMachine(Machine model) {
-		int rows;
-		try{
-			int isNumeric = (model.isNumeric?1:0); 
-			sql = "update tMachine set name = '" + model.name + "', sMain = '" + model.main + "', " +
-						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + ", " +
-						"sInitial = '" + model.init + "', sFinal = '" + model.fin + "', " +
-						"descr  = '" + model.descr + "' where id = " + model.id;
-			rows=db.s.executeUpdate(sql);
-			//System.out.println("rows = " + rows + " sql=" + sql);
-			if (rows == 0)
-				System.out.println("editMachine: Не змінило відредагований " + model.name + "!");
-			//System.out.println("rows = " + rows + " sql=" + sql);
-		}
-		catch (Exception e) {
-			//System.out.println(e.getMessage());
-			System.out.println("ERROR: DbMachine: editMachine :" + sql);
-			System.out.println(">>> " + e.getMessage());
-		}
-	}	
 	
 	public Machine getMachine(int id){
 		//System.out.println("DbMachine: getMachine :" + id);
@@ -66,10 +44,32 @@ public class DbMachine {
 			System.out.println("ERROR: DbMachine: getMachine :" + sql);
 			System.out.println(">>> " + e.getMessage());
 		}
-		//System.out.println(">>>get>> " + id + " row = " + model.program.size());
-		//System.out.println("DbMachine: getMachine :" + id + " " + model.name);
 		return model;
 	}
+	
+	// модифікує відредаговану машину Тьюрінга
+	public void editMachine(Machine model) {
+		int rows;
+		try{
+			int isNumeric = (model.isNumeric?1:0); 
+			sql = "update tMachine set name = '" + model.name + "', sMain = '" + model.main + "', " +
+						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + ", " +
+						"sInitial = '" + model.init + "', sFinal = '" + model.fin + "', " +
+						"descr  = '" + model.descr + "' where id = " + model.id;
+			rows=db.s.executeUpdate(sql);
+			//System.out.println("rows = " + rows + " sql=" + sql);
+			if (rows == 0)
+				System.out.println("editMachine: Не змінило відредагований " + model.name + "!");
+			//System.out.println("rows = " + rows + " sql=" + sql);
+		}
+		catch (Exception e) {
+			//System.out.println(e.getMessage());
+			System.out.println("ERROR: DbMachine: editMachine :" + sql);
+			System.out.println(">>> " + e.getMessage());
+		}
+	}	
+	
+	
 	
 	// створює нову порожню машину Тюрінга
 	public int newMachine() {
