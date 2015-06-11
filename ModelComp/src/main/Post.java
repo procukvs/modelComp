@@ -69,6 +69,7 @@ public class Post extends Model {
 		for(int i = 0; i < program.size(); i++) {
 			rule = (Derive)program.get(i);
 			if (rule.getisAxiom()) {
+				//System.out.println(rule.getsRigth() + " " + noSymbolVar(rule.getsRigth()));
 				if (!noSymbolVar(rule.getsRigth())) badAxiom = badAxiom + "," + rule.getNum();
 			} else {
 				boolean good = goodVars(rule.getsLeft()) && goodVars(rule.getsRigth());
@@ -82,6 +83,7 @@ public class Post extends Model {
 		if (badAxiom.length() > 0) 	mes.add("Аксіоми " + badAxiom.substring(1) + " містять змінні.");
 		if (badRule.length() > 0) 	mes.add("В правилах виводу " + badRule.substring(1) + " змінні використовуються некоректно.");
 		if (dublRule.length() > 0) 	mes.add("В лівих частинах правил виводу " + dublRule.substring(1) + " змінні повторюються.");
+		//System.out.println(mes.size());
 		return mes;
 	}	
 	
@@ -107,9 +109,11 @@ public class Post extends Model {
 			mes.add("В підстановках " + rules.substring(1));
 			mes.add(" використовуються символи " + allNoAlfa);
 			mes.add(" що не входять в об\"єднаний алфавіт " + main+add + " !");
-			return StringWork.transferToArray(mes);
+			
 		}	
-		else return null;
+		//System.out.println(mes.size());
+		//System.out.println(StringWork.transferToArray(mes)[0]);
+		return StringWork.transferToArray(mes);
 	}
 	
 	//===========================================
