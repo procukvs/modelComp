@@ -107,9 +107,9 @@ public class Post extends Model {
 			mes.add("В підстановках " + rules.substring(1));
 			mes.add(" використовуються символи " + allNoAlfa);
 			mes.add(" що не входять в об\"єднаний алфавіт " + main+add + " !");
-			return StringWork.transferToArray(mes);
+	
 		}	
-		else return null;
+		return StringWork.transferToArray(mes);
 	}
 	
 	//===========================================
