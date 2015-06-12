@@ -277,6 +277,7 @@ public class DbAccess {
 		switch(type){
 		case "Algorithm" : dbAlgo.newRule(model.id, id, (Rule)cmd); break;
 		case "Machine": dbMach.newState((Machine)model, id, (State)cmd); break;
+		case "Post" : dbPost.newDerive(model.id, (Derive)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}

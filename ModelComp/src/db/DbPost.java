@@ -59,6 +59,24 @@ public class DbPost {
 		return program;
 	}	
 	
-	
+	public void newDerive(int post, Derive rule) {
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				int isAxiom = (rule.getisAxiom()?1:0); 
+				sql = "update pDerive set num = num+1" + "	where idModel = " + post + " and num >= " + rule.getNum();
+				db.s.execute(sql);	 
+				sql = "insert into pDerive values(" + post + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
+				 		+ rule.getsRigth() + "'," + isAxiom + ",'" + rule.gettxComm() + "')";
+				db.s.execute(sql);
+				db.conn.commit();
+			}	catch (Exception e) {
+				System.out.println("ERROR:newDerive: " + e.getMessage() );
+				db.conn.rollback();
+			}  
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+	}
 	
 }

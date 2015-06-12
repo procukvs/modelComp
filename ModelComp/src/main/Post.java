@@ -57,6 +57,20 @@ public class Post extends Model {
         return data;
 	}	
 	
+	// знаходить максимальний номер стану в програмi
+	public int findMaxNumber(){
+		int cnt = 0;
+		int num;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ ){
+				num = ((Derive)program.get(i)).getId();
+				if(cnt < num) cnt = num;
+			}	
+		}
+		return cnt;
+	}	
+	
+	
 	
 	///Pattern.matches("[0-9]*[1-9]", s);
 	public ArrayList <String> iswfModelVar(){

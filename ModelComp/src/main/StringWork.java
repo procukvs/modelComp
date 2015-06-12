@@ -136,8 +136,11 @@ public class StringWork {
 	}
 			
 	public static String[] transferToArray(ArrayList <String> al){
-		String[] res = new String[al.size()];
-		for(int i=0; i < al.size(); i++) res[i] = al.get(i); 
+		String[] res = null;
+		if ((al !=null) && (al.size() > 0)){
+			res = new String[al.size()];
+			for(int i=0; i < al.size(); i++) res[i] = al.get(i);
+		}	
 		return res;
 	}
 }
