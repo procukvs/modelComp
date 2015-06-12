@@ -300,7 +300,15 @@ public class ShowRule extends JPanel {
 				else  sMove[0].requestFocus();
 				break;
 			case "Post":
-				if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
+				String numS = state.getText();
+				int numI = -1;
+				if (StringWork.isPosNumber(numS)) numI = new Integer(numS);
+				if((numI < 0) || (numI > model.program.size())) {
+					text = "Порядковий номер аксіоми/правила виводу повинен бути не меньше 1 і не більше " + model.program.size() + ".";
+					JOptionPane.showMessageDialog(ShowRule.this, text);
+				} else {
+					if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
+				}	
 				break;
 			}
 			
@@ -321,13 +329,23 @@ public class ShowRule extends JPanel {
 	}	
 	class LssLeft implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String noAlfa = StringWork.isAlfa(comAlfa, sLeft.getText());
-			if (!noAlfa.isEmpty()){
+			switch (type) {
+			case "Algorithm":
+				String noAlfa = StringWork.isAlfa(comAlfa, sLeft.getText());
+				if (!noAlfa.isEmpty()){
+					
+					String text = "Ліва частина підстановки містить символи " + 
+								noAlfa + " що не входять до спільного алфавіту " + comAlfa + " !";
+					JOptionPane.showMessageDialog(ShowRule.this,text);	
+				} else { sRigth.requestFocus();}
+				break;
+			case "Post":
+				String s = sRigth.getText();
+				String var = StringWork.extract(s,"Var");
+				String alfa = StringWork.extract(s,"Alfa");
 				
-				String text = "Ліва частина підстановки містить символи " + 
-							noAlfa + " що не входять до спільного алфавіту " + comAlfa + " !";
-				JOptionPane.showMessageDialog(ShowRule.this,text);	
-			} else { sRigth.requestFocus();}
+			}
+			
 		}	
 	}
 	class LssRigth implements ActionListener  {
