@@ -56,6 +56,12 @@ public class StringWork {
 		return Pattern.matches("@[0-9a-zA-Z][0-9a-zA-Z]", s);
 	}
 	
+	public static boolean isOnlyAlfa(String alfa, String s) {
+		//Pattern pnum = Pattern.compile("tt");
+		return Pattern.matches("@[" + alfa+"]*", s);
+	}
+	
+	
 	public static String isAlfa(String alfa, String s) {
 	// вибирає з s всі РІЗНІ символи, що не водять в алфавіт alfa
 		String noAlfa = "";
@@ -143,5 +149,29 @@ public class StringWork {
 		}	
 		return res;
 	}
+	
+	public static String substitution(String str, TreeMap <Character,String > sm) {
+		String res = "";
+		int i =0;
+		while (i < str.length()){
+			if (str.charAt(i) == '@'){
+				i++; res = res + sm.get(str.charAt(i)); 
+			} else res = res + str.substring(i,i+1);
+			i++;
+		}
+		return res;
+	}
+	
+	public static String substitutionVar(String str, TreeMap <Character,String > sm) {
+		String res = "";
+		int i =0;
+		while (i < str.length()){
+			if (str.charAt(i) == '@'){
+				i++; res = res + "[" + str.charAt(i) + sm.get(str.charAt(i)) + "]"; 
+			} else res = res + str.substring(i,i+1);
+			i++;
+		}
+		return res;
+	}	
 }
 

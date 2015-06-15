@@ -1,6 +1,7 @@
 package main;
 
 public class Rule extends Command  {
+	private int num = 1;
 	private String sLeft = "";
 	private String sRigth = "";
 	private boolean isEnd = false;
@@ -12,16 +13,16 @@ public class Rule extends Command  {
       if (txComm.length()>0) s = s +  " '" + txComm;
       return s;
     }
-    public Rule(String sLeft, String sRigth, boolean isEnd, String txComm) {
-    	super(txComm);
+    public Rule(int num, String sLeft, String sRigth, boolean isEnd, String txComm, int id) {
+    	super(id,txComm);
+    	this.num = num; this.isEnd = isEnd; 
     	this.sLeft = sLeft; this.sRigth = sRigth;
-    	this.isEnd = isEnd; 
-    	//this.txComm = txComm;
     }
+    public int getNum() {return num;}
     public String getsLeft() {return sLeft;}
     public String getsRigth() {return sRigth;}
     public boolean getisEnd() {return isEnd;}
-    public String gettxComm() {return txComm;}
+   // public String gettxComm() {return txComm;}
     
     public String output() {
     	String wr = "  \"" + sLeft + "\" ->";

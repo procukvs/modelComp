@@ -39,8 +39,8 @@ public class Machine extends Model {
 	public void setFin(String fin) {this.fin = fin; }
 	//----------------------------------------------
 	//-----work DB ------- 
-	public void dbDelete() {
-		 DbAccess.getDbMachine().deleteMachine(this);
+	public boolean dbDelete() {
+		 return DbAccess.getDbMachine().deleteMachine(this);
 	}
 	public int dbNewAs() { 
 		return DbAccess.getDbMachine().newMachineAs(this);
@@ -234,7 +234,8 @@ public class Machine extends Model {
 		return cnt;
 	}
 	
-	// знаходить порядковий номер команди в програмі за номером стану num 
+	// знаходить порядковий номер команди в програмі за номером стану num в БД
+	/*
 	public int findCommand(int num) {
 		int cnt = -1;
 		if ((program != null) && (program.size() > 0)) {
@@ -243,6 +244,7 @@ public class Machine extends Model {
 		}
 		return cnt;
 	}
+	*/
 	
 	public ArrayList eval(String str, int nodef) {
 		// застосовує машину Тьюрінга до слова str не більше ніж (nodef+1) раз

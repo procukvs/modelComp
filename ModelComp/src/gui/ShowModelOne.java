@@ -83,7 +83,7 @@ public class ShowModelOne extends JPanel {
 	public void setModel(String type, Model model) {
 		this.model = model;
 		this.type = type;
-		if (model == null) selected = 0; else selected = db.getOrder(type, model.id);
+		if (model == null) selected = 0; else selected = db.getOrder(type, model.name);
 	   	description.setModel(type, model);
     	program.setModel(type, model);
     	r = db.getModelCount(type);

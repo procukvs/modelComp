@@ -59,6 +59,90 @@ public class DbPost {
 		return program;
 	}	
 	
+	// модифікує відредаговану систему
+	public void editPost(Post model) {
+		int rows;
+		try{
+			int isNumeric = (model.isNumeric?1:0); 
+			sql = "update pPost set name = '" + model.name + "', sMain = '" + model.main + "', " +
+						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + "," +
+						"descr  = '" + model.descr + "' where id = " + model.id;
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0)
+				System.out.println("editPost: Не змінило відредагований " + model.name + "!");
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: editPost :" + e.getMessage());
+		}
+	}		
+	
+	
+	// створює нову порожню систему
+	public int newPost() {
+		String name = db.findName("Post","Post");
+		int cnt = db.maxNumber("Post")+1;
+		int rows;
+		try{
+			sql = "insert into pPost values(" + cnt + ",'" + name + "','|#','',1,2,'new')";
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0) cnt = 0;
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: newPost :" + sql + " "  + e.getMessage());
+		}
+		return cnt;
+	}	
+	
+	// створює нову систему на основі системи з model (включаючи всі аксіоми та правила виводу)
+	public int newPostAs(Post model){
+		String name = db.findName("Post", model.name);
+		int cnt = db.maxNumber("Post")+1;
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into pPost select " + cnt + ",'" + name + "', sMain, sAdd, " + 
+							"isNumeric, Rank, descr from pPost where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				if (rows == 0) cnt =0;
+				sql = "insert into pDerive select " + cnt + ", id, num, sLeft, sRigth, isAxiom, txComm " +
+							" from pDerive where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: newPostAs :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}
+	
+	public boolean deletePost(Post model){
+		int rows;
+		boolean res = false;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "delete from pDerive where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from pPost where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+				res = true;
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: deletePost :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
+	}	
+	
 	public void newDerive(int post, Derive rule) {
 		try {
 			db.conn.setAutoCommit(false);
@@ -79,4 +163,35 @@ public class DbPost {
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
 	
+	public void editDerive(int post, Derive rule) {
+		 try{	
+			int  isAxiom = (rule.getisAxiom()?1:0); 
+			//System.out.println("Db.."+rule.output());
+		 	sql = "update pDerive set sLeft = '" + rule.getsLeft() + "'," + "sRigth = '" + rule.getsRigth() + 
+		 			"', isAxiom = " +	isAxiom + ", txComm = '" + rule.gettxComm() + "'" +
+		 			"	where idModel = " + post + " and id = " + rule.getId() ;
+		 	//System.out.println("Db.."+sql);
+		 	db.s.execute(sql);
+	  	 } catch (SQLException e) {
+			System.out.println("ERROR: editDErive: " + e.getMessage() );
+		 }  			
+	}
+	public void deleteDerive(int post, Derive rule){
+		try {
+			db.conn.setAutoCommit(false);
+			try{	
+				sql = "delete from pDerive "  + " where idModel = " + post + " and id = " + rule.getId();
+				//System.out.println("deteDerive id = " + rule.getId() + " num = " + rule.getNum());
+				db.s.execute(sql);
+				sql = "update pDerive set num = num-1 " + "	where idModel = " + post + " and num >= " + rule.getNum();
+				db.s.execute(sql);	 
+				db.conn.commit();
+			}	catch (Exception e) {
+				System.out.println("ERROR: deleteDerive: " + e.getMessage());
+				db.conn.rollback();
+			}  
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+	}
 }

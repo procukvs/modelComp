@@ -1,6 +1,8 @@
 package gui;
 
 import javax.swing.*;
+
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,6 +14,8 @@ public class ShowCommand extends JDialog  {
 	JButton yes;
 	JButton cancel;
 	Command command = null;
+	private String type = "Algorithm";
+	private Model model = null;
 	
 	ShowCommand(Frame owner){
 		super(owner, "Command");
@@ -49,14 +53,20 @@ public class ShowCommand extends JDialog  {
 	//описуємо класи - слухачі !!!!!!
 	class LsYes implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			
-			String text = showRule.testAllCommand();
-			if (text.isEmpty()) {
+			command = showRule.getCommand();
+			if (type.equals("Post")){
 				command = showRule.getCommand();
-				//command = new Rule(showRule.sLeft.getText(),showRule.sRigth.getText(),
-				//				showRule.checkEnd.isSelected(),showRule.sComm.getText());
-				hide();
-			} else JOptionPane.showMessageDialog(ShowCommand.this,text);;
+				ArrayList <String> mes = ((Derive)command).iswfCommand((Post)model);
+				if (mes.size() == 0) hide();
+				else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
+				
+			} else {
+				String text = showRule.testAllCommand();
+				if (text.isEmpty()) {
+					command = showRule.getCommand();
+					hide();
+				} else JOptionPane.showMessageDialog(ShowCommand.this,text); 
+			}	
 		}	
 	}
 	class LsCancel implements ActionListener  {
@@ -68,6 +78,7 @@ public class ShowCommand extends JDialog  {
 	}
 	public void setCommand(String what, String type, Model model,  int id){
 		command = null;
+		this.type = type; this.model = model;
 		if (what == "Add") lWhat.setText(Model.title(type, 9)); else lWhat.setText("Редагувати");
 		showRule.setRule(type, model, id, what);
 	}

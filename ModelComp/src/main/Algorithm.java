@@ -29,8 +29,8 @@ public class Algorithm extends Model {
 	//----------------------------------------------
 	
 	//-----work DB ------- 
-	public void dbDelete() {
-		 DbAccess.getDbAlgorithm().deleteAlgorithm(this);
+	public boolean dbDelete() {
+		 return DbAccess.getDbAlgorithm().deleteAlgorithm(this);
 	}
 	public int dbNewAs() { 
 		return DbAccess.getDbAlgorithm().newAlgorithmAs(this);
@@ -40,7 +40,7 @@ public class Algorithm extends Model {
 		ArrayList data = new ArrayList();
 		ArrayList row;
 		Rule rule;
-		char[] typeInfo = {'I','S','S','B','S','I'}; 
+		char[] typeInfo = {'I','S','S','B','S','I','I'}; 
 		//sql = "select id, sLeft, sRigth, isEnd, txComm, idModel " +
     	//			" from mRule where idModel = " + idModel;
     	//System.out.println("model = " + model + "   " + sql);
@@ -52,11 +52,12 @@ public class Algorithm extends Model {
 		for (int i = 0; i < program.size(); i++){
 			row = new ArrayList();
 			rule = (Rule)program.get(i);
-			row.add(i+1);
+			row.add(rule.getNum());
 			row.add(rule.getsLeft());
 			row.add(rule.getsRigth());
 			row.add(rule.getisEnd());
 			row.add(rule.gettxComm());
+			row.add(rule.getId());
 			row.add(idModel);
 			data.add(row);
         } 
@@ -75,16 +76,25 @@ public class Algorithm extends Model {
         	noRigth = StringWork.isAlfa(main+add,rule.getsRigth());
         	if(!noLeft.isEmpty()) noRigth = StringWork.unionAlfa(noLeft, noRigth);
         	if (!noRigth.isEmpty()) {
-        		rules = rules + "," + (i+1);
+        		rules = rules + "," + rule.getNum();
         		if (allNoAlfa.isEmpty()) allNoAlfa = noRigth;
         		else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noRigth);
         	}
 		}
 		if (!rules.isEmpty()) 
-			return new String[] {"В підстановках " + rules.substring(1),
-								" використовуються символи " + allNoAlfa,
-								" що не входять в об\"єднаний алфавіт " + main+add + " !"};
+			return new String[] {"I:В підстановках " + rules.substring(1),
+								"  використовуються символи " + allNoAlfa,
+								"  що не входять в об\"єднаний алфавіт " + main+add + " !"};
 		else return null;
+	}
+	
+	public ArrayList <String> iswfNum(String num) {
+		ArrayList <String> mes = new ArrayList <String>();
+		int numI = -1;
+		if (StringWork.isPosNumber(num)) numI = new Integer(num);
+		if((numI < 0) || (numI > program.size()+1)) 
+			mes.add("E:Порядковий номер підстановки повинен бути не меньше 1 і не більше " + (program.size() + 1) + ".");
+		return mes;
 	}
 	
 	public int findFirst(String str) {

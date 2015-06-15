@@ -175,8 +175,9 @@ public class DbMachine {
 		return cnt;
 	}		
 	
-	public void deleteMachine(Machine model){
+	public boolean deleteMachine(Machine model){
 		int rows;
+		boolean res = false;
 		try {
 			db.conn.setAutoCommit(false);
 			try{
@@ -187,6 +188,7 @@ public class DbMachine {
 				sql = "delete from tMachine where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				db.conn.commit();
+				res = true;
 			}
 			catch (Exception e) {
 				//System.out.println(e.getMessage());
@@ -197,6 +199,7 @@ public class DbMachine {
 			db.conn.setAutoCommit(true);
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
 	}
 	
 	// переіменування в машині mach стану in на стан out
@@ -230,20 +233,20 @@ public class DbMachine {
 		catch (Exception e) { System.out.println(e.getMessage());}		
 	}
 	
-	public void newState(Machine mach, int id, State st){
+	public void newState(Machine mach, State st){
 		String allCh = "_" + mach.main + mach.add + mach.no;
 		String move = "";
 		String inCh = "";
 		try {
 			db.conn.setAutoCommit(false);
 			try{	
-				sql = "insert into tProgram values(" + mach.id + "," + id + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+				sql = "insert into tProgram values(" + mach.id + "," + st.getId() + ",'" + st.getState() + "','" + st.gettxComm() + "')";
 				db.s.execute(sql);
 				for(int i = 0; i < st.getGoing().size(); i++) {
 					move = st.getGoing().get(i);
 					if (!move.isEmpty()) {
 						if(i < allCh.length()) inCh = allCh.substring(i,i+1); else inCh = " ";
-					    sql = "insert into tMove values(" + mach.id + "," + id + ",'" + inCh + "','" + move.substring(3,4)
+					    sql = "insert into tMove values(" + mach.id + "," + st.getId() + ",'" + inCh + "','" + move.substring(3,4)
 					    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
 					    db.s.execute(sql);	 
 					}

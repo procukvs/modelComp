@@ -2,8 +2,12 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
+import java.sql.SQLException;
+import java.text.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DateFormat;
 import java.util.*;
 
 import main.*;
@@ -13,6 +17,10 @@ public class ShowWork extends JDialog {
 	private JLabel lWhat;
 	private ShowDescription showDescription;
 	private ShowEval showEval;
+	//private ShowGroup showGroup;
+	private ShowForm showForm;
+	private Box evalBox ;
+	
 	//private ShowTest showTest;
 	ShowSteps showSteps;
 	JButton eval;
@@ -37,10 +45,12 @@ public class ShowWork extends JDialog {
 		//lWhat.setHorizontalAlignment(lWhat.CENTER);
 		lWhat.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,16));
 		showDescription = new ShowDescription(false);
+		showForm = new ShowForm(this);
 		showEval = new ShowEval(this);
 		//showTest = new ShowTest(owner);
 		showSteps = new ShowSteps();
 		
+		//showGroup = new ShowGroup(this);
 		eval = new JButton("Виконати");
 		show = new JButton("Переглянути");
 		quit = new JButton("Вийти");
@@ -52,12 +62,11 @@ public class ShowWork extends JDialog {
 		headBox.add(lWhat);
 		headBox.add(showDescription);
 		//-----------------------------
-		Box evalBox = Box.createVerticalBox();
-		//evalBox.setBorder(new EtchedBorder());
+		evalBox = Box.createVerticalBox();
+		//evalBox.add(showForm);
 		evalBox.add(showEval);
 		evalBox.add(showSteps);
 		//-----------------------------
-		
 		Box buttons = Box.createHorizontalBox();
 		buttons.add(Box.createGlue());
 		buttons.add(eval);
@@ -67,12 +76,16 @@ public class ShowWork extends JDialog {
 		buttons.add(quit);
 		buttons.add(Box.createGlue());
 		//---------------------
+		Box endBox = Box.createVerticalBox();
+		//endBox.add(showGroup);
+		endBox.add(buttons);
+		//--------------------
 		add(headBox, BorderLayout.NORTH);
 		//===================================
 		//add(showEval, BorderLayout.CENTER);
 		add(evalBox,BorderLayout.CENTER);
 		//===================================
-		add(buttons, BorderLayout.SOUTH);
+		add(endBox, BorderLayout.SOUTH);  //buttons
 		//setSize(200,500);
 		//pack();
 		
@@ -95,9 +108,16 @@ public class ShowWork extends JDialog {
 	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
 	    
 	    showDescription.setModel(type, model);
+	    if (type.equals("Post")){
+	    	evalBox.add(showForm);
+	    	showForm.tMessage.setText("");
+	    	eval.setText("Формувати дані");
+	    } else{
+	    	evalBox.remove(showForm);
+	    	eval.setText("Виконати");
+	    }
+	    showEval.setVisible(!type.equals("Post"));
 	    showEval.setModel(type, model);
-	    
-    	
 		show.setEnabled(false);
 		//System.out.println("setModel......panel");
 		showSteps.setVisible(false);
@@ -110,40 +130,81 @@ public class ShowWork extends JDialog {
 			String text = "";
 			String input = "";
 			String sParam;
-			if (isNumeric){
-				for (int i = 0; i < rank; i++) {
-					sParam = showEval.tParam[i].getText();
-					if(StringWork.isNatur(sParam)) {
-						if (i> 0) input = input + "#";
-						input = input + StringWork.toInternal(new Integer(sParam));
-					} else text = text + " " + sParam;
+			if (!type.equals("Post")){
+				if (isNumeric){
+					for (int i = 0; i < rank; i++) {
+						sParam = showEval.tParam[i].getText();
+						if(StringWork.isNatur(sParam)) {
+							if (i> 0) input = input + "#";
+							input = input + StringWork.toInternal(new Integer(sParam));
+						} else text = text + " " + sParam;
+					}
+					if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+				} else {
+					input = showEval.tInit.getText();
+					text = StringWork.isAlfa(main, input);
+					if(!text.isEmpty()) text = "Вхідне слово " + input + 
+											" містить символи " + text + " що не належать основному алфавіту !";
 				}
-				if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+				if(text.isEmpty()) {
+					//=================================
+					int nodef = new Integer(showEval.tNodef.getText());
+					//System.out.println("Eval begin:" + input + " " + nodef);
+					sl = model.eval(input, nodef);
+					//text = ((Substitution)(sl.get(sl.size()- 1))).str;
+					//if (isNumeric) text = StringWork.transNumeric(text);
+					//if (sl.size() == nodef + 1) text = "Невизначено";
+					text = model.takeResult(sl, nodef);
+					showEval.tResult.setText(text);
+					showEval.tStep.setText(sl.size()+""); 
+					show.setEnabled(true);
+				}  else {
+					show.setEnabled(false);
+				}
+				//System.out.println("eval......panel");
+				showSteps.setVisible(false);
+				pack();
 			} else {
-				input = showEval.tInit.getText();
-				text = StringWork.isAlfa(main, input);
-				if(!text.isEmpty()) text = "Вхідне слово " + input + 
-							   " містить символи " + text + " що не належать основному алфавіту !";
+				int step = 0;
+				String template = "HH:mm:ss";  /// "dd.MM.yyyy HH:mm:ss"
+				DateFormat formatter = new SimpleDateFormat(template);
+				sParam = showForm.tStep.getText();
+				if(StringWork.isPosNumber(sParam)) {
+					Post post = (Post)model;
+					 Date cur = new Date();
+					int cnt;
+					step = new Integer(sParam);
+					text = "Формування " + formatter.format(cur) + " : ";
+					cnt = post.initialForm();
+					for(int i = 0; i < step; i++){
+						cur = new Date(); 
+						showForm.tMessage.setText(text + formatter.format(cur) + " крок " + i + " .. " + cnt +".");
+						showForm.revalidate();
+						showForm.repaint();
+						System.out.println(text + formatter.format(cur) + " крок " + i + " .. " + cnt + ".");
+						cnt = post.stepForm(i+1);
+					}
+					cur = new Date(); 
+					showForm.tMessage.setText(text + formatter.format(cur) + " закінчено. За " + step + " кроків створено " + cnt + ".");
+					System.out.println(text + formatter.format(cur) + " закінчено .. " + cnt + ".");
+					//time = System.currentTimeMillis();
+					//for (int i=0; i<1000000; i++) 
+					//	ar.add(new Integer(rnd.nextInt()));
+					//text = "Forming all data - finish " + (System.currentTimeMillis()-time) + " milisecunds.";
+					//Date cur1 = new Date();
+					//Date curnew = cur1;
+					//curnew.setTime(cur1.getTime()-cur.getTime());
+					//text = text + "..." + formatter.format(cur1) + "...";
+							
+					//showForm.tMessage.setText(text);
+				}
+				else {
+					text = "Кількість кроків - не натуральнe число!";
+					showForm.tMessage.setText(text);
+					showForm.tStep.requestFocus();
+				}	
+				//JOptionPane.showMessageDialog(ShowWork.this,"Forming dat Post!!! " + showForm.tStep.getText());
 			}
-			if(text.isEmpty()) {
-				//=================================
-				int nodef = new Integer(showEval.tNodef.getText());
-				//System.out.println("Eval begin:" + input + " " + nodef);
-				sl = model.eval(input, nodef);
-				//text = ((Substitution)(sl.get(sl.size()- 1))).str;
-				//if (isNumeric) text = StringWork.transNumeric(text);
-				//if (sl.size() == nodef + 1) text = "Невизначено";
-				text = model.takeResult(sl, nodef);
-				showEval.tResult.setText(text);
-				showEval.tStep.setText(sl.size()+""); 
-				show.setEnabled(true);
-			}  else {
-				show.setEnabled(false);
-			}
-			//System.out.println("eval......panel");
-			showSteps.setVisible(false);
-			pack();
-			//JOptionPane.showMessageDialog(WorkAlgorithm.this,text);
 		}	
 	}
 	class LsShow implements ActionListener  {

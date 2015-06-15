@@ -27,7 +27,9 @@ public class Main {
 	    } 
 	    else System.out.println("No connection to DB Model.db");
 	
-	   // Testing.formMachine();
+	   // Testing.testSubstitution();
+	   // Testing.test();
+	  // Testing.findSubstit(); 
 	}
 	
 	public static void main(String[] args) {

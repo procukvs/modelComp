@@ -221,8 +221,7 @@ public class ShowModelButtons extends JPanel {
 						//db.deleteModel(type, model);
 						//newId = db.getNumber(type, newId-1);
 					int newId = model.getDbOrder();
-					model.dbDelete();
-					newId = model.getDbNumber(newId-1);
+					if (model.dbDelete()) newId = model.getDbNumber(newId-1);
 					showMain.showModel(type, newId);
 				}
 			}

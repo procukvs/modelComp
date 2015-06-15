@@ -16,6 +16,7 @@ public class ShowSteps extends JPanel {
 	JTable table;
 	JCheckBox cInter;
 	JLabel lInter;
+	private ShowGroup showGroup;
 	//JButton bQuit;
 	ArrayList dataIn = new ArrayList();
 	private String type = "Algorithm";
@@ -56,7 +57,8 @@ public class ShowSteps extends JPanel {
 
 		//workCol();
 		
-		
+		showGroup = new ShowGroup(this);
+		showGroup.setVisible(false);
 		cInter = new JCheckBox();
 		lInter = new JLabel("Внутрішнє представлення");
 		//bQuit = new JButton("Вийти");
@@ -65,6 +67,7 @@ public class ShowSteps extends JPanel {
 		header.setHorizontalAlignment(header.CENTER);
 		//Container contentPane = getContentPane();
 		Box control = Box.createHorizontalBox();
+		control.add(showGroup);
 		control.add(Box.createGlue());
 		control.add(cInter);
 		control.add(lInter);
@@ -107,7 +110,7 @@ public class ShowSteps extends JPanel {
 	
 	
 	
-	
+/*	
 	public void setShowSteps2(String type, Model model, ArrayList subList) {
 		this.model = model;
 		this.type = type;
@@ -136,7 +139,7 @@ public class ShowSteps extends JPanel {
 			dataIn.add(row);
 		}
 	}
-	
+	*/
 	class TestInter implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			//formDataSource(cInter.isSelected());

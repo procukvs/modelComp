@@ -1,7 +1,14 @@
 package main;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import gui.*;
+import db.*;
 
 public class Post extends Model {
 	public String main = "|#";
@@ -11,6 +18,10 @@ public class Post extends Model {
 	//================================
 	private boolean isMulty = false;  // допустимі в лівій частині повторення змінних
 	private static String varChar = "RSTUVWXYZ";
+	//=====================================
+	private ArrayList <FullSubstitution> res = null; 		//new ArrayList <FullSubstitution>();
+	private ArrayList <FullSubstitution> oneStep = null; 	//new ArrayList <FullSubstitution>();
+	private Set <String> prevString = null; 				//new HashSet<String>();
 	
 	public Post(int id, String name) {
 		super(id,name);
@@ -30,11 +41,11 @@ public class Post extends Model {
 	//----------------------------------------------
 	
 	//-----work DB ------- 
-	public void dbDelete() {
-		// DbAccess.getDbAlgorithm().deleteAlgorithm(this);
+	public boolean  dbDelete() {
+		return DbAccess.getDbPost().deletePost(this);
 	}
 	public int dbNewAs() { 
-		return 0; //DbAccess.getDbAlgorithm().newAlgorithmAs(this);
+		return DbAccess.getDbPost().newPostAs(this);
 	}
 	
 	public ArrayList getDataSource(int idModel) {
@@ -70,7 +81,15 @@ public class Post extends Model {
 		return cnt;
 	}	
 	
-	
+	// знаходить порядковий номер команди в програмі за номером стану num 
+	public int findCommand(int num) {
+		int cnt = -1;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ )
+				if(num == (((Derive)program.get(i)).getId())) cnt = i;
+		}
+		return cnt;
+	}	
 	
 	///Pattern.matches("[0-9]*[1-9]", s);
 	public ArrayList <String> iswfModelVar(){
@@ -79,7 +98,7 @@ public class Post extends Model {
 		String badRule = "";
 		String dublRule = "";
 		Derive rule;
-		if (!noSymbolVar(main+add)) mes.add(" @ не може входити в об'єднаний алфавіт.");
+		if (!noSymbolVar(main+add)) mes.add("E: @ не може входити в об'єднаний алфавіт.");
 		for(int i = 0; i < program.size(); i++) {
 			rule = (Derive)program.get(i);
 			if (rule.getisAxiom()) {
@@ -94,12 +113,151 @@ public class Post extends Model {
 				if ((!isMulty) &&  (!noDublicateVar(rule.getsLeft()))) dublRule = dublRule + "," + rule.getNum();;
 			}
 		}
-		if (badAxiom.length() > 0) 	mes.add("Аксіоми " + badAxiom.substring(1) + " містять змінні.");
-		if (badRule.length() > 0) 	mes.add("В правилах виводу " + badRule.substring(1) + " змінні використовуються некоректно.");
-		if (dublRule.length() > 0) 	mes.add("В лівих частинах правил виводу " + dublRule.substring(1) + " змінні повторюються.");
+		if (badAxiom.length() > 0) 	mes.add("E:Аксіоми " + badAxiom.substring(1) + " містять змінні.");
+		if (badRule.length() > 0) 	mes.add("E:В правилах виводу " + badRule.substring(1) + " змінні використовуються некоректно.");
+		if (dublRule.length() > 0) 	mes.add("E:В лівих частинах правил виводу " + dublRule.substring(1) + " змінні повторюються.");
 		//System.out.println(mes.size());
 		return mes;
 	}	
+	
+	// застосувати ВСІ правила виводу на кроці step до слова str
+	public ArrayList <FullSubstitution> extendRules(String str, int step){
+		ArrayList <FullSubstitution> res = new ArrayList <FullSubstitution>();
+		Derive rule;
+		for(int i = 0; i < program.size(); i++ ){
+			rule = (Derive)program.get(i);
+			if (!rule.getisAxiom())	res.addAll(rule.extend(str, main,step));
+		}
+		return res;
+	}
+	
+	public int initialForm(){
+		Derive rule;
+		res = new ArrayList <FullSubstitution>();
+		oneStep = new ArrayList <FullSubstitution>();
+		prevString = new HashSet<String>();
+		for(int i = 0; i < program.size(); i++ ){
+			rule = (Derive)program.get(i);
+			if (rule.getisAxiom())	{
+				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),true,true));
+			}
+		}
+		if (oneStep != null)  addOneStep(res,oneStep);
+		return res.size(); 
+	}
+	
+	public int stepForm(int step) {
+		SortedSet<String> oneString = new TreeSet<String>(); 
+		String st;
+		for(int i = 0; i < oneStep.size(); i++){
+			st = oneStep.get(i).str; 
+			if (!prevString.contains(st)) oneString.add(st);
+		}
+		oneStep = new ArrayList <FullSubstitution>();
+		Iterator <String> it = oneString.iterator();
+		while(it.hasNext()){
+			st =it.next();
+			oneStep.addAll(extendRules(st, step));
+			prevString.add(st);
+		}
+		if (oneStep != null)  addOneStep(res,oneStep);
+		return res.size(); 
+	}
+	
+	public int finalForm(){
+		oneStep = null;
+		prevString = null;
+		return res.size(); 
+	}
+	
+	public  ArrayList <FullSubstitution> eval(ShowForm showForm, int stepAll){
+		String template = "HH:mm:ss";  /// "dd.MM.yyyy HH:mm:ss"
+		DateFormat formatter = new SimpleDateFormat(template);
+		//String text1;
+		Date cur = new Date();
+		String text = "Формавання " + formatter.format(cur) + " : ";
+		ArrayList <FullSubstitution> res = new ArrayList <FullSubstitution>();
+		ArrayList <FullSubstitution> oneStep = new ArrayList <FullSubstitution>();
+		Set <String> prevString = new HashSet<String>();
+		SortedSet<String> oneString; 
+		//ArrayList <String> oneString;  
+		Derive rule;
+		int step = 0;
+		String st;
+		for(int i = 0; i < program.size(); i++ ){
+			rule = (Derive)program.get(i);
+			if (rule.getisAxiom())	{
+				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),true,true));
+				
+			}
+		}
+		if (oneStep != null)  addOneStep(res,oneStep);      //res.addAll(oneStep);
+		System.out.println(text + " stepAll = " + stepAll + " " + oneStep.size());
+		while (step < stepAll){
+			step++;
+			cur = new Date();
+			showForm.setMessage(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
+			// try{ 
+			//    wait(100000);	   
+			// } catch (Exception e) {
+			//	System.out.println(">>> " + e.getMessage());
+			// } 
+			//showForm.updateUI();
+		//showForm.tMessage.setVisible(false);
+			//showForm.tMessage.setVisible(true);
+			//show.setEnabled(false);
+			System.out.println(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
+			//oneString = new ArrayList <String>();
+			// щоб не використовувати двічі однакові рядки, раніше отримані
+			oneString = new TreeSet<String>(); 
+			for(int i = 0; i < oneStep.size(); i++){
+				st = oneStep.get(i).str; 
+				if (!prevString.contains(st)) oneString.add(st);
+			}
+			oneStep = new ArrayList <FullSubstitution>();
+		//	for(int i = 0; i < oneString.size(); i++){
+		//		oneStep.addAll(extendRules(oneString.get(i), step));
+		//	}
+			Iterator <String> it = oneString.iterator();
+			while(it.hasNext()){
+				st =it.next();
+				oneStep.addAll(extendRules(st, step));
+				prevString.add(st);
+			}
+			if (oneStep != null)  addOneStep(res,oneStep);
+			//res.addAll(oneStep);
+		}
+		cur = new Date();
+		//showForm.tMessage.setText(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+		
+		showForm.setMessage(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+		System.out.println(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+		return res;
+	}
+	
+	private void addOneStep(ArrayList <FullSubstitution> res, ArrayList <FullSubstitution> oneStep) {
+		FullSubstitution addFSub;
+		FullSubstitution fSub;
+		boolean no; 
+		int j;
+		for (int i = 0; i < oneStep.size(); i++){
+			addFSub = oneStep.get(i); no = true; j = 0;
+			String st = addFSub.str;
+			while (no && (j < res.size())){
+				fSub = res.get(j);
+				no = !st.equals(fSub.str);
+				if (!no) {
+					// вже такий рядок отрмано раніше !!! -- тільки добавити Sustitution !!
+					if (fSub.any == null) fSub.any = new ArrayList <Substitution>();
+					fSub.any.add(addFSub.sub);
+				} else j++;
+			}
+			addFSub.isFst = no;
+			res.add(addFSub);
+		}
+	}
+	
+	
 	
 	public String[] iswfModel(){
 		ArrayList <String> mes = iswfModelVar();
@@ -120,14 +278,49 @@ public class Post extends Model {
         	}
 		}
 		if (!rules.isEmpty()) {
-			mes.add("В підстановках " + rules.substring(1));
-			mes.add(" використовуються символи " + allNoAlfa);
-			mes.add(" що не входять в об\"єднаний алфавіт " + main+add + " !");
+			mes.add("I:В підстановках " + rules.substring(1));
+			mes.add("  використовуються символи " + allNoAlfa);
+			mes.add("  що не входять в об\"єднаний алфавіт " + main+add + " !");
 		}	
 		//System.out.println(mes.size());
 		//System.out.println(StringWork.transferToArray(mes)[0]);
 
 		return StringWork.transferToArray(mes);
+	}
+	
+	public ArrayList <String> iswfNum(String num) {
+		ArrayList <String> mes = new ArrayList <String>();
+		int numI = -1;
+		if (StringWork.isPosNumber(num)) numI = new Integer(num);
+		if((numI < 0) || (numI > program.size()+1)) 
+			mes.add("E:Порядковий номер аксіоми/правила виводу повинен бути не меньше 1 і не більше " + (program.size() + 1) + ".");
+		return mes;
+	}
+	
+	public ArrayList <String> iswfLeft(String l) {
+		ArrayList <String> mes =  new ArrayList <String>();
+		if (!goodVars(l)) mes.add("E:В лівій частині правила використовується невірні змінні.");
+		if ((!isMulty) &&  (!noDublicateVar(l))) mes.add("E:В лівій частині правила змінні повторюються.");
+		String noSym = StringWork.isAlfa(main+add, StringWork.extract(l,"Alfa"));
+		if (!noSym.isEmpty()) mes.add("I:Символи " + noSym + " не входять в об'єднаний алфавіт.");
+		return mes;
+	}
+	
+	public ArrayList <String> iswfAxiom(String ax) {
+		ArrayList <String> mes =  new ArrayList <String>();
+		if (!noSymbolVar(ax)) mes.add("E:Аксіома не може містити змінні.");
+		String noSym = StringWork.isAlfa(main+add, StringWork.extract(ax,"Alfa"));
+		if (!noSym.isEmpty()) mes.add("I:Символи " + noSym + " не входять в об'єднаний алфавіт.");
+		return mes;
+	}
+	
+	public ArrayList <String> iswfRigth(String l, String r) {
+		ArrayList <String> mes = new ArrayList <String>();
+		if (!goodVars(r)) mes.add("E:В правій частині правила використовуються невірні змінні.");
+		if (!onlyLeftVars(l, r)) mes.add("E:В правій частині правила використовуються змінні, яких немає в лівій.");
+		String noSym = StringWork.isAlfa(main+add, StringWork.extract(r,"Alfa"));
+		if (!noSym.isEmpty()) mes.add("I:Символи " + noSym + " не входять в об'єднаний алфавіт.");
+		return mes;
 	}
 	
 	//===========================================
@@ -138,7 +331,6 @@ public class Post extends Model {
 		return Pattern.matches("[" + varChar + "]*", StringWork.extract(s,"Var"));
 	}
 	public boolean onlyLeftVars(String l, String r) {
-		
 		return Pattern.matches("[" + StringWork.extract(l,"Var") + "]*", StringWork.extract(r,"Var"));
 	}
 	public boolean noDublicateVar(String s) {
@@ -146,6 +338,8 @@ public class Post extends Model {
 		String compresVar = StringWork.isAlfa("", lVar);
 		return lVar.length() == compresVar.length();
 	}
+	
+	
 	
 	
 }

@@ -11,9 +11,9 @@ public class Command {
 		this.txComm = txComm;
 		this.id = id;
 	}
-	/*public String show(){
+	public String output(){
 		 return "Command-show";
-	}*/
+	}
 	public String show(String st){
 		 return "Command-show";
 	}

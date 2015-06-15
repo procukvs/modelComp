@@ -143,16 +143,18 @@ public class ShowRule extends JPanel {
 		this.model = model;
 		this.type = type;
 		this.what = what;
-		state.setVisible(!type.equals("Algorithm"));
+		//state.setVisible(!type.equals("Algorithm"));
 		lModel.setText(Model.title(type, 2)+ " " + model.name + "     № " + model.id);
 		// 
-		idCom = (id==0?model.findMaxNumber()+1:(type.equals("Algorithm") || isEdit ? id : model.findMaxNumber()+1));
+		//idCom = (id==0?model.findMaxNumber()+1:(type.equals("Algorithm") || isEdit ? id : model.findMaxNumber()+1));
+		idCom = (isEdit ? id : model.findMaxNumber()+1);
 		lId.setText(Model.title(type, 10) + "  № " + idCom);	
 		if (isAlgo) {
 			Rule rule;
 			algo = (Algorithm)model;
-			if (id == 0) rule = new Rule("","",false,"====");
-			else rule = (Rule)model.program.get(id-1);
+			if (id == 0) rule = new Rule(model.program.size()+1,"","",false,"====",idCom);
+			else rule = (Rule)model.program.get( model.findCommand(id));
+			state.setText("" + rule.getNum());
 			labelLeft.setText("Ліва частина підстановки");
 			sLeft.setText(rule.getsLeft());
 			labelRigth.setText("Права частина підстановки");
@@ -167,6 +169,7 @@ public class ShowRule extends JPanel {
 			mainBox.add(leftBox);
 			mainBox.add(rigthBox);
 			mainBox.add(checkEnd);
+			if (isEdit) sLeft.requestFocus(); else state.requestFocus();
 			for (int i = 0; i < 30; i++){
 				mainBox.remove(moveBox[i]);
 			}
@@ -177,8 +180,10 @@ public class ShowRule extends JPanel {
 			post = (Post)model;
 			lId.setText(Model.title(type, 10) + "(" + idCom + ")");	
 			//state.setText("1");
-			if (id == 0) rule = new Derive(post.program.size()+1,false,"","","====",idCom);
-			else rule = (Derive)model.program.get(id-1);
+			// id --- key in DB !!!!!!!!
+			//int num = model.findCommand(id);
+			if (id == 0) rule = new Derive(model.program.size()+1,false,"","","====",idCom);
+			else rule =  (Derive)model.program.get( model.findCommand(id));                                   //(Derive)model.program.get(id-1);
 			state.setText("" + rule.getNum());
 			if (isEdit) {
 				if (rule.getisAxiom()) sRigth.requestFocus(); else sLeft.requestFocus();
@@ -197,14 +202,18 @@ public class ShowRule extends JPanel {
 			comAlfa = comAlfa + StringWork.isAlfa(comAlfa,post.add);
 			//System.out.println(".." + comAlfa + "..");
 			mainBox.add(checkAxiom);
+			
 			if(rule.getisAxiom()){
+				labelRigth.setText("Аксіома");
+				mainBox.add(rigthBox);
 				sRigth.requestFocus();
 				mainBox.remove(leftBox);
 			} else {
-				sLeft.requestFocus();
+				labelRigth.setText("Права частина правила");
 				mainBox.add(leftBox);
+				mainBox.add(rigthBox);
+				sLeft.requestFocus();
 			}
-			mainBox.add(rigthBox);
 			mainBox.remove(checkEnd);
 			for (int i = 0; i < 30; i++){
 				mainBox.remove(moveBox[i]);
@@ -256,13 +265,15 @@ public class ShowRule extends JPanel {
 	
 	public Command getCommand(){
 		Command com = null;
+		String st = state.getText();
+		int num = model.program.size()+1;
 		switch(type){
 		case "Algorithm":
-			com = new Rule(sLeft.getText(),sRigth.getText(), checkEnd.isSelected(),sComm.getText());
+			if (StringWork.isPosNumber(st)) num = new Integer(st);  
+			com = new Rule(num, sLeft.getText(),sRigth.getText(), checkEnd.isSelected(),sComm.getText(), idCom);
 			break;
 		case "Machine":	
 			String  move = "";
-			String st = state.getText();
 			String ch = "";
 			ArrayList <String> going = new ArrayList<String>();
 			for(int i =0; i < comAlfa.length(); i++) {
@@ -279,10 +290,9 @@ public class ShowRule extends JPanel {
 			com = new State(st,idCom,going,sComm.getText());
 			break;
 		case "Post":
-			String numS = state.getText();
-			int numI = 1;
-			if (StringWork.isPosNumber(numS)) numI = new Integer(numS);  
-			com = new Derive(numI,checkAxiom.isSelected(),sLeft.getText(),sRigth.getText(),sComm.getText(),idCom);
+			if (StringWork.isPosNumber(st)) num = new Integer(st);  
+			com = new Derive(num,checkAxiom.isSelected(),sLeft.getText(),sRigth.getText(),sComm.getText(),idCom);
+			//System.out.println(com.output());
 			break;
 		}
 		return com;
@@ -293,6 +303,7 @@ public class ShowRule extends JPanel {
 	// Класи слухачі 
 	class LsState implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			ArrayList <String> mes;
 			switch (type){
 			case "Machine":
 				String text = mach.testState(state.getText());
@@ -300,7 +311,17 @@ public class ShowRule extends JPanel {
 				else  sMove[0].requestFocus();
 				break;
 			case "Post":
-				String numS = state.getText();
+				mes = post.iswfNum(state.getText());
+				if (mes.size() == 0) {
+					if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
+				} else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				break;
+			case "Algorithm":
+				mes = algo.iswfNum(state.getText());
+				if (mes.size() == 0)  sLeft.requestFocus();
+				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				break;		
+			/*	String numS = state.getText();
 				int numI = -1;
 				if (StringWork.isPosNumber(numS)) numI = new Integer(numS);
 				if((numI < 0) || (numI > model.program.size())) {
@@ -309,7 +330,7 @@ public class ShowRule extends JPanel {
 				} else {
 					if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
 				}	
-				break;
+				break; */
 			}
 			
 		}	
@@ -322,8 +343,11 @@ public class ShowRule extends JPanel {
 				mainBox.remove(leftBox);	
 			} else {
 				labelRigth.setText("Права частина правила");
-				sLeft.requestFocus();
+				//sLeft.requestFocus();
+				mainBox.remove(rigthBox);
 				mainBox.add(leftBox);
+				mainBox.add(rigthBox);
+				sLeft.requestFocus();
 			}
 		}	
 	}	
@@ -340,22 +364,33 @@ public class ShowRule extends JPanel {
 				} else { sRigth.requestFocus();}
 				break;
 			case "Post":
-				String s = sRigth.getText();
-				String var = StringWork.extract(s,"Var");
-				String alfa = StringWork.extract(s,"Alfa");
-				
+				ArrayList <String> mes = post.iswfLeft(sLeft.getText());
+				if (mes.size() == 0) sRigth.requestFocus();
+				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				break;
 			}
 			
 		}	
 	}
 	class LssRigth implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String noAlfa = StringWork.isAlfa(comAlfa, sRigth.getText());
-			if (!noAlfa.isEmpty()){
-				String text = "Ліва частина підстановки містить символи " + 
+			switch (type) {
+			case "Algorithm":
+				String noAlfa = StringWork.isAlfa(comAlfa, sRigth.getText());
+				if (!noAlfa.isEmpty()){
+					String text = "Ліва частина підстановки містить символи " + 
 							noAlfa + " що не входять до спільного алфавіту " + comAlfa + " !";
-				JOptionPane.showMessageDialog(ShowRule.this,text);	
-			} else { sComm.requestFocus();}
+					JOptionPane.showMessageDialog(ShowRule.this,text);	
+				} else { sComm.requestFocus();}
+				break;
+			case "Post":
+				ArrayList <String> mes = null;
+				if(checkAxiom.isSelected())	 mes = post.iswfAxiom(sRigth.getText());
+				else mes = post.iswfRigth(sLeft.getText(),sRigth.getText());
+				if (mes.size() == 0) sComm.requestFocus();
+				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				break;
+			}
 		}	
 	}		
 	

@@ -39,9 +39,7 @@ public class DbAlgorithm {
 		//System.out.println(">>>get>> " + id + " row = " + model.program.size());
 		return model;
 	}
-	
-	
-	
+		
 	// створює новий порожній алгоритм
 	public int newAlgorithm() {
 		//Algorithm model= null;
@@ -70,7 +68,7 @@ public class DbAlgorithm {
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into mRule select " + cnt + ", id, sLeft, sRigth, isEnd, txComm " +
+				sql = "insert into mRule select " + cnt + ", id, num, sLeft, sRigth, isEnd, txComm " +
 						" from mRule where idModel = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				sql = "insert into mAlgorithm select " + cnt + ",'" + name + "', sMain, sAdd, " + 
@@ -91,8 +89,9 @@ public class DbAlgorithm {
 		return cnt;
 	}
 	
-	public void deleteAlgorithm(Algorithm model){
+	public boolean deleteAlgorithm(Algorithm model){
 		int rows;
+		boolean res = false;
 		try {
 			db.conn.setAutoCommit(false);
 			try{
@@ -101,6 +100,7 @@ public class DbAlgorithm {
 				sql = "delete from mAlgorithm where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				db.conn.commit();
+				res = true;
 			}
 			catch (Exception e) {
 				//System.out.println(e.getMessage());
@@ -111,6 +111,7 @@ public class DbAlgorithm {
 			db.conn.setAutoCommit(true);
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
 	}
 	
 	// модифікує відредагований алгоритм
@@ -149,7 +150,7 @@ public class DbAlgorithm {
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {
 					r = (Rule)model.program.get(i);
-					sql = "insert into mRule values(" + cnt + "," + (i+1) + ",'" + r.getsLeft() +
+					sql = "insert into mRule values(" + cnt + "," + (i+1) + "," + r.getNum() + ",'" + r.getsLeft() +
 							"','" + r.getsRigth() + "'," + (r.getisEnd()?1:0) + ",'" + r.gettxComm() + "')";
 					rows=rows + db.s.executeUpdate(sql);
 				}
@@ -181,7 +182,7 @@ public class DbAlgorithm {
 				System.out.println(">>> " + e.getMessage());
 		    }  	
 	}
-	
+	/*
 	public void newRule(int algo, int row, Rule rule) {
 		try {
 			db.conn.setAutoCommit(false);
@@ -207,6 +208,27 @@ public class DbAlgorithm {
 				System.out.println(">>> " + e.getMessage());
 				db.conn.rollback();
 			} 
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+	}
+	*/
+	
+	public void newRule(int algo, Rule rule) {
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				int isEnd = (rule.getisEnd()?1:0); 
+				sql = "update mRule set num = num+1" + "	where idModel = " + algo + " and num >= " + rule.getNum();
+				db.s.execute(sql);	 
+				sql = "insert into mRule values(" + algo + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
+				 		+ rule.getsRigth() + "'," + isEnd + ",'" + rule.gettxComm() + "')";
+				db.s.execute(sql);
+				db.conn.commit();
+			}	catch (Exception e) {
+				System.out.println("ERROR:newRule: " + e.getMessage() );
+				db.conn.rollback();
+			}  
 			db.conn.setAutoCommit(true);
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
@@ -238,7 +260,7 @@ public class DbAlgorithm {
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
-	
+	/*
 	public void moveUp(int algo, int row) {
 		try {
 			db.conn.setAutoCommit(false);
@@ -265,7 +287,8 @@ public class DbAlgorithm {
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}	
-	
+	*/
+	/*
 	public void moveDown(int algo, int row) {
 		try {
 			db.conn.setAutoCommit(false);
@@ -293,22 +316,22 @@ public class DbAlgorithm {
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
-	
+	*/
 	private ArrayList getAllRules(int algo) {
 		ArrayList rules = new ArrayList();
-		sql = "select id, sLeft, sRigth, isEnd, txComm, idModel " +
-		      "  from mRule where idModel = " + algo + " order by id";
+		sql = "select id, num,  sLeft, sRigth, isEnd, txComm, idModel " +
+		      "  from mRule where idModel = " + algo + " order by num";
 		try{ 
 			db.s.execute(sql);
 	        ResultSet rs = db.s.getResultSet();
 	        while((rs!=null) && (rs.next())) {
 	        	// тут будемо зберігати одну підстановку
-				Rule rule = new Rule(rs.getString(2),rs.getString(3), rs.getBoolean(4),rs.getString(5));
+				Rule rule = new Rule(rs.getInt(2), rs.getString(3),rs.getString(4), 
+										rs.getBoolean(5),rs.getString(6),rs.getInt(1));
 				rules.add(rule);
 	        } 
 		}catch (Exception e){
-			System.out.println("ERROR: getAllRules :" + sql);
-			System.out.println(">>> " + e.getMessage());
+			System.out.println("ERROR: getAllRules :" + sql + " " + e.getMessage());
 		}
 		return rules;
 	}

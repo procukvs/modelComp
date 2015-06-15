@@ -140,6 +140,7 @@ public class WorkFile {
 	private Algorithm algorithm (String txComm) {
 		Algorithm model = null;
 		Rule r;
+		int id = 0;
 		ArrayList rules = new ArrayList();
 		//if (lex == 4) {txComm = valueLex; get();} 
 		//System.out.println("init algorithm: lex =" + lex + " valueLex ="+ valueLex);
@@ -170,7 +171,8 @@ public class WorkFile {
 			} else model.isNumeric = false;
 		}
 		while ((errorText.isEmpty()) && (lex != 23)){
-			r = rule();
+			id++;
+			r = rule(id);
 			if (r != null) model.program.add(r);
 		}
 		if (errorText.isEmpty()) {
@@ -189,7 +191,7 @@ public class WorkFile {
 		return model;		
 	}
 	
-	private Rule rule() {
+	private Rule rule(int id) {
 		String sLeft, sRigth = "";
 		String txComm = "";
 		boolean isEnd = false;
@@ -206,7 +208,7 @@ public class WorkFile {
 		}
 		if (errorText.isEmpty()) {
 			if (lex == 4) {txComm = valueLex; get();}
-			return new Rule(sLeft,sRigth,isEnd, txComm);
+			return new Rule(id, sLeft,sRigth,isEnd, txComm, id);
 		} else return null;
 	}
 	

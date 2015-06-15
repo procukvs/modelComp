@@ -3,6 +3,7 @@ import java.util.*;
 
 import db.*;
 import file.*;
+import gui.ShowForm;
 
 public class Model {
 	public int id;
@@ -29,10 +30,10 @@ public class Model {
 	//----------------------------------------------	
 	
 	//-----work DB ------- 
-	public void dbDelete(){} //
+	public boolean dbDelete(){ return false;} //
 	public int getDbOrder(){
 		//System.out.println(getTypeModel());
-		return DbAccess.getDbAccess().getOrder(getTypeModel(), id); 
+		return DbAccess.getDbAccess().getOrder(getTypeModel(), name); 
 	}
 	public int getDbNumber(int id){
 		//System.out.println(getTypeModel());
@@ -55,7 +56,7 @@ public class Model {
 								"стан", "машиною Тюрінга"},
 			{"Post", "Системи Поста","Система","системи","Аксіоми та правила виводу системи", "системою", 
 								"систему","Нова", "Систему", "Нове","Аксіома/правило виводу",
-								"правило виводу", "системою Поста"} };
+								"аксіому/правило виводу", "системою Поста"} };
 				
 	Model(int id, String name) {
 		this.id = id; this.name = name;
@@ -75,6 +76,10 @@ public class Model {
 	}
 	
 	public ArrayList eval(String str, int nodef){
+		return null;
+	}
+	
+	public ArrayList eval(ShowForm showForm, int step){
 		return null;
 	}
 	
@@ -98,8 +103,16 @@ public class Model {
 	public int findMaxNumber() {
 		return program.size();
 	}
+	// знаходить  порядковий номер команди за іі номером-ключом в БД id
+	public int findCommand(int id) {
+		int cnt = -1;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ )
+				if(id == (((Command)program.get(i)).getId())) cnt = i;
+		}
+		return cnt;
+	}
 	
-	public int findCommand(int num) {return num-1;}
 	public int findCommand(String key) {return 0;}
 	
 	private String getTypeModel(){

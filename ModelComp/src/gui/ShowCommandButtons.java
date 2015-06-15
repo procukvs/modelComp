@@ -116,19 +116,20 @@ public class ShowCommandButtons extends JPanel {
 				//	return;
 				//}
 				Rule rule;
-				int row = table.selectedRule();
+				int id = table.selectedRule();
+				int idNew;
 				//if (row == 0) rule = new Rule("","",false,"====");
 				//else rule = (Rule)model.program.get(row-1);
 				//System.out.println("New.."+row + ".."+rule.show());
-				workCommand.setCommand("Add", type, model, row);
+				workCommand.setCommand("Add", type, model, id);
 				workCommand.show();
 				command= workCommand.getCommand();
 				if (command != null) { 
-					row = workCommand.showRule.getIdCom();
-					db.newCommand(type, model, row, command);
+					//idNew = workCommand.showRule.getIdCom();
+					db.newCommand(type, model, command);
 					showMain.showModel(type, model.id);
 					//System.out.println("New.."+row);
-					table.showRow(false,model.findCommand(row)+1);
+					table.showRow(false,model.findCommand(command.getId())+1);
 				}
 			}
 		}  
@@ -139,6 +140,7 @@ public class ShowCommandButtons extends JPanel {
 			if (model != null) {
 				Rule rule;
 				int row = table.selectedRule();
+				//System.out.println("ShowCommandButton ..Edit"+row);
 				if (row > 0){
 					//	rule = (Rule)model.asub.get(row-1);
 					//	workRule.setInit("edit", algo,row, rule);
@@ -147,7 +149,9 @@ public class ShowCommandButtons extends JPanel {
 					workCommand.setCommand("Edit", type, model, row);
 					workCommand.show();
 					command= workCommand.getCommand();
+				
 					if (command != null) { 
+						//System.out.println("New.."+command.output());
 						db.editCommand(type, model, row, command);
 						showMain.showModel(type, model.id);
 						//model = db.getModel(type, model.id);
@@ -170,17 +174,18 @@ public class ShowCommandButtons extends JPanel {
 				text1 = text1 + "\"" + rule.getsLeft() + " -> " + rule.getsRigth() + "\"";
 				String text2 = "Коментар: \"" + rule.gettxComm() + "\"";
 				String [] text = new String[] {"Вилучити підстановку з номером  " + row + "..",  text1, text2} ; */
-				int row1 = (type.equals("Algorithm")? row-1: ((Machine)model).findCommand(row)) ;
-				//System.out.println(row1);
-				
-				Command c = (Command) model.program.get(row1);
+				//int row1 = (type.equals("Algorithm")? row-1: ((Machine)model).findCommand(row)) ;
+				//int row1 = table.selectedRule();
+				//System.out.println("LsDelet row1= " + row1);
+				int row1 = model.findCommand(row);
+				Command c = (Command) model.program.get(row1);                 //get(row1-1);
 				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + "..",  c.show(model.getAllChar())} ;
 				UIManager.put("OptionPane.yesButtonText", "Так");
 				UIManager.put("OptionPane.noButtonText", "Ні");	
 				int response = 
 						JOptionPane.showConfirmDialog(ShowCommandButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
 				if (response == JOptionPane.YES_OPTION) { 
-					db.deleteCommand(type, model.id, row);
+					db.deleteCommand(type, model.id, row,c);
 					showMain.showModel(type, model.id);
 					//table.showPrevRow(false);
 					table.showRow(false,row1);
@@ -193,9 +198,9 @@ public class ShowCommandButtons extends JPanel {
 	class LsUp implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				int row = table.selectedRule();
+				int row = table.numberSelectedRow();
 				if (row > 1) {
-					db.moveUp(type, model.id, row);
+					db.moveUp(type, model, row);
 					showMain.showModel(type, model.id);
 					table.showPrevRow(false);
 				}
@@ -207,9 +212,9 @@ public class ShowCommandButtons extends JPanel {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
 				//int all = model.program.size();
-				int row = table.selectedRule();
+				int row = table.numberSelectedRow();
 				if ((row > 0) && (row < model.program.size())){
-					db.moveDown(type, model.id, row);
+					db.moveDown(type, model, row);
 					showMain.showModel(type, model.id);
 					table.showNextRow(false);
 				}

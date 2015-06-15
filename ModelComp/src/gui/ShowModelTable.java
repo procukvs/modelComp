@@ -139,15 +139,37 @@ public class ShowModelTable extends JPanel {
 		int rule = 0;
 		if (r >= 0) {
 			int col = 0;
-			if(type.equals("Machine")){
+			switch (type) {
+			case "Algorithm": col = 5; break; 
+			case "Machine": 
 				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
-				//System.out.println(col);
+				break;
+			case "Post": col = 5; break;	
 			}
-			
 			rule = (Integer)dbm.getValueAt(r,col);
 		}
 		return rule;
 	}
+	
+	// номер виділеної команди для Algorithm / Post/ Computer
+	public int numberSelectedRow(){
+		int r = table.getSelectedRow();
+		int rule = 0;
+		if (r >= 0) {
+			int col = 0;
+			switch (type) {
+			//case "Algorithm": col = 1; break; 
+			case "Machine": 
+				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
+				break;
+			//case "Post": col = 1; break;
+			//case "Computer": col = 1; break;	
+			}
+			rule = (Integer)dbm.getValueAt(r,col);		
+		}
+		return rule;
+	}
+	
 	public void showPrevRow(boolean update){
 		int r = table.getSelectedRow();
 		if (r==0) r++;
@@ -186,7 +208,7 @@ public class ShowModelTable extends JPanel {
 	private int[] findWidth(){
 		int [] w = null;
 		switch(type){
-		case "Algorithm" : w = new int[]{10,100,100,10,400,10}; break;
+		case "Algorithm" : w = new int[]{10,100,100,10,390,10,10}; break;
 		case "Post" : w = new int[]{10,10,100,100,390,10,10}; break;
 		case "Machine": 
 			if (model != null) {
@@ -199,7 +221,7 @@ public class ShowModelTable extends JPanel {
 				w[l+2] = 10; w[l+3] = 10;
 			} else w = new int[]{10,30,30,30,510, 10,10};	
 			break;
-		default:  w = new int[]{10,100,100,10,400,10}; 
+		default:  w = new int[]{10,100,100,10,390,10,10}; 
 		}
 		return w;
 	}
@@ -215,6 +237,7 @@ public class ShowModelTable extends JPanel {
 									{"Права частина підстановки","S","N"},
 									{"Заключна ?","B","N"},
 									{"Коментар","S","N"},
+									{"№П","I","N"},
 									{"№Ал","I","N"}
 								}; break;
 		case "Post" : 
@@ -253,6 +276,7 @@ public class ShowModelTable extends JPanel {
 				{"Права частина підстановки","S","E"},
 				{"Заключна ?","B","E"},
 				{"Коментар","S","E"},
+				{"№П","I","N"},
 				{"№Ал","I","N"}
 			};
 			
