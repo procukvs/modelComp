@@ -194,4 +194,37 @@ public class DbPost {
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
+	// додає введену з файлу систему ПОста model (включаючи всі аксіоми/правила виводу)
+	public int addPost(Post model){
+		String name = model.name;
+		int cnt = db.maxNumber("Post")+1;
+		int rows;
+		Derive r;
+		if (db.isModel("Post",name)) name = db.findName("Post", model.name);
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				int isNumeric = (model.isNumeric?1:0); 
+				sql = "insert into pPost values(" + cnt + ",'" + name + "','" + model.main + "','" +
+						model.add + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					r = (Derive)model.program.get(i);
+					sql = "insert into pDerive values(" + cnt + "," + (i+1) + "," + r.getNum() + ",'" + r.getsLeft() +
+							"','" + r.getsRigth() + "'," + (r.getisAxiom()?1:0) + ",'" + r.gettxComm() + "')";
+					rows=rows + db.s.executeUpdate(sql);
+				}
+			if (rows != model.program.size() + 1) cnt = 0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: addPost :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}		
 }

@@ -25,6 +25,7 @@ public class ShowEval extends JPanel {
 	private String main = "";
 	private int rank = 0;
 	private Model model;
+	private String type;
 	
 	
 	ShowEval(ShowWork owner) {
@@ -104,6 +105,7 @@ public class ShowEval extends JPanel {
 	public void setModel(String type, Model model) {
 		//Algorithm algo = (Algorithm) model;
 		this.model = model;
+		this.type = type;
 		boolean isPost = type.equals("Post");
 		rank = model.getRank();
 		main = model.getMain();
@@ -141,13 +143,15 @@ public class ShowEval extends JPanel {
 			String sParam = tParam[index].getText();
 			tResult.setText("");
 			tStep.setText("");
-			owner.show.setEnabled(false);
-			//System.out.println("Param......panel");
-			owner.showSteps.setVisible(false);
-			owner.pack();
+			if (!type.equals("Post")) {
+				owner.show.setEnabled(false);
+				owner.showSteps.setVisible(false);
+				owner.pack();
+			}	
 			if(StringWork.isNatur(sParam)) {
 				if(index < rank-1) tParam[index+1].requestFocus();
-				else tNodef.requestFocus();
+				else if (!type.equals("Post"))tNodef.requestFocus();
+				else see.requestFocus();
 			} else {
 				JOptionPane.showMessageDialog(ShowEval.this, 
 						"Значення " + sindex + " аргументу " + sParam + " - не натуральне число !");
@@ -176,7 +180,7 @@ public class ShowEval extends JPanel {
 			String text = "";
 			String sParam;
 			String input = "";
-			JOptionPane.showMessageDialog(ShowEval.this, "See result");
+			//JOptionPane.showMessageDialog(ShowEval.this, "See result");
 			for (int i = 0; i < rank; i++) {
 				sParam = tParam[i].getText();
 				if(StringWork.isNatur(sParam)) {

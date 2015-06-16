@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import file.OutputText;
 import gui.*;
 import db.*;
 
@@ -139,7 +140,8 @@ public class Post extends Model {
 		for(int i = 0; i < program.size(); i++ ){
 			rule = (Derive)program.get(i);
 			if (rule.getisAxiom())	{
-				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),true,true));
+				boolean isTh = StringWork.isOnlyAlfa(main, rule.getsRigth());
+				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),isTh,true));
 			}
 		}
 		if (oneStep != null)  addOneStep(res,oneStep);
@@ -175,7 +177,7 @@ public class Post extends Model {
 				if((fs.str.length()>=l) && (input.equals(fs.str.substring(0,l)))) {
 					String rs = fs.str.substring(l);
 					if (!undef)	{
-						undef = (!StringWork.isPeano(rs.substring(1)));
+						undef = (!StringWork.isPeano(rs));
 						if (undef) str = ""; 
 					}
 					if (undef) {
@@ -184,11 +186,13 @@ public class Post extends Model {
 					}
 					else {
 						if (!str.isEmpty()) str = str + ".";
-						str = str + StringWork.transNumeric(rs.substring(1));
+						str = str + StringWork.transNumeric(rs);
 					}
 				}
 			}
 		}
+		if (str.isEmpty()) str = "Невизначено";
+		else if (undef) str = "Невизначено: " + str;
 		return str;
 	}
 	/*
@@ -274,7 +278,29 @@ public class Post extends Model {
 	    return data;
 	}	
 	
-	
+	public String output(String name, OutputText out) {
+		String res = "";
+		String wr;
+		Derive r;
+		if(out.open(name)) {
+			System.out.println("File " + name + " is open..");
+			if (!descr.isEmpty()) out.output("'" + descr);
+			out.output("System " + this.name);
+			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
+			if (isNumeric) wr = wr + " Numerical " + rank + ";";
+			out.output(wr); 
+			for (int i = 0; i < program.size(); i++){
+				r = (Derive)program.get(i);
+				wr = r.output();
+				if (!(r.txComm.isEmpty())) wr = wr + " '" + r.txComm;
+			    out.output(wr);
+			}
+			out.output("end " + this.name);
+			out.close();
+			System.out.println("File " + name + " is close.."); 
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}	
 	
 	
 	

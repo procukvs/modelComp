@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Dimension;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -12,8 +14,11 @@ public class ShowGroup extends JPanel {
 		//сформувати необхідні gui-елементи
 		JLabel lWhat = new JLabel("Що переглянути ?");
 		th = new JToggleButton("Теореми",true);
+		th.setMaximumSize(new Dimension(200,20));
 		all = new JToggleButton("Всі виводимі");
+		all.setMaximumSize(new Dimension(200,20));
 		step = new JToggleButton("Всі виводимі (покроково)");
+		step.setMaximumSize(new Dimension(200,20));
 		lCnt = new JLabel("0");
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(th);
@@ -24,7 +29,7 @@ public class ShowGroup extends JPanel {
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		setBorder(new EtchedBorder());
+		//setBorder(new EtchedBorder());
 		add(lWhat);
 		add(Box.createHorizontalStrut(12));
 		add(th);

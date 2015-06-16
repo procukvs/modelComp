@@ -95,10 +95,11 @@ public class WorkFile {
 		    	switch (type){
 		    	case "Algorithm": model = algorithm(txComm); break;
 		    	case "Machine" : model = machine(txComm); break;
-		    	default: errorText = "Очікується тип моделі Algorithm/Machine !";	
+		    	case "System": model = post(txComm); break;
+		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System !";	
 		    	}
 		    	
-		    } else errorText = "Очікується тип моделі Algorithm/Machine !";
+		    } else errorText = "Очікується тип моделі Algorithm/Machine/System !";
 		   // model = algorithm();
 		  	in.close();
 			System.out.println("File " + name + " is close.."); 
@@ -291,6 +292,7 @@ public class WorkFile {
 		return model;		
 	}	
 
+		
 	private State state(Machine model, int id) {
 		String inSym = "_" + model.main + model.add + model.no;
 		State st = null;
@@ -339,9 +341,80 @@ public class WorkFile {
 		return st;
 	}
 	
+	private Post post (String txComm) {
+		Post model = null;
+		Derive r;
+		int id = 0;
+		ArrayList rules = new ArrayList();
+		//if (lex == 4) {txComm = valueLex; get();} 
+		//System.out.println("init algorithm: lex =" + lex + " valueLex ="+ valueLex);
+		exam(20,"службове слово System");
+		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя системи");
+		if (errorText.isEmpty()) {
+			model = new Post(0,valuePrev);
+			model.descr = txComm;
+			model.program = rules;
+			exam(21,"службове слово Alphabet");
+			if (errorText.isEmpty()) exam(2, "рядок - основний алфавіт");
+		}
+		if (errorText.isEmpty()) {
+			model.main = StringWork.isAlfa("", valuePrev);
+			exam(12,"символ ,");
+			if (errorText.isEmpty()) exam(2, "рядок - додатковий алфавіт");
+		}
+		if (errorText.isEmpty()) {
+			model.add = StringWork.isAlfa(model.main, valuePrev);
+			exam(13,"символ ;"); 
+			if (lex == 22){
+				model.isNumeric = true; get(); 
+				exam(3,"ціле число - арність функції");
+				if (errorText.isEmpty()) {
+					model.rank = new Integer(valuePrev);
+					exam(13,"символ ;"); 
+				}
+			} else model.isNumeric = false;
+		}
+		while ((errorText.isEmpty()) && (lex != 23)){
+			id++;
+			r = derive(id);
+			if (r != null) model.program.add(r);
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 23){
+				get();
+				exam(1, "ідентифікатор - імя системи");
+				if (errorText.isEmpty()) {
+					if (!(model.name.equals(valuePrev)))
+						errorText = "Заключне імя " + valuePrev  + " не співпадає з іменем системи " + model.name + "!";
+				}
+			} else errorText = "Очікується службове слово end !";
+		}	
+		if (errorText.isEmpty()) 
+			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		if (!errorText.isEmpty()) model = null; 
+		return model;		
+	}	
 	
-	
-	
+	private Derive derive(int id) {
+		String sLeft = "", sRigth = "";
+		String txComm = "";
+		boolean isAxiom = true;
+		sRigth = valueLex;
+		exam(2, "рядок - аксіома/ліва частина правила виводу");
+		if (errorText.isEmpty()) {
+			if(lex == 14){
+				get();
+				sLeft = sRigth; isAxiom = false;
+				sRigth = valueLex;
+				exam(2, "рядок - права частина правила виводу");
+			}
+			if (errorText.isEmpty()) exam (13,"символ ;");
+		}	
+		if (errorText.isEmpty()) {
+			if (lex == 4) {txComm = valueLex; get();}
+			return new Derive(id, isAxiom, sLeft,sRigth, txComm, id);
+		} else return null;
+	}		
 	
 	
 	
@@ -399,6 +472,7 @@ public class WorkFile {
 					case "Machine": if(type.equals("Machine"))lex = 20; break;
 					case "Initial": if(type.equals("Machine"))lex = 24; break;
 					case "Final": if(type.equals("Machine"))lex = 25; break;
+					case "System": if(type.equals("Post"))lex = 20; break;
 				}
 			} else if (StringWork.isDigit(next)) {
 				lex = 3;

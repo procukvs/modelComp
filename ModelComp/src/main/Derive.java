@@ -38,7 +38,7 @@ public class Derive extends Command {
     
     public String output() {
     	String wr = "";
-		if (!isAxiom) wr = "  \"" + sLeft + "\" -> ";
+		if (!isAxiom) wr = "  \"" + sLeft + "\" -> "; else wr = "  ";
 		wr = wr + "\"" + sRigth + "\";";
     	return wr;
    }

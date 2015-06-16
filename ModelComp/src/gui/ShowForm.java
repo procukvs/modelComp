@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class ShowForm extends JPanel {
-	JTextField tStep;
+	public JTextField tStep;
 	public JTextField tMessage;
 	//ShowWork owner1;
 	ShowForm(ShowWork owner) {
@@ -48,6 +48,7 @@ public class ShowForm extends JPanel {
 		//--------------------------
 	}
 	
+	/*
 	public void setMessage(String text){
 		tMessage.setText(text);
 		tMessage.repaint();
@@ -55,5 +56,5 @@ public class ShowForm extends JPanel {
 		repaint();
 		//tMessage.paintCompanent();
 		//owner1.paintCompanent();
-	}
+	}  */
 }

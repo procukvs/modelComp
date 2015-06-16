@@ -218,7 +218,7 @@ public class DbAccess {
 		switch(type){
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
 		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
-	//	case "Post" : idModel = dbPost.addMachine((Post)model); break; 
+		case "Post" : idModel = dbPost.addPost((Post)model); break; 
 		}	
 		return idModel;
 	}

@@ -189,9 +189,9 @@ public class ShowModelButtons extends JPanel {
 					else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 				}
 				else text = wf.getErrorText();
-				JOptionPane.showMessageDialog(ShowModelButtons.this,text + " ??");
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,text + " ??");
 			}	
-			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelInput..."); // text);
+			JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
 		}	
 	}
 	class Quit implements ActionListener  {

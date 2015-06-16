@@ -91,7 +91,8 @@ public class ShowWork extends JDialog {
 		//pack();
 		
 		
-		// встановити слухачів !!!			
+		// встановити слухачів !!!	
+		showForm.tStep.addActionListener(new LsFormStep());
 		eval.addActionListener(new LsEval());
 		show.addActionListener(new LsShow());
 		quit.addActionListener(new LsQuit());
@@ -170,6 +171,7 @@ public class ShowWork extends JDialog {
 				pack();
 			} else {
 				showEval.setVisible(false);
+				showSteps.setVisible(false);
 				show.setEnabled(false);
 				pack();
 				sParam = showForm.tStep.getText();
@@ -209,6 +211,21 @@ public class ShowWork extends JDialog {
 			}
 		}	
 	}
+	class LsFormStep implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			String step = showForm.tStep.getText();
+			if(StringWork.isNatur(step)) {
+				showEval.setVisible(false);
+				showSteps.setVisible(false);
+				show.setEnabled(false);
+				pack();
+				eval.requestFocus();
+				//JOptionPane.showMessageDialog(ShowWork.this,"Form");
+			} else JOptionPane.showMessageDialog(ShowWork.this,"Кількість кроків " + step + " - не натуральне число");;
+		}
+		
+	}
+	
 	class LsShow implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			show.setEnabled(false);
