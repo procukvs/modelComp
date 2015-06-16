@@ -164,76 +164,44 @@ public class Post extends Model {
 		return res.size(); 
 	}
 	
+	public String findResult(String input1){
+		String str = "";
+		boolean undef = false;
+		String input = input1 + "#";
+		int l = input.length();
+		for(int i = 0; i < res.size(); i++ ){
+			FullSubstitution fs = res.get(i);
+			if (fs.isTh && fs.isFst){
+				if((fs.str.length()>=l) && (input.equals(fs.str.substring(0,l)))) {
+					String rs = fs.str.substring(l);
+					if (!undef)	{
+						undef = (!StringWork.isPeano(rs.substring(1)));
+						if (undef) str = ""; 
+					}
+					if (undef) {
+						if (!str.isEmpty()) str = str + ".";
+						str = str + "<" + rs + ">";
+					}
+					else {
+						if (!str.isEmpty()) str = str + ".";
+						str = str + StringWork.transNumeric(rs.substring(1));
+					}
+				}
+			}
+		}
+		return str;
+	}
+	/*
 	public int finalForm(){
 		oneStep = null;
 		prevString = null;
 		return res.size(); 
 	}
-	
-	public  ArrayList <FullSubstitution> eval(ShowForm showForm, int stepAll){
-		String template = "HH:mm:ss";  /// "dd.MM.yyyy HH:mm:ss"
-		DateFormat formatter = new SimpleDateFormat(template);
-		//String text1;
-		Date cur = new Date();
-		String text = "Формавання " + formatter.format(cur) + " : ";
-		ArrayList <FullSubstitution> res = new ArrayList <FullSubstitution>();
-		ArrayList <FullSubstitution> oneStep = new ArrayList <FullSubstitution>();
-		Set <String> prevString = new HashSet<String>();
-		SortedSet<String> oneString; 
-		//ArrayList <String> oneString;  
-		Derive rule;
-		int step = 0;
-		String st;
-		for(int i = 0; i < program.size(); i++ ){
-			rule = (Derive)program.get(i);
-			if (rule.getisAxiom())	{
-				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),true,true));
-				
-			}
-		}
-		if (oneStep != null)  addOneStep(res,oneStep);      //res.addAll(oneStep);
-		System.out.println(text + " stepAll = " + stepAll + " " + oneStep.size());
-		while (step < stepAll){
-			step++;
-			cur = new Date();
-			showForm.setMessage(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
-			// try{ 
-			//    wait(100000);	   
-			// } catch (Exception e) {
-			//	System.out.println(">>> " + e.getMessage());
-			// } 
-			//showForm.updateUI();
-		//showForm.tMessage.setVisible(false);
-			//showForm.tMessage.setVisible(true);
-			//show.setEnabled(false);
-			System.out.println(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
-			//oneString = new ArrayList <String>();
-			// щоб не використовувати двічі однакові рядки, раніше отримані
-			oneString = new TreeSet<String>(); 
-			for(int i = 0; i < oneStep.size(); i++){
-				st = oneStep.get(i).str; 
-				if (!prevString.contains(st)) oneString.add(st);
-			}
-			oneStep = new ArrayList <FullSubstitution>();
-		//	for(int i = 0; i < oneString.size(); i++){
-		//		oneStep.addAll(extendRules(oneString.get(i), step));
-		//	}
-			Iterator <String> it = oneString.iterator();
-			while(it.hasNext()){
-				st =it.next();
-				oneStep.addAll(extendRules(st, step));
-				prevString.add(st);
-			}
-			if (oneStep != null)  addOneStep(res,oneStep);
-			//res.addAll(oneStep);
-		}
-		cur = new Date();
-		//showForm.tMessage.setText(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
-		
-		showForm.setMessage(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
-		System.out.println(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+	*/
+	public ArrayList finalForm(){
 		return res;
 	}
+	
 	
 	private void addOneStep(ArrayList <FullSubstitution> res, ArrayList <FullSubstitution> oneStep) {
 		FullSubstitution addFSub;
@@ -256,6 +224,57 @@ public class Post extends Model {
 			res.add(addFSub);
 		}
 	}
+	
+	public ArrayList getStepSource(ArrayList sl, boolean internal) {
+		return getStepSource(sl, internal, 1);
+	}
+	
+	public ArrayList getStepSource(ArrayList sl, boolean internal, int var) {
+		ArrayList data = new ArrayList();
+		ArrayList row;
+		FullSubstitution fs;
+		String pr;
+		boolean take;
+		if (sl != null) {
+			for(int i = 0; i < sl.size(); i++ ){
+				fs = (FullSubstitution)sl.get(i);
+				switch(var){
+				case 1: take = fs.isFst && fs.isTh; break;
+				case 2: take = fs.isFst; break;
+				default: take = true;
+				}
+				if (take) {
+					row = new ArrayList();
+					row.add(fs.sub.pos);
+					if(var == 3) row.add(fs.sub.rule);
+					if(isNumeric) row.add(StringWork.transNumeric(fs.str));
+					else row.add(fs.str);
+					//if (internal) row.add(extractPrev( sb));
+					//else row.add(StringWork.transNumeric(extractPrev( sb)));
+					//if (internal) row.add(extract(sb));
+					//else row.add(StringWork.transNumeric(extract( sb)));
+					if (var > 1) row.add(fs.isTh);
+					pr = "." + fs.sub.str;
+					if (var != 3){
+						if (fs.any != null){
+							for(int j = 0; j < fs.any.size(); j++){
+								pr = pr + "." + fs.any.get(j).str;
+							}
+						}
+					}
+					if(isNumeric) {
+						if(internal) row.add(fs.str);
+						else row.add(StringWork.transNumeric(pr));
+					}
+					else row.add(pr);
+					data.add(row);
+				}	
+			}
+		}
+	    return data;
+	}	
+	
+	
 	
 	
 	
@@ -338,7 +357,59 @@ public class Post extends Model {
 		String compresVar = StringWork.isAlfa("", lVar);
 		return lVar.length() == compresVar.length();
 	}
-	
+	//======================================================================================
+	/*
+	 
+	 public  ArrayList <FullSubstitution> eval(ShowForm showForm, int stepAll){
+		String template = "HH:mm:ss";  /// "dd.MM.yyyy HH:mm:ss"
+		DateFormat formatter = new SimpleDateFormat(template);
+		//String text1;
+		Date cur = new Date();
+		String text = "Формавання " + formatter.format(cur) + " : ";
+		ArrayList <FullSubstitution> res = new ArrayList <FullSubstitution>();
+		ArrayList <FullSubstitution> oneStep = new ArrayList <FullSubstitution>();
+		Set <String> prevString = new HashSet<String>();
+		SortedSet<String> oneString; 
+		//ArrayList <String> oneString;  
+		Derive rule;
+		int step = 0;
+		String st;
+		for(int i = 0; i < program.size(); i++ ){
+			rule = (Derive)program.get(i);
+			if (rule.getisAxiom())	{
+				oneStep.add(new FullSubstitution(rule.getsRigth(), new Substitution(rule.getNum(), 0, ""),true,true));
+				
+			}
+		}
+		if (oneStep != null)  addOneStep(res,oneStep);      //res.addAll(oneStep);
+		System.out.println(text + " stepAll = " + stepAll + " " + oneStep.size());
+		while (step < stepAll){
+			step++;
+			cur = new Date();
+			showForm.setMessage(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
+			System.out.println(text + formatter.format(cur) + " крок " + step + " .. " + res.size() + ".");
+			// щоб не використовувати двічі однакові рядки, раніше отримані
+			oneString = new TreeSet<String>(); 
+			for(int i = 0; i < oneStep.size(); i++){
+				st = oneStep.get(i).str; 
+				if (!prevString.contains(st)) oneString.add(st);
+			}
+			oneStep = new ArrayList <FullSubstitution>();
+			Iterator <String> it = oneString.iterator();
+			while(it.hasNext()){
+				st =it.next();
+				oneStep.addAll(extendRules(st, step));
+				prevString.add(st);
+			}
+			if (oneStep != null)  addOneStep(res,oneStep);
+		}
+		cur = new Date();
+		showForm.setMessage(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+		System.out.println(text + formatter.format(cur) + " закінчено .. " + res.size() + ".");
+		return res;
+	}
+	 
+	 */
 	
 	
 	

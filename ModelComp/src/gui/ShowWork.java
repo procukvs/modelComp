@@ -20,7 +20,7 @@ public class ShowWork extends JDialog {
 	//private ShowGroup showGroup;
 	private ShowForm showForm;
 	private Box evalBox ;
-	
+		
 	//private ShowTest showTest;
 	ShowSteps showSteps;
 	JButton eval;
@@ -63,7 +63,7 @@ public class ShowWork extends JDialog {
 		headBox.add(showDescription);
 		//-----------------------------
 		evalBox = Box.createVerticalBox();
-		//evalBox.add(showForm);
+		evalBox.add(showForm);
 		evalBox.add(showEval);
 		evalBox.add(showSteps);
 		//-----------------------------
@@ -86,6 +86,7 @@ public class ShowWork extends JDialog {
 		add(evalBox,BorderLayout.CENTER);
 		//===================================
 		add(endBox, BorderLayout.SOUTH);  //buttons
+		showForm.setVisible(false);
 		//setSize(200,500);
 		//pack();
 		
@@ -109,13 +110,16 @@ public class ShowWork extends JDialog {
 	    
 	    showDescription.setModel(type, model);
 	    if (type.equals("Post")){
-	    	evalBox.add(showForm);
+	    	//evalBox.add(showForm);
 	    	showForm.tMessage.setText("");
 	    	eval.setText("Формувати дані");
+	    	show.setText("Переглянути дані");
 	    } else{
-	    	evalBox.remove(showForm);
+	    	//evalBox.remove(showForm);
 	    	eval.setText("Виконати");
+	    	show.setText("Переглянути");
 	    }
+	    showForm.setVisible(type.equals("Post"));
 	    showEval.setVisible(!type.equals("Post"));
 	    showEval.setModel(type, model);
 		show.setEnabled(false);
@@ -165,13 +169,16 @@ public class ShowWork extends JDialog {
 				showSteps.setVisible(false);
 				pack();
 			} else {
-				int step = 0;
-				String template = "HH:mm:ss";  /// "dd.MM.yyyy HH:mm:ss"
-				DateFormat formatter = new SimpleDateFormat(template);
+				showEval.setVisible(false);
+				show.setEnabled(false);
+				pack();
 				sParam = showForm.tStep.getText();
 				if(StringWork.isPosNumber(sParam)) {
+					int step = 0;
+					String template = "HH:mm:ss";  
+					DateFormat formatter = new SimpleDateFormat(template);
 					Post post = (Post)model;
-					 Date cur = new Date();
+					Date cur = new Date();
 					int cnt;
 					step = new Integer(sParam);
 					text = "Формування " + formatter.format(cur) + " : ";
@@ -179,24 +186,19 @@ public class ShowWork extends JDialog {
 					for(int i = 0; i < step; i++){
 						cur = new Date(); 
 						showForm.tMessage.setText(text + formatter.format(cur) + " крок " + i + " .. " + cnt +".");
-						showForm.revalidate();
-						showForm.repaint();
-						System.out.println(text + formatter.format(cur) + " крок " + i + " .. " + cnt + ".");
+						//showForm.revalidate();
+						//showForm.repaint();
+						//System.out.println(text + formatter.format(cur) + " крок " + i + " .. " + cnt + ".");
 						cnt = post.stepForm(i+1);
 					}
-					cur = new Date(); 
-					showForm.tMessage.setText(text + formatter.format(cur) + " закінчено. За " + step + " кроків створено " + cnt + ".");
-					System.out.println(text + formatter.format(cur) + " закінчено .. " + cnt + ".");
-					//time = System.currentTimeMillis();
-					//for (int i=0; i<1000000; i++) 
-					//	ar.add(new Integer(rnd.nextInt()));
-					//text = "Forming all data - finish " + (System.currentTimeMillis()-time) + " milisecunds.";
-					//Date cur1 = new Date();
-					//Date curnew = cur1;
-					//curnew.setTime(cur1.getTime()-cur.getTime());
-					//text = text + "..." + formatter.format(cur1) + "...";
-							
-					//showForm.tMessage.setText(text);
+					cur = new Date();
+					sl = post.finalForm();
+					showForm.tMessage.setText(text + formatter.format(cur) + " закінчено. За " + step + " кроків створено " + sl.size() + ".");
+					//System.out.println(text + formatter.format(cur) + " закінчено .. " + cnt + ".");
+					showEval.setVisible(post.getIsNumeric());
+					pack();
+					show.setEnabled(true);
+					
 				}
 				else {
 					text = "Кількість кроків - не натуральнe число!";
@@ -213,6 +215,7 @@ public class ShowWork extends JDialog {
 			showSteps.setShowSteps(type, model, sl);
 											//System.out.println("show......panel");
 			showSteps.setVisible(true);
+			showSteps.showGroup.th.setSelected(true);
 			pack();
 		}	
 	}

@@ -4,16 +4,22 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class ShowGroup extends JPanel {
+	JToggleButton th ;
+	JToggleButton all;
+	JToggleButton step;
+	JLabel lCnt;
 	ShowGroup(ShowSteps owner) {
 		//сформувати необхідні gui-елементи
 		JLabel lWhat = new JLabel("Що переглянути ?");
-		JToggleButton th = new JToggleButton("Теореми",true);
-		JToggleButton all = new JToggleButton("Всі виводимі");
-		JToggleButton step = new JToggleButton("Всі виводимі (покроково)");
+		th = new JToggleButton("Теореми",true);
+		all = new JToggleButton("Всі виводимі");
+		step = new JToggleButton("Всі виводимі (покроково)");
+		lCnt = new JLabel("0");
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(th);
 		bg.add(all);
 		bg.add(step);
+	
 		
 		//=================================
 		// формуємо розміщення
@@ -26,7 +32,8 @@ public class ShowGroup extends JPanel {
 		add(all);
 		add(Box.createHorizontalStrut(2));
 		add(step);
-		add(Box.createHorizontalStrut(2));
+		add(Box.createHorizontalStrut(12));
+		add(lCnt);
 	}	
 	
 }

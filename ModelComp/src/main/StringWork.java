@@ -47,6 +47,11 @@ public class StringWork {
 		return Pattern.matches("[a-zA-Z][0-9a-zA-Z_]*", s);
 	}
 	
+
+	public static boolean isPeano(String s) {
+		return Pattern.matches("[|]*", s);
+	}
+	
 	public static boolean isMove(String s) {
 		//Pattern pnum = Pattern.compile("tt");
 		return Pattern.matches("@[0-9a-zA-Z][0-9a-zA-Z][^ ][<>.]", s);
@@ -58,7 +63,7 @@ public class StringWork {
 	
 	public static boolean isOnlyAlfa(String alfa, String s) {
 		//Pattern pnum = Pattern.compile("tt");
-		return Pattern.matches("@[" + alfa+"]*", s);
+		return Pattern.matches("[" + alfa+"]*", s);
 	}
 	
 	

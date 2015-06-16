@@ -50,13 +50,13 @@ public class Model {
 	private static String[][] titles = { 
 			{"Algorithm", "Нормальні алгоритми Маркова","Алгоритм","алгоритму","Підстановки алгоритму",	"алгоритмом",
 								"алгоритм","Новий", "Алгоритм", "Нова","Підстановка",
-								"підстановку","нормальним алгоритмом"}, 
+								"підстановку","нормальним алгоритмом","Послідовність підстановок алгоритму"}, 
 			{"Machine", "Машини Тюрінга","Машина","машини","Програма машини (Таблиця переходів)", "машиною", 
 								"машину","Нова", "Машину", "Новий","Стан",
-								"стан", "машиною Тюрінга"},
+								"стан", "машиною Тюрінга","Послідовність конфігурацій машини"},
 			{"Post", "Системи Поста","Система","системи","Аксіоми та правила виводу системи", "системою", 
 								"систему","Нова", "Систему", "Нове","Аксіома/правило виводу",
-								"аксіому/правило виводу", "системою Поста"} };
+								"аксіому/правило виводу", "системою Поста","Всі теореми"} };
 				
 	Model(int id, String name) {
 		this.id = id; this.name = name;
@@ -65,6 +65,7 @@ public class Model {
 	
 	public String takeResult(ArrayList sl, int nodef) { return "";}
 	
+	public ArrayList getStepSource(ArrayList sl, boolean internal, int var) {return null;}
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {return null;}
 	
 	public ArrayList getDataSource(int idModel) {

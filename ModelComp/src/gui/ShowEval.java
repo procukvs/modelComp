@@ -12,20 +12,26 @@ import javax.swing.border.*;
 public class ShowEval extends JPanel {
 	private JLabel lParam;
 	private JLabel lInit;
+	private JLabel lFunction;
 	JTextField tParam[];
 	JTextField tInit;
+	JLabel lNodef;
 	JTextField tNodef;
 	JTextField tResult;
+	JLabel lStep;
 	JTextField tStep;
+	private JButton see;
 	private ShowWork owner;
 	private String main = "";
 	private int rank = 0;
+	private Model model;
 	
 	
 	ShowEval(ShowWork owner) {
 		//сформувати необхідні gui-елементи 
 		lParam = new JLabel("Аргументи");
 		lInit = new JLabel("Початкове слово");
+		lFunction = new JLabel("Значення функції");
 		tParam = new JTextField[10];//JTextField(30);
 		String si;
 		for (int i = 0; i < 10; i++){
@@ -39,7 +45,7 @@ public class ShowEval extends JPanel {
 		tInit = new JTextField(30);
 		tInit.setMaximumSize(new Dimension(100,20));	
 		//tParam.setMaximumSize(new Dimension(100,20));
-		JLabel lNodef = new JLabel("Невизначено");
+		lNodef = new JLabel("Невизначено");
 		
 		tNodef = new JTextField(5);
 		tNodef.setMaximumSize(new Dimension(40,20));
@@ -47,10 +53,11 @@ public class ShowEval extends JPanel {
 		tResult = new JTextField(30);
 		tResult.setMaximumSize(new Dimension(100,20));
 		tResult.setEditable(false);
-		JLabel lStep = new JLabel("Виконано кроків");
+		lStep = new JLabel("Виконано кроків");
 		tStep = new JTextField(5);
 		tStep.setMaximumSize(new Dimension(40,20));
 		tStep.setEditable(false);
+		see = new JButton("Показати результат");
 		
 		this.owner = owner;
 		//=================================
@@ -67,6 +74,7 @@ public class ShowEval extends JPanel {
 		init.add(Box.createGlue());
 		init.add(lNodef);
 		init.add(tNodef);
+		init.add(lFunction);
 		init.add(Box.createGlue());
 		Box result = Box.createHorizontalBox();
 		result.add(Box.createGlue());
@@ -75,6 +83,7 @@ public class ShowEval extends JPanel {
 		result.add(Box.createGlue());
 		result.add(lStep);
 		result.add(tStep);
+		result.add(see);
 		result.add(Box.createGlue());
 		//------------------------------------
 		add(Box.createGlue());
@@ -88,11 +97,14 @@ public class ShowEval extends JPanel {
 		// встановити слухачів !!!			
 		for (int i = 0; i < 10; i++) tParam[i].addActionListener(new LtParam());
 		tInit.addActionListener(new LtInit());
+		see.addActionListener(new LSee());
 		
 	}
 	
 	public void setModel(String type, Model model) {
 		//Algorithm algo = (Algorithm) model;
+		this.model = model;
+		boolean isPost = type.equals("Post");
 		rank = model.getRank();
 		main = model.getMain();
 		for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
@@ -114,6 +126,12 @@ public class ShowEval extends JPanel {
 		tNodef.setText("1000");	
 		tResult.setText("");
 		tStep.setText("");
+		lNodef.setVisible(!isPost);
+		tNodef.setVisible(!isPost);
+		lFunction.setVisible(isPost);
+		lStep.setVisible(!isPost);
+		tStep.setVisible(!isPost);
+		see.setVisible(isPost); 
 	}
 	
 	class LtParam implements ActionListener  {
@@ -152,6 +170,30 @@ public class ShowEval extends JPanel {
 						"Вхідне слово " + sInit + " містить символи " + noAlfa + 
 							" що не належать основному алфавіту !");
 		}	
+	}
+	class LSee implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			String text = "";
+			String sParam;
+			String input = "";
+			JOptionPane.showMessageDialog(ShowEval.this, "See result");
+			for (int i = 0; i < rank; i++) {
+				sParam = tParam[i].getText();
+				if(StringWork.isNatur(sParam)) {
+					if (i> 0) input = input + "#";
+					input = input + StringWork.toInternal(new Integer(sParam));
+				} else text = text + " " + sParam;
+			}
+			if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+			if(text.isEmpty()) {
+				//=================================
+				//sl = model.eval(input, nodef);
+				//text = model.takeResult(sl, nodef);
+				text = ((Post)model).findResult(input); 
+				tResult.setText(text);
+				//showEval.tStep.setText(sl.size()+"")
+			} else JOptionPane.showMessageDialog(ShowEval.this, text);
+		}
 	}
 
 }

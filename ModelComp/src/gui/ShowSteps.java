@@ -13,10 +13,13 @@ public class ShowSteps extends JPanel {
 	ModelTable dbm;
 	//===========================
 	
+	JLabel header;
 	JTable table;
 	JCheckBox cInter;
 	JLabel lInter;
-	private ShowGroup showGroup;
+	ShowGroup showGroup;
+	private int group=1;
+	private boolean internal = true;
 	//JButton bQuit;
 	ArrayList dataIn = new ArrayList();
 	private String type = "Algorithm";
@@ -63,7 +66,7 @@ public class ShowSteps extends JPanel {
 		lInter = new JLabel("Внутрішнє представлення");
 		//bQuit = new JButton("Вийти");
 		
-		JLabel header = new JLabel("Послідовність підстановок алгоритму");
+		header = new JLabel("Послідовність підстановок алгоритму");
 		header.setHorizontalAlignment(header.CENTER);
 		//Container contentPane = getContentPane();
 		Box control = Box.createHorizontalBox();
@@ -84,27 +87,39 @@ public class ShowSteps extends JPanel {
 		
 		//bQuit.addActionListener(new TestQuit());
 		cInter.addActionListener(new TestInter());
+		showGroup.th.addActionListener(new TestTh());
+		showGroup.all.addActionListener(new TestAll());
+		showGroup.step.addActionListener(new TestStep());
 	}
 	
 	public void setShowSteps(String type,  Model model, ArrayList sl){
 		ArrayList ds = null;
+		int cnt = 0;
 		boolean visible = false;
 		this.model = model;
 		this.type = type;
 		this.sl = sl;
+		group = 1;
 		//cInter.setSelected(model.getIsNumeric());
 		//cInter.setVisible(model.getIsNumeric());
 		//lInter.setVisible(model.getIsNumeric());
-		if(type.equals("Algorithm")) visible = model.getIsNumeric();
-		cInter.setSelected(visible);
+		if(type.equals("Algorithm")  || type.equals("Post")) visible = model.getIsNumeric();
+		cInter.setSelected(type.equals("Algorithm"));
+		internal = type.equals("Algorithm");
 		cInter.setVisible(visible);
 		lInter.setVisible(visible);
-		ds = model.getStepSource(sl, true);
+		showGroup.setVisible(type.equals("Post"));
+		header.setText(Model.title(type, 13));
+		ds = model.getStepSource(sl, type.equals("Algorithm"));
 		dbm.setDataSource(null);
 		dbm.setInitialModel(findInform(type));
 		dbm.fireTableStructureChanged();
 		setColumnWidth();
 		if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);	
+		if(type.equals("Post")) {
+			if ((ds != null) && (ds.size() > 0)) cnt = ds.size();
+			showGroup.lCnt.setText(" " + cnt + " ");
+		}
 	}
 	
 	
@@ -144,7 +159,10 @@ public class ShowSteps extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//formDataSource(cInter.isSelected());
 			//dbm.setDataSource(dataIn);
-			dbm.setDataSource(model.getStepSource(sl, cInter.isSelected()));
+			internal = cInter.isSelected();
+			if (type.equals("Algorithm"))
+				dbm.setDataSource(model.getStepSource(sl, cInter.isSelected()));
+			else setTablePost(internal,group);		
 			/*ArrayList ds = null;
 			ds = model.getStepSource(sl, cInter.isSelected());
 			JOptionPane.showMessageDialog(ShowSteps.this,"testInter " + cInter.isSelected() +" " + (sl== null) + " ds " + ds.size());
@@ -155,6 +173,84 @@ public class ShowSteps extends JPanel {
 			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);	*/
 		}	
 	}
+	class TestTh implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			//JOptionPane.showMessageDialog(ShowSteps.this,"Всі теореми");
+			group = 1;
+			setTablePost(internal,1);
+		}	
+	} 
+	class TestAll implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			group = 2;
+			setTablePost(internal,2);
+			/*
+			ArrayList ds = null;
+			String[][] info = new String[][]{	{"Крок","I","N"},	{"Виведено","S","N"},
+												{"Теорема","B","N"}, {"Попередньо виведене","S","N"}	}; 
+			//JOptionPane.showMessageDialog(ShowSteps.this,"Всі виведені");
+			header.setText("Всі виводимі слова");
+			ds = model.getStepSource(sl, true,2);
+			dbm.setDataSource(null);
+			dbm.setInitialModel(info);
+			dbm.fireTableStructureChanged();
+			setColumnWidth1(new int[]{25,260,30,460});
+			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
+			*/	
+		}	
+	} 
+	class TestStep implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			group = 3;
+			setTablePost(internal,3);
+		}	
+	} 
+	
+	private void setTablePost(boolean inter, int var){
+		ArrayList ds = null;
+		String[][] info;
+		int [] w = null;
+		String hd;
+		int cnt = 0;
+		switch(var){
+		case 2:
+			hd = "Всі виводимі слова";
+			info = (inter?
+					new String[][]{	{"Крок","I","N"},	{"Виведено","S","N"},
+					{"Теорема","B","N"}, {"Внутрішнє предствлення","S","N"}} :
+					new String[][]{	{"Крок","I","N"},	{"Виведено","S","N"},
+						{"Теорема","B","N"}, {"Попередньо виведене","S","N"}}); 
+			w = new int[]{25,260,30,460};
+			break;
+		case 3:
+			hd = "Всі виведені (покроково)";
+			info = new String[][]{	{"Крок","I","N"}, {"Правило","I","N"}, {"Виведено","S","N"},
+					{"Теорема","B","N"}, {"Попередньо виведене","S","N"}	};
+			w = new int[]{25,20, 250,30,450};
+			break;
+		default:
+			hd = "Всі теореми";
+			info = new String[][]{{"Крок","I","N"},	{"Виведено","S","N"},
+									{"Попередньо виведене","S","N"}	};
+			w = new int[]{25,275,475};
+		}
+		header.setText(hd);
+		ds = model.getStepSource(sl, inter, var);
+		dbm.setDataSource(null);
+		dbm.setInitialModel(info);
+		dbm.fireTableStructureChanged();
+		TableColumn column = null;
+		for (int i = 0; i < w.length; i++) {
+	        column = table.getColumnModel().getColumn(i);
+	        column.setPreferredWidth(w[i]); 
+	    } 
+		if ((ds != null) && (ds.size() > 0)) {
+			dbm.setDataSource(ds);
+			cnt = ds.size();
+		}
+		showGroup.lCnt.setText(" " + cnt + " ");
+	}
+	
 	/*
 	class TestQuit implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
@@ -178,7 +274,13 @@ public class ShowSteps extends JPanel {
 					{"Крок","I","N"},
 					{"Конфігурація","S","N"},
 					{"Скорочене представлення конфігурації","S","N"}
-				}; break;		
+				}; break;
+		case "Post":
+			info = new String[][]{
+					{"Крок","I","N"},
+					{"Виведено","S","N"},
+					{"Попередньо виведене","S","N"}
+				}; break;
 		default: 	info = new String[][]{
 				{"Крок","I","N"},
 				{"№ підст.","I","N"},
@@ -199,11 +301,20 @@ public class ShowSteps extends JPanel {
 	    }     
 	}
 	
+	private void setColumnWidth1(int[] widthCol ) {
+		TableColumn column = null;
+		for (int i = 0; i < widthCol.length; i++) {
+	        column = table.getColumnModel().getColumn(i);
+	        column.setPreferredWidth(widthCol[i]); 
+	    }     
+	}
+	
 	private int[] findWidth(){
 		int [] w = null;
 		switch(type){
 		case "Algorithm" : w = new int[]{100,75,300,300}; break;
 		case "Machine":  w = new int[]{75,350,350}; break;
+		case "Post":  w = new int[]{25,275,475}; break;
 		default:  w = new int[]{100,75,300,300}; 
 		}
 		return w;

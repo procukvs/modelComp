@@ -62,6 +62,7 @@ public class Derive extends Command {
 			   TreeMap <Character,String > sm = sms.get(i); 
 			   String st = StringWork.substitution(sRigth,sm);
 			   boolean isTh = StringWork.isOnlyAlfa(main, st);
+			  // System.out.println("main=" + main + " st=" + st + "..." + isTh);
 			   res.add(new FullSubstitution(st, new Substitution(num, step, StringWork.substitutionVar(sLeft, sm)), isTh, true));
 		   }
 	   }
