@@ -42,6 +42,10 @@ public class StringWork {
 		return Pattern.matches("[0-9]", new String("" + ch));
 	}
 	
+	public static boolean isSelect(String s) {
+		return Pattern.matches("i[1-9][1-9]", s); // && (s.charAt(1) >= s.charAt(2));
+	}
+	
 	public static boolean isIdentifer(String s) {
 		//Pattern pnum = Pattern.compile("tt");
 		return Pattern.matches("[a-zA-Z][0-9a-zA-Z_]*", s);

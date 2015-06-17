@@ -26,6 +26,8 @@ public class ShowCommandButtons extends JPanel {
 	JButton down ;
 	JButton rename;
 	JButton insert ;
+	JButton see;
+	JButton eval;
 	
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -41,6 +43,8 @@ public class ShowCommandButtons extends JPanel {
 		down = new JButton("Перемістити вниз");
 		rename = new JButton("Переіменувати");
 		insert = new JButton("Вставити програму");
+		see = new JButton("Переглянути");
+		eval = new JButton("Обрахувати");
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		workCommand = new ShowCommand(owner);
@@ -62,8 +66,10 @@ public class ShowCommandButtons extends JPanel {
 		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(delete);
 		buttons.add(Box.createHorizontalStrut(5));
+		buttons.add(see);
 		buttons.add(up);
 		buttons.add(Box.createHorizontalStrut(5));
+		buttons.add(eval);
 		buttons.add(down); 
 		buttons.add(rename);
 		buttons.add(Box.createHorizontalStrut(5));
@@ -87,16 +93,18 @@ public class ShowCommandButtons extends JPanel {
 	
 	public void setModel(String type, Model model){
 		boolean isVisible = type.equals("Machine");
+		boolean rec = type.equals("Recursive");
 		this.type = type;
 		this.model = model;
 		
 		add.setText(Model.title(type, 9));
 		addAs.setVisible(isVisible);
-		up.setVisible(!isVisible);
-		down.setVisible(!isVisible);
+		up.setVisible(!isVisible && !rec);
+		down.setVisible(!isVisible && !rec);
 		rename.setVisible(isVisible);
 		insert.setVisible(isVisible);
-		
+		see.setVisible(rec);
+		eval.setVisible(rec);
 	}	
 	
 	// Класи слухачі 

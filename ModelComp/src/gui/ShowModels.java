@@ -29,10 +29,12 @@ public class ShowModels extends JFrame {
 		JMenuItem algorithm = new JMenuItem(Model.title("Algorithm", 1));	//(new AlgorithmAction()); // 
 		JMenuItem machine = new JMenuItem(Model.title("Machine", 1));  		//("Машини Тьюрінга"); 
 		JMenuItem post = new JMenuItem(Model.title("Post", 1));
+		JMenuItem rec = new JMenuItem(Model.title("Recursive", 1));
 		
 		mModel.add(algorithm);
 		mModel.add(machine);
 		mModel.add(post);
+		mModel.add(rec);
 		menuBar.add(mModel);
 		//menuBar.add(createModelMenu());
 		menuBar.add(quit);
@@ -41,6 +43,7 @@ public class ShowModels extends JFrame {
 		algorithm.addActionListener(new LsAlgorithm());
 		machine.addActionListener(new LsMachine());
 		post.addActionListener(new LsPost());
+		rec.addActionListener(new LsRecursive());
 		quit.addActionListener(new LsQuit());
 				
 		label = new JLabel("Нормальні алгоритми Маркова");
@@ -95,6 +98,10 @@ public class ShowModels extends JFrame {
 	
 	class LsPost implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {showModel("Post",0);	}	
+	}
+	
+	class LsRecursive implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {showModel("Recursive",0);	}	
 	}
 	
 	class LsQuit implements ActionListener  {

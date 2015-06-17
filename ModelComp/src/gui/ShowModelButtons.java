@@ -104,6 +104,7 @@ public class ShowModelButtons extends JPanel {
 		work.setText("Рoбота з " + Model.title(type, 5));
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
+		work.setVisible(!type.equals("Recursive"));
 	}
 	
 	//описуємо класи - слухачі !!!!!!

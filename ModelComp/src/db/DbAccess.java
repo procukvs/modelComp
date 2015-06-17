@@ -45,6 +45,7 @@ public class DbAccess {
 	private static DbAlgorithm dbAlgo;
   	private static DbMachine dbMach;
 	private static DbPost dbPost;
+	private static DbRecursive dbRec;
 	private DbAccess(){ 
 		try
 	    {
@@ -54,6 +55,7 @@ public class DbAccess {
 		  dbAlgo = new DbAlgorithm(this);
 		  dbMach = new DbMachine(this);
 		  dbPost = new DbPost(this);
+		  dbRec = new DbRecursive(this);
 	     }
 		catch(Exception ex)
         {
@@ -68,6 +70,7 @@ public class DbAccess {
 	public static DbAlgorithm getDbAlgorithm() { return dbAlgo;}
 	public static DbMachine getDbMachine() { return dbMach;}
 	public static DbPost getDbPost() { return dbPost;}
+	public static DbRecursive getDbRecursive() { return dbRec;}
 	//======================================================
 	
 	

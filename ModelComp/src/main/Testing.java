@@ -152,5 +152,22 @@ public class Testing {
 		} else return init;
 	}
 	
+	//========================================
+	public static void testBody() {
+		RecBody w =new  RecBody(2, false);
+		RecBody rec = null;
+		String str ="";
+		String [] in = {"a1","z1","a2",  "i22", "@S(a1,[z1])",
+				"@r(z1,a1)", "@R(z1,a1)", "@R(z1,@S(a1,[z1]))", "@M(x1,67)"};
+		for (int i = 0; i < in.length; i++){
+			System.out.println(": " + in[i] + " --> ");
+			rec = w.analysRecBody(in[i]);
+			if (rec == null) str = w.getErrorText();
+			else str = " < " + rec.rank + " : " + rec.isConst + " > " + rec.toString();
+			System.out.println( " --> " + str);
+		}
+	
+	}
+	
 	
 }

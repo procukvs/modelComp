@@ -27,10 +27,13 @@ public class ShowDescription extends JPanel {
 	private JLabel txtFin;
 	private JTextField sFin;
 	
+	private JLabel txtNumeric;
 	private JCheckBox isNumeric;
 	private JLabel txtRank;
 	private JTextField iRank;
+	private JLabel txtMain;
 	private JTextField sMain;
+	private JLabel txtAdd;
 	private JTextField sAdd;
 	private JLabel txtComm;
 	private JTextField sComm;
@@ -50,17 +53,17 @@ public class ShowDescription extends JPanel {
 		sFin = new JTextField(3);
 		sFin.setMaximumSize(new Dimension(5,100));
 		
-		JLabel txtNumeric = new JLabel("Функція ");
+		txtNumeric = new JLabel("Функція ");
 		isNumeric = new JCheckBox();
 		isNumeric.setSelected(true);
 		txtRank = new JLabel("Арність");
 		iRank = new JTextField(2);
 		iRank.setMaximumSize(new Dimension(3,100));
 		iRank.setText("2");
-		JLabel txtMain = new JLabel("Алфавіт основний");
+		txtMain = new JLabel("Алфавіт основний");
 		sMain = new JTextField(10); 
 		sMain.setMaximumSize(new Dimension(20,100));
-		JLabel txtAdd = new JLabel("Алфавіт додатковий");
+		txtAdd = new JLabel("Алфавіт додатковий");
 		sAdd = new JTextField(10); 
 		sAdd.setMaximumSize(new Dimension(20,100));
 		txtComm = new JLabel("Опис алгоритму");
@@ -159,12 +162,22 @@ public class ShowDescription extends JPanel {
 	
 	public void setModel(String type,Model model) {
 		boolean isVisible = type.equals("Machine");
+		boolean isVisibleMany = !type.equals("Recursive");
 		this.type = type;
 	    this.model = model;
 	  	txtAlgo.setText(Model.title(type, 2)); 
 		txtComm.setText("Опис " + Model.title(type, 3));
 	    if (model == null) showEmpty( );
 	    else showModel();
+	    
+	    txtMain.setVisible(isVisibleMany);
+	    sMain.setVisible(isVisibleMany);
+	    txtAdd.setVisible(isVisibleMany);
+	    sAdd.setVisible(isVisibleMany);
+	    txtNumeric.setVisible(isVisibleMany);
+	    isNumeric.setVisible(isVisibleMany);
+	    txtRank.setVisible(isVisibleMany);
+	    iRank.setVisible(isVisibleMany);
 	    
 		txtInit.setVisible(isVisible);
 		sInit.setVisible(isVisible);
