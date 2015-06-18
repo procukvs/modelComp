@@ -25,6 +25,7 @@ public class DbRecursive {
             	model = new Recursive(id, rs.getString(1));
             	model.descr = rs.getString(2);
             	model.program = getAllFunction(id);
+            	model.extend();
             }
        	}
 		catch (Exception e) {
@@ -35,7 +36,7 @@ public class DbRecursive {
 	
 	private ArrayList getAllFunction(int rec) {
 		ArrayList program = new ArrayList();
-		sql = "select name, Rank, isConst, txBody,  txComm, id, idModel " +
+		sql = "select name, txBody,  txComm, id, idModel " +
 		      "  from fFunction where idModel = " + rec + " order by name";
 		boolean isConst;		
 		try{ 
@@ -43,7 +44,8 @@ public class DbRecursive {
 	        ResultSet rs = db.s.getResultSet();
 	        while((rs!=null) && (rs.next())) {
 	        	isConst = rs.getBoolean(3);
-	           	Function f = new Function(rs.getInt(6), rs.getString(1), rs.getInt(2), rs.getBoolean(3), rs.getString(4), rs.getString(5));
+	           	Function f = new Function(rs.getInt(4), rs.getString(1), rs.getString(2), rs.getString(3));
+	           //	System.out.println(f.toString());
 				program.add(f);
 	        } 
 		}catch (Exception e){

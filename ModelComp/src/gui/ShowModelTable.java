@@ -210,6 +210,7 @@ public class ShowModelTable extends JPanel {
 		switch(type){
 		case "Algorithm" : w = new int[]{10,100,100,10,390,10,10}; break;
 		case "Post" : w = new int[]{10,10,100,100,390,10,10}; break;
+		case "Recursive" : w = new int[]{60, 10,10,10,170,350,10,10}; break;
 		case "Machine": 
 			if (model != null) {
 				Machine m = (Machine)model;
@@ -249,7 +250,18 @@ public class ShowModelTable extends JPanel {
 									{"Коментар","S","N"},
 									{"№Пр","I","N"},
 									{"№С","I","N"}
-								}; break;								
+								}; break;
+		case "Recursive" : 
+			info = new String[][]{
+									{"Назва","S","N"},
+									{"Арність","I","N"},
+									{"Костанта","B","N"},
+									{"Вірна","B","N"},
+									{"Тіло функції","S","N"},
+									{"Коментар","S","N"},
+									{"№Ф","I","N"},
+									{"№Н","I","N"}
+								}; break;						
 		case "Machine": 
 			int l;
 			String allS;

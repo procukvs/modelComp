@@ -154,7 +154,7 @@ public class Testing {
 	
 	//========================================
 	public static void testBody() {
-		RecBody w =new  RecBody(2, false);
+		Recursive w =new  Recursive(0,"mm");
 		RecBody rec = null;
 		String str ="";
 		String [] in = {"a1","z1","a2",  "i22", "@S(a1,[z1])",
@@ -163,7 +163,7 @@ public class Testing {
 			System.out.println(": " + in[i] + " --> ");
 			rec = w.analysRecBody(in[i]);
 			if (rec == null) str = w.getErrorText();
-			else str = " < " + rec.rank + " : " + rec.isConst + " > " + rec.toString();
+			else str = " < " + rec.rank + " : " +  " > " + rec.toString();
 			System.out.println( " --> " + str);
 		}
 	

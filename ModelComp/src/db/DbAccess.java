@@ -266,6 +266,7 @@ public class DbAccess {
 		case "Algorithm" : return dbAlgo.getAlgorithm(id);
 		case "Machine": return dbMach.getMachine(id); 
 		case "Post": return dbPost.getPost(id); 
+		case "Recursive": return dbRec.getRecursive(id); 
 		default: return null;
 		}
 	}
@@ -372,6 +373,7 @@ public class DbAccess {
 		case "Computer" : return "mComputer";
 		case "Machine": return "tMachine";
 		case "Post" : return "pPost";
+		case "Recursive" : return "fRecursive";
 		default: return "mAlgorithm";
 		}
 	}
@@ -381,6 +383,7 @@ public class DbAccess {
 		case "Computer" : return "mProgram";
 		case "Machine": return "tProgram";
 		case "Post" : return "pDerive";
+		case "Recursive" : return "fFunction";
 		default: return "mRule";
 		}
 	}
