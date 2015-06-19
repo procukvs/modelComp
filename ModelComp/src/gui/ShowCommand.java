@@ -11,6 +11,7 @@ import main.*;
 public class ShowCommand extends JDialog  {
 	JLabel lWhat;
 	ShowRule showRule;
+	JButton test;
 	JButton yes;
 	JButton cancel;
 	Command command = null;
@@ -28,6 +29,7 @@ public class ShowCommand extends JDialog  {
 		lWhat.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,16));
 		showRule = new ShowRule();
 		yes = new JButton("Зберегти");
+		test = new JButton("Тестувати");
 		cancel = new JButton("Не зберігати");
 		
 		// формуємо розміщення
@@ -35,6 +37,8 @@ public class ShowCommand extends JDialog  {
 		//---------------------------		
 		Box buttonBox = Box.createHorizontalBox();
 		buttonBox.add(Box.createGlue());
+		buttonBox.add(test);
+		buttonBox.add(Box.createHorizontalStrut(15));
 		buttonBox.add(yes);
 		buttonBox.add(Box.createHorizontalStrut(15));
 		buttonBox.add(cancel);
@@ -45,7 +49,8 @@ public class ShowCommand extends JDialog  {
 		add(buttonBox, BorderLayout.SOUTH);
 		pack();
 		//setSize(400,200);
-		// встановити слухачів !!!			
+		// встановити слухачів !!!	
+		test.addActionListener(new LsTest());
 		yes.addActionListener(new LsYes());
 		cancel.addActionListener(new LsCancel());
 	}
@@ -76,10 +81,21 @@ public class ShowCommand extends JDialog  {
 			hide();
 		}	
 	}
+	
+	class LsTest implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			Recursive r = (Recursive)model;
+			Function f = (Function)showRule.getCommand();
+			//System.out.println(f.getName() + " ...." + f.gettxBody());
+			showRule.lTesting.setText(r.fullAnalys(f.getName(), f.gettxBody()));
+		}
+	}
+	
 	public void setCommand(String what, String type, Model model,  int id){
 		command = null;
 		this.type = type; this.model = model;
 		if (what == "Add") lWhat.setText(Model.title(type, 9)); else lWhat.setText("Редагувати");
+		test.setVisible(type.equals("Recursive"));
 		showRule.setRule(type, model, id, what);
 	}
 	public Command getCommand() { return command;}

@@ -2,6 +2,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecSuper extends RecBody {
 	RecBody f;
 	ArrayList <RecBody> af;
@@ -71,5 +73,15 @@ public class RecSuper extends RecBody {
 		if (st.isEmpty()) st = f.iswf(map);
 		if (st.isEmpty() && (f.rank != af.size())) st = "Арність функції " + f.rank + " не дорівнює кількості аргументів.";
 		return st;
+	}
+	public DefaultMutableTreeNode formTree() { 
+		DefaultMutableTreeNode ft = f.formTree();
+		//DefaultMutableTreeNode ht = h.formTree();
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(toString(),true);
+		root.add(ft);
+		for(int i=0; i < af.size(); i++){
+			root.add(af.get(i).formTree());
+		}
+		return root;
 	}
 }

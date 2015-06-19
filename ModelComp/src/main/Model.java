@@ -105,9 +105,19 @@ public class Model {
 	}
 	
 	// знаходить максимальний номер команди в програмi
-	public int findMaxNumber() {
-		return program.size();
+	public int findMaxNumber(){
+		int cnt = 0;
+		int num;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ ){
+				num = ((Command)program.get(i)).getId();
+				if(cnt < num) cnt = num;
+			}	
+		}
+		return cnt;
 	}
+	
+	
 	// знаходить  порядковий номер команди за іі номером-ключом в БД id
 	public int findCommand(int id) {
 		int cnt = -1;

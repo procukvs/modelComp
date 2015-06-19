@@ -17,7 +17,7 @@ public class ShowWork extends JDialog {
 	private JLabel lWhat;
 	private ShowDescription showDescription;
 	private ShowEval showEval;
-	//private ShowGroup showGroup;
+	private ShowFunction showFunction;
 	private ShowForm showForm;
 	private Box evalBox ;
 		
@@ -45,6 +45,7 @@ public class ShowWork extends JDialog {
 		//lWhat.setHorizontalAlignment(lWhat.CENTER);
 		lWhat.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,16));
 		showDescription = new ShowDescription(false);
+		showFunction = new ShowFunction(this);
 		showForm = new ShowForm(this);
 		showEval = new ShowEval(this);
 		//showTest = new ShowTest(owner);
@@ -64,6 +65,7 @@ public class ShowWork extends JDialog {
 		//-----------------------------
 		evalBox = Box.createVerticalBox();
 		evalBox.add(showForm);
+		evalBox.add(showFunction);
 		evalBox.add(showEval);
 		evalBox.add(showSteps);
 		//-----------------------------
@@ -87,6 +89,7 @@ public class ShowWork extends JDialog {
 		//===================================
 		add(endBox, BorderLayout.SOUTH);  //buttons
 		showForm.setVisible(false);
+		showFunction.setVisible(false);
 		//setSize(200,500);
 		//pack();
 		
@@ -103,10 +106,12 @@ public class ShowWork extends JDialog {
 		//Algorithm algo = (Algorithm)model; 
 		this.type = type;
 	    this.model = model;
-	    isNumeric = model.getIsNumeric();
-	    rank = model.getRank();
-	    main = model.getMain();
-	    lWhat.setText("Робота з " + Model.title(type, 12));
+	    lWhat.setText("Робота з " + Model.title(type, 12));		
+	    if(type.equals("Recursive")){
+	    	isNumeric = model.getIsNumeric();
+	    	rank = model.getRank();
+	    	main = model.getMain();
+	    } else lWhat.setText("Робота з " + Model.title(type, 12) + ".  Обчислити функцію.");
 	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
 	    
 	    showDescription.setModel(type, model);
@@ -120,6 +125,8 @@ public class ShowWork extends JDialog {
 	    	eval.setText("Виконати");
 	    	show.setText("Переглянути");
 	    }
+	    showFunction.setVisible(type.equals("Recursive"));
+	   // System.out.println("showWork......showFunction " + type.equals("Recursive"));
 	    showForm.setVisible(type.equals("Post"));
 	    showEval.setVisible(!type.equals("Post"));
 	    showEval.setModel(type, model);
@@ -127,6 +134,14 @@ public class ShowWork extends JDialog {
 		//System.out.println("setModel......panel");
 		showSteps.setVisible(false);
 		pack();
+	}
+	
+	// викликається зразу після setModel !!!!! 
+	public void setFunction(Function f) {
+		lWhat.setText("Робота з " + Model.title(type, 12) + ".  Функція " + f.getName() +".");
+		//showFunction.setVisible(true);
+		showFunction.setFunction(f);
+		showEval.setFunction(f);
 	}
 
 	class LsEval implements ActionListener  {

@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecBase extends RecBody {
 	String name;
 	int b=0;
@@ -26,4 +28,8 @@ public class RecBase extends RecBody {
 	}
 	public String toString() {return name;} 
 	public String toTest(){return "<Base:" + rank + ":" + name + ">";} 
+	
+	public DefaultMutableTreeNode formTree() { 
+		return new DefaultMutableTreeNode(name,false);
+	}
 }

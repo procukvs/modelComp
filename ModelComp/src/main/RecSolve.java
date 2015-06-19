@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecSolve extends RecBody {
 	RecBody g;
 	int max;
@@ -27,5 +29,12 @@ public class RecSolve extends RecBody {
 		String st =  g.iswf(map);
 		if (st.isEmpty() && (g.rank <= 1)) st = "Невірна арність " + g.rank + " у функції операції мінімізації.";
 		return st;		
+	}
+	
+	public DefaultMutableTreeNode formTree() { 
+		DefaultMutableTreeNode gt = g.formTree();
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(toString(),true);
+		root.add(gt);
+		return root;
 	}
 }

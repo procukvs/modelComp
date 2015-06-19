@@ -20,6 +20,7 @@ public class ShowCommandButtons extends JPanel {
 	private Model model = null;
 	private ShowCommand workCommand;
 	private Command command;
+	private ShowWork showWork; 
 	JButton add;
 	JButton addAs ;
 	JButton up ;
@@ -44,10 +45,12 @@ public class ShowCommandButtons extends JPanel {
 		rename = new JButton("Переіменувати");
 		insert = new JButton("Вставити програму");
 		see = new JButton("Переглянути");
-		eval = new JButton("Обрахувати");
+		eval = new JButton("Виконати");
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		workCommand = new ShowCommand(owner);
+		showWork = new ShowWork(showMain);
+		
 		//workCommand = new ShowCommand(frame);
 		this.db = db;
 		this.table = table;
@@ -88,7 +91,8 @@ public class ShowCommandButtons extends JPanel {
 		down.addActionListener(new LsDown());
 		addAs.addActionListener(new LsAddAs());
 		rename.addActionListener(new LsRename());
-		insert.addActionListener(new LsInsert());	
+		insert.addActionListener(new LsInsert());
+		eval.addActionListener(new LsEval());	
 	}
 	
 	public void setModel(String type, Model model){
@@ -103,7 +107,7 @@ public class ShowCommandButtons extends JPanel {
 		down.setVisible(!isVisible && !rec);
 		rename.setVisible(isVisible);
 		insert.setVisible(isVisible);
-		see.setVisible(rec);
+		see.setVisible(false);
 		eval.setVisible(rec);
 	}	
 	
@@ -329,5 +333,24 @@ public class ShowCommandButtons extends JPanel {
 			
 			}
 		}	
-	} 	
+	} 
+ 	class LsEval implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			if (model != null){
+				int row = table.selectedRule();
+				//System.out.println("ShowCommandButton ..Edit"+row);
+				if (row > 0){
+					Function f;
+					//recur = (Recursive)model;
+					f = (Function)model.program.get(model.findCommand(row));
+					if (f.getiswf())
+						showWork.setModel(type, model);
+						showWork.setFunction(f);
+						showWork.show();
+						
+					  //JOptionPane.showMessageDialog(ShowCommandButtons.this,"обрахувати функцію " + f.getName() + ".");
+				}
+			}
+		}	
+	}
 }

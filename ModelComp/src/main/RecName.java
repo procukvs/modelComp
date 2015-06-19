@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecName extends RecBody {
 	String name;
 	/*
@@ -49,5 +51,9 @@ public class RecName extends RecBody {
 			if(bd != null) st = bd.iswf(map);
 			else st = "Функція " + name + " містить синтаксичні помилки.";
 		} else st = "Не знайдено функцію " + name + "."; 
+	}
+	
+	public DefaultMutableTreeNode formTree() { 
+		return new DefaultMutableTreeNode(name,false);
 	}
 }

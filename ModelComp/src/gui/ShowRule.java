@@ -15,6 +15,7 @@ public class ShowRule extends JPanel {
 	private Algorithm algo = null;
 	private Machine mach = null;
 	private Post post = null;
+	private Recursive recur = null;
 	private String type = "Algorithm";
 	private int idCom = 0;  // Algorithm =>  порядковий номер, else => ключ в БД 
 	private String comAlfa;
@@ -30,10 +31,16 @@ public class ShowRule extends JPanel {
 	JCheckBox checkEnd;
 	JLabel lChar[];
 	JTextField sMove[];
+	JLabel labelBody;
+	JTextField sBody;
 	JTextField sComm;
+	JTextField lTesting;
+	//JLabel lTesting;
 	Box mainBox;
 	Box leftBox;
 	Box rigthBox; 
+	Box bodyBox;
+	ShowTree testTree;
 	//-------------------for Machine--------------
 	Box moveBox[];
 		
@@ -69,9 +76,17 @@ public class ShowRule extends JPanel {
 			si = ((Integer)i).toString();
 			sMove[i].setActionCommand(si);
 		}
+		labelBody = new JLabel("Тіло функції");
+		sBody = new JTextField(50);
+		sBody.setMaximumSize(new Dimension(600,20));
 		JLabel labelComm = new JLabel("Коментар");
 		sComm = new JTextField(50);
 		sComm.setMaximumSize(new Dimension(600,20));
+		//lTesting = new JLabel("....");
+		lTesting = new JTextField(50);
+		lTesting.setMaximumSize(new Dimension(700,20));
+		//testTree = new ShowTree();
+		
 		
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -116,6 +131,10 @@ public class ShowRule extends JPanel {
 								//mainBox.add(Box.createHorizontalStrut(5));
 		mainBox.add(checkEnd);
 		//------------------------------
+		bodyBox = Box.createHorizontalBox();
+		bodyBox.add(labelBody);
+		bodyBox.add(sBody);
+		//------------------------------
 		Box comBox = Box.createHorizontalBox();
 		comBox.add(labelComm);
 		comBox.add(sComm);
@@ -124,16 +143,21 @@ public class ShowRule extends JPanel {
 		add(nameBox);
 		add(Box.createVerticalStrut(5));
 		add(mainBox);
+		add(bodyBox);
 		add(Box.createVerticalStrut(3));
-		add(comBox);	
+		add(comBox);
+		add(lTesting);
+		//add(testTree);
 		add(Box.createGlue());
-				
+		
+		//testTree.setVisible(false);
 		// встановити слухачів !!!
 		state.addActionListener(new LsState());
 		checkAxiom.addActionListener(new LsCheckAxiom());
 		sLeft.addActionListener(new LssLeft());
 		sRigth.addActionListener(new LssRigth());
 		for (int i = 0; i < 30; i++) sMove[i].addActionListener(new LsMove());
+		sBody.addActionListener(new LsBody());
 	}
 	
 	public void setRule(String type, Model model, int id, String what) {
@@ -148,7 +172,11 @@ public class ShowRule extends JPanel {
 		// 
 		//idCom = (id==0?model.findMaxNumber()+1:(type.equals("Algorithm") || isEdit ? id : model.findMaxNumber()+1));
 		idCom = (isEdit ? id : model.findMaxNumber()+1);
-		lId.setText(Model.title(type, 10) + "  № " + idCom);	
+		lId.setText(Model.title(type, 10) + "  № " + idCom);
+		mainBox.setVisible(!type.equals("Recursive"));
+		bodyBox.setVisible(type.equals("Recursive"));
+		lTesting.setVisible(type.equals("Recursive"));
+		//testTree.setVisible(false);
 		if (isAlgo) {
 			Rule rule;
 			algo = (Algorithm)model;
@@ -220,7 +248,34 @@ public class ShowRule extends JPanel {
 			}
 			//sLeft.requestFocus();			
 		}  
-		else {
+		else if (type.equals("Recursive")){
+			Function f;
+			recur = (Recursive)model;
+			if (id==0) f = recur.newFunction(null);
+			else f = (Function)model.program.get(recur.findCommand(id));
+			sBody.setText(f.gettxBody());
+			sComm.setText(f.gettxComm());
+			lTesting.setText(f.geterrorText());
+			if (isEdit) {
+				state.setText(f.getName());
+				sBody.requestFocus();
+			}
+			else {
+				state.setText(id==0?f.getName():recur.findName(f.getName()));
+				state.requestFocus();
+			}
+			state.enable(!isEdit);
+			lTesting.setEditable(false);
+			/*
+			if(f.getiswf()){
+				RecBody rb = recur.map.get(f.getName());
+				testTree.setTree(rb.formTree());
+				testTree.setVisible(true);
+			}
+			*/
+			//lTesting.enable(false);
+			
+		}else{
 			State st;
 			mach = (Machine)model;
 			if (id == 0) st = mach.emptyState("@a0");
@@ -294,6 +349,8 @@ public class ShowRule extends JPanel {
 			com = new Derive(num,checkAxiom.isSelected(),sLeft.getText(),sRigth.getText(),sComm.getText(),idCom);
 			//System.out.println(com.output());
 			break;
+		case "Recursive":
+			com = new Function (idCom, st, sBody.getText(),sComm.getText()); break;
 		}
 		return com;
 	}
@@ -304,12 +361,18 @@ public class ShowRule extends JPanel {
 	class LsState implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			ArrayList <String> mes;
+			String text;
 			switch (type){
 			case "Machine":
-				String text = mach.testState(state.getText());
+				text = mach.testState(state.getText());
 				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
 				else  sMove[0].requestFocus();
 				break;
+			case "Recursive":
+				text = recur.testName(state.getText());
+				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
+				else  sBody.requestFocus();
+				break;	
 			case "Post":
 				mes = post.iswfNum(state.getText());
 				if (mes.size() == 0) {
@@ -406,5 +469,12 @@ public class ShowRule extends JPanel {
 			else JOptionPane.showMessageDialog(ShowRule.this, text);	
 			//JOptionPane.showMessageDialog(ShowRule.this,"index = " + index + " move = " + move);
 		}	
+	}
+	class LsBody implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String st = recur.fullAnalys(state.getText(), sBody.getText());
+			lTesting.setText(st);
+			if(st.isEmpty()) sComm.requestFocus();
+		}
 	}
 }

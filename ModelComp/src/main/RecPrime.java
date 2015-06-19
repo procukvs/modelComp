@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecPrime extends RecBody {
 	RecBody g,h;
 	public RecPrime(RecBody g, RecBody h){
@@ -31,5 +33,14 @@ public class RecPrime extends RecBody {
 				st = "Невідповідність арностей у функцій операції примітивної рекурсії.";
 		}
 		return st;
+	}
+	
+	public DefaultMutableTreeNode formTree() { 
+		DefaultMutableTreeNode gt = g.formTree();
+		DefaultMutableTreeNode ht = h.formTree();
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(toString(),true);
+		root.add(gt);
+		root.add(ht);
+		return root;
 	}
 }

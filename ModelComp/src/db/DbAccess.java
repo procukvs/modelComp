@@ -276,6 +276,7 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.editRule(model.id, id, (Rule)cmd); break;
 		case "Machine": dbMach.editState((Machine)model, id, (State)cmd); break;
 		case "Post" : dbPost.editDerive(model.id, (Derive)cmd); break;
+		case "Recursive" : dbRec.editFunction(model.id, (main.Function)cmd); break;
 		default: System.out.println(">>> Not realise editCommand for: " + type + "!");
 		}
 	}
@@ -285,6 +286,7 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.newRule(model.id, (Rule)cmd); break;
 		case "Machine": dbMach.newState((Machine)model, (State)cmd); break;
 		case "Post" : dbPost.newDerive(model.id, (Derive)cmd); break;
+		case "Recursive" : dbRec.newFunction(model.id, (main.Function)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}

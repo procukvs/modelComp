@@ -1,6 +1,8 @@
 package main;
 
 import java.util.*;
+import javax.swing.tree.*;
+
 
 public class RecBody {
 	int rank = -1;
@@ -23,5 +25,7 @@ public class RecBody {
 	public void setIswf(HashMap <String, RecBody> map) {}
 	public boolean isConst(HashMap <String, RecBody> map) {return false;};
 	public String iswf(HashMap <String, RecBody> map) {return "";}
+	
+	public DefaultMutableTreeNode formTree() { return null;}
 }
 

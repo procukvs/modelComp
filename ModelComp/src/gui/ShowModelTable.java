@@ -145,6 +145,7 @@ public class ShowModelTable extends JPanel {
 				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
 				break;
 			case "Post": col = 5; break;	
+			case "Recursive": col = 6; break;	
 			}
 			rule = (Integer)dbm.getValueAt(r,col);
 		}
@@ -255,7 +256,7 @@ public class ShowModelTable extends JPanel {
 			info = new String[][]{
 									{"Назва","S","N"},
 									{"Арність","I","N"},
-									{"Костанта","B","N"},
+									{"Константа","B","N"},
 									{"Вірна","B","N"},
 									{"Тіло функції","S","N"},
 									{"Коментар","S","N"},

@@ -1,9 +1,11 @@
 package main;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 public class Recursive extends Model {
-	HashMap <String, RecBody> map;
+	public HashMap <String, RecBody> map;
 	public Recursive(int id, String name) {
 		super(id,name);
 		map = new HashMap <String, RecBody>();
@@ -20,7 +22,7 @@ public class Recursive extends Model {
 			if(rb == null) f.errorText = "S:" + errorText; //getErrorText(); 
 			//String st;
 			//if( rb == null) st = getErrorText(); else st = rb.toString(); 
-			//System.out.println(f.name + ":" + f.txBody + " ==> " + f.getRank());
+			//System.out.println(f.name + ":" + f.txBody + " ==> " + f.iswf);
 			map.put(f.name,rb);
 		}
 		
@@ -30,7 +32,10 @@ public class Recursive extends Model {
 				rb = map.get(f.name);
 				st = rb.setRank(f.name, map);
 				f.rank = rb.rank;
-				if(!st.isEmpty())f.errorText = "R:" + st;
+				if(!st.isEmpty()){
+					f.errorText = "R:" + st;
+					f.iswf = false;
+				}
 				else f.isConst = rb.isConst(map);
 				//System.out.println(f.name + ":" + f.errorText);
 			}
@@ -43,7 +48,7 @@ public class Recursive extends Model {
 				st = rb.iswf(map);
 				if(!st.isEmpty()) {
 					f.iswf = false; f.errorText = "C:" + st;
-					System.out.println(f.name + ":" + f.errorText);
+					//System.out.println(f.name + ":" + f.errorText);
 				}
 			}
 		} 
@@ -53,6 +58,32 @@ public class Recursive extends Model {
 		
 	}
 
+	public String[] iswfModel(){
+		ArrayList <String> mes = new ArrayList<String>();
+		String [] names = new String[] {"","",""};
+		Function f;
+		int j;
+		for(int i = 0; i < program.size(); i++) {
+			f = (Function)program.get(i);
+			if (!f.getiswf()){
+				switch(f.geterrorText().charAt(0)){
+				case 'S': j=0; break;
+				case 'R': j=1; break;
+				case 'C': j=2; break;
+				default: j = -1;
+				}
+				if (j >= 0){
+					if(!names[j].isEmpty()) names[j] = names[j] + ",";
+					names[j] = names[j] + f.getName();
+				}
+			}
+		}
+		if(!names[0].isEmpty()) mes.add("Функції " + names[0] + " містять синтаксичні помилки."); 
+		if(!names[1].isEmpty()) mes.add("Для функцій " + names[1] + " не встановлено арність.");
+		if(!names[2].isEmpty()) mes.add("Для функцій " + names[2] + " не виконуються контекстні умови."); 
+		return StringWork.transferToArray(mes);
+	}
+	
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -76,9 +107,7 @@ public class Recursive extends Model {
         } 
         return data;
 	}		
-	
-	
-	
+		
 	public String toString() {
 		String rs = "[";
 		for(String nf:map.keySet()){
@@ -88,8 +117,63 @@ public class Recursive extends Model {
 		}
 		return rs + "\n]";
 	}
+
+	public String fullAnalys(String name, String body){
+		String st = "";
+		RecBody rb = analysRecBody(body);
+		if (rb != null) {
+			st = rb.setRank(name, map);
+			if(st.isEmpty()){
+				st = rb.iswf(map);
+				if(!st.isEmpty()) st = "R:" + st;
+			}
+			else st = "R:" + st;
+		} else st = "S:" + errorText;
+		return st;
+	}
 	
+	//перевіряє ім"я нової функції на коректність...
+	public String testName(String name){
+		String st = "";
+		if (StringWork.isIdentifer(name)){
+			if(map.containsKey(name)) st = "Функція з іменем " + name + " вже є в наборі.";
+		} else st = "Імя функції " + name + " - не ідентифікатор.";
+		return st;
+	}
 	
+	//знаходить імя функції по замовчуванню : перше вільне з "base00", "base01",...
+	public String findName(String base){
+		int i = 0;
+		NumberFormat suf = new DecimalFormat("00"); 
+		boolean isUse;
+		String name;
+		do {
+			i++;
+			name = base + suf.format(i);
+			isUse = map.containsKey(name);
+		} while (isUse);
+		return name;
+	}
+	
+   public Function newFunction(Function f){	
+	   int num = findMaxNumber();
+	   if (f != null){
+		  return new Function(num, findName(f.name), f.txBody, f.txComm); 
+	   } 
+	   else return new Function(num, findName("new"),"","");
+   }
+	
+   	// 	знаходить порядковий номер функції в програмі за іменем name 
+	public int findCommand(String name) {
+		int cnt = -1;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ )
+				if(name.equals(((Function)program.get(i)).getName())) cnt = i;
+		}
+		return cnt;
+	}
+   
+   
 	public String isBody(String text){
 		errorText = "";
 		textAnalys = text;	posAnalys = 0;

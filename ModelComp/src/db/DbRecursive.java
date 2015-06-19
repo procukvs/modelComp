@@ -53,5 +53,25 @@ public class DbRecursive {
 		}
 		return program;
 	}	
-
+	
+	public void editFunction(int id, Function fun) {
+		 try{	
+			sql = "update fFunction set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + fun.gettxComm() + "'" +
+		 			"	where idModel = " + id + " and id = " + fun.getId() ;
+		 	//System.out.println("Db.."+sql);
+		 	db.s.execute(sql);
+	  	 } catch (SQLException e) {
+			System.out.println("ERROR: editFunction: " + e.getMessage() );
+		 }  			
+	}
+	
+	public void newFunction(int idModel, Function fun) {
+		 try{	
+			sql = "insert into fFunction values(" + idModel + "," + fun.getId() + ",'" + fun.getName() +
+					"','" + fun.gettxBody() + "','" + fun.gettxComm() + "')";
+			db.s.execute(sql);
+	  	 } catch (SQLException e) {
+			System.out.println("ERROR: newFunction: " + e.getMessage() );
+		 }  			
+	}
 }
