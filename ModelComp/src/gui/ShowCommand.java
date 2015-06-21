@@ -66,11 +66,11 @@ public class ShowCommand extends JDialog  {
 				else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
 				
 			} else {
-				String text = showRule.testAllCommand();
-				if (text.isEmpty()) {
+				ArrayList <String> mes = showRule.testAllCommand();
+				if (mes.size() == 0) {
 					command = showRule.getCommand();
 					hide();
-				} else JOptionPane.showMessageDialog(ShowCommand.this,text); 
+				} else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
 			}	
 		}	
 	}

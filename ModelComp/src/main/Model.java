@@ -45,6 +45,7 @@ public class Model {
 	public int dbNewAs() { return 1;}
 	public void dbRenameState(String in,String out) {}
 	public String dbInsertModel(String nmInsert) { return "";}
+	public String dbInsertModel(int were, String nmInsert) { return "";}
 	
 	
 	private static String[][] titles = { 
@@ -59,7 +60,10 @@ public class Model {
 								"аксіому/правило виводу", "системою Поста","Всі теореми"},
 			{"Recursive", "Частково-рекурсивні функції","Набір функцій","набору","Функції набору", "набором", 
 									"набір","Новий", "Набір", "Нова","Функція",
-									"функцію", "набором функцій","Функції набору"} 	
+									"функцію", "набором функцій","Функції набору"},
+			{"Computer", "Машини з необмеженими регістрами","Машина","машини","Програма", "машиною", 
+									"машину","Нова", "Машину", "Нова","Команда",
+									"команду", "машиною","Послідовність конфігурацій машини"},
 								};
 				
 	Model(int id, String name) {

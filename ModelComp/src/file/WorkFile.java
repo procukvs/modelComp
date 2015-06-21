@@ -96,10 +96,11 @@ public class WorkFile {
 		    	case "Algorithm": model = algorithm(txComm); break;
 		    	case "Machine" : model = machine(txComm); break;
 		    	case "System": model = post(txComm); break;
-		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System !";	
+		    	case "Recursive": model = recursive(txComm); break;
+		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive !";	
 		    	}
 		    	
-		    } else errorText = "Очікується тип моделі Algorithm/Machine/System !";
+		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive !";
 		   // model = algorithm();
 		  	in.close();
 			System.out.println("File " + name + " is close.."); 
@@ -416,6 +417,63 @@ public class WorkFile {
 		} else return null;
 	}		
 	
+	private Recursive recursive(String txComm){
+		Recursive model = null;
+		Function f;
+		int id = 0;
+		ArrayList functions = new ArrayList();
+		exam(20,"службове слово Recursive");
+		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя набору функцій");
+		if (errorText.isEmpty()) {
+			model = new Recursive(0,valuePrev);
+			model.descr = txComm;
+			model.program = functions;
+		}
+		while ((errorText.isEmpty()) && (lex != 23)){
+			//   if (lex == 4) {txComm = valueLex; get();} 
+			id++;
+			f = function(id);
+			if (f != null) model.program.add(f);
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 23){
+				get();
+				exam(1, "ідентифікатор - імя набору функцій");
+				if (errorText.isEmpty()) {
+					if (!(model.name.equals(valuePrev)))
+						errorText = "Заключне імя " + valuePrev  + " не співпадає з іменем набору функцій " + model.name + "!";
+				}
+			} else errorText = "Очікується службове слово end !";
+		}	
+		if (errorText.isEmpty()) 
+			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		if (!errorText.isEmpty()) model = null; 
+		return model;
+	}
+	
+	private Function function(int id) {
+		String name = "", txBody = "";
+		String txComm = "";
+		int rank = 1;
+		if (lex == 4) {txComm = valueLex; get();}
+		name = valueLex;
+		exam(1, "ідентифікатор - імя функції");
+		exam(15, "символ :");
+		if (errorText.isEmpty()) {
+			if(lex == 3) rank = new Integer(valueLex);
+			exam(3, "натуральне число - арність функції");
+			exam(16, "символ =");
+		}
+		if (errorText.isEmpty()){
+		   while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){
+			 txBody = txBody + valueLex; get(); 
+		   }  
+		   exam (13,"символ ;");
+		}
+		if (errorText.isEmpty())
+			return new Function(id, name, txBody, txComm);
+		else return null;
+	}		
 	
 	
 	private void exam(int lx, String what) {
@@ -480,14 +538,15 @@ public class WorkFile {
 					valueLex = valueLex + next; getChar();
 				} while (StringWork.isDigit(next));
 			} else  {
-				lex = 40;  // undefined lexem !!!
+				lex = 40;   valueLex = ""+next;// undefined lexem !!!
 				switch (next){
 					case '.': lex = 11; getChar(); break;
 					case ',': lex = 12; getChar(); break;
 					case ';': lex = 13; getChar(); break;
 					case '-': getChar(); 
 						if (next == '>') {lex = 14; getChar();}	break;
-					case ':': if(type.equals("Machine")) lex = 15; getChar(); break;
+					case ':': if(type.equals("Machine") || type.equals("Recursive")) lex = 15; getChar(); break;
+					case '=': if(type.equals("Recursive")) lex = 16; getChar(); break;
 					//case '\n':	
 					default: getChar();	
 				}

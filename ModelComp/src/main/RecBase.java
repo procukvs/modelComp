@@ -26,10 +26,30 @@ public class RecBase extends RecBody {
 		if ((b>0) &&(!(b>=wh))) st = "Функція селекції " + name + " - невірна.";
 		return st;
 	}
+	public int eval(int[] arg, Recursive set){
+		int res = 0;
+		if (set.getNoUndef()){
+			set.stepEval();
+			if (b==0){
+				if (wh==1) res = arg[0] + 1;
+			} else  res = arg[wh-1];
+		}
+		return res;
+	}
+	
 	public String toString() {return name;} 
 	public String toTest(){return "<Base:" + rank + ":" + name + ">";} 
 	
-	public DefaultMutableTreeNode formTree() { 
-		return new DefaultMutableTreeNode(name,false);
+	public void formTree(DefaultMutableTreeNode root) { 
+		//System.out.println(this.toString());
+		root.add(new DefaultMutableTreeNode(name,false));
 	}
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		int res = this.eval(arg,set);
+		String sh = name + "<" + StringWork.argString(arg) + ">=" + res;
+		root.add(new DefaultMutableTreeNode(sh,false));
+		return res;
+	}
+	
+	
 }

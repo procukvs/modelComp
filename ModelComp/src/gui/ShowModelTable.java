@@ -140,6 +140,7 @@ public class ShowModelTable extends JPanel {
 		if (r >= 0) {
 			int col = 0;
 			switch (type) {
+			case "Computer": col = 3; break;	
 			case "Algorithm": col = 5; break; 
 			case "Machine": 
 				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
@@ -209,6 +210,7 @@ public class ShowModelTable extends JPanel {
 	private int[] findWidth(){
 		int [] w = null;
 		switch(type){
+		case "Computer" : w = new int[]{20,70,510,20,10}; break;
 		case "Algorithm" : w = new int[]{10,100,100,10,390,10,10}; break;
 		case "Post" : w = new int[]{10,10,100,100,390,10,10}; break;
 		case "Recursive" : w = new int[]{60, 10,10,10,170,350,10,10}; break;
@@ -232,6 +234,14 @@ public class ShowModelTable extends JPanel {
 	private String[][] findInform(String type){
 		String[][] info = null;
 		switch(type){
+		case "Computer" : 
+			info = new String[][]{
+									{"№","I","N"},
+									{"Команда","S","N"},
+									{"Коментар","S","N"},
+									{"№К","I","N"},
+									{"№M","I","N"}
+								}; break;
 		case "Algorithm" : 
 			info = new String[][]{
 									{"№","I","N"},

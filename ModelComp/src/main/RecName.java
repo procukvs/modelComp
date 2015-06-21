@@ -53,7 +53,29 @@ public class RecName extends RecBody {
 		} else st = "Не знайдено функцію " + name + "."; 
 	}
 	
-	public DefaultMutableTreeNode formTree() { 
-		return new DefaultMutableTreeNode(name,false);
+	public int eval(int[] arg, Recursive set){
+		int res = 0;
+		if (set.getNoUndef()){
+			res = set.map.get(name).eval(arg, set);
+		}
+		return res;
 	}
+	
+	public void formTree(DefaultMutableTreeNode root) { 
+		//System.out.println(this.toString());
+		root.add( new DefaultMutableTreeNode(name,false));
+	}
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		int res = 0;
+		if (set.getNoUndef()){
+			String sBase = name + "<" + StringWork.argString(arg) + ">=" ;
+			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
+			res = set.map.get(name).test(arg, set,base);
+			//int res = this.test(arg,set,base);
+			base.setUserObject(sBase+res); 
+			root.add(base);
+		}
+		return res;
+	}
+	
 }

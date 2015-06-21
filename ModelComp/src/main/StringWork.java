@@ -182,5 +182,13 @@ public class StringWork {
 		}
 		return res;
 	}	
+	public static String argString(int[] arg) {
+		String st = "";
+		for(int i=0; i<arg.length; i++) {
+			if (i>0)  st = st+",";
+			st = st+arg[i];
+		}
+		return st;
+	}
 }
 

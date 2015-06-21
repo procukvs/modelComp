@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.sql.SQLException;
 import java.text.*;
@@ -20,6 +21,7 @@ public class ShowWork extends JDialog {
 	private ShowFunction showFunction;
 	private ShowForm showForm;
 	private Box evalBox ;
+	Box headBox; 
 		
 	//private ShowTest showTest;
 	ShowSteps showSteps;
@@ -28,11 +30,15 @@ public class ShowWork extends JDialog {
 	JButton quit;
 	private String type = "Algorithm";
 	private Model model = null;
+	private Function f = null;
 	private boolean isNumeric = true;
 	private int rank = 2;
 	private String main = "";
 	private ArrayList sl = null;
 	//private boolean visibleSteps = false;
+	
+	//==========================
+	ShowTree testTree;
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ShowWork(ShowModels owner){
@@ -50,6 +56,9 @@ public class ShowWork extends JDialog {
 		showEval = new ShowEval(this);
 		//showTest = new ShowTest(owner);
 		showSteps = new ShowSteps();
+		//========================
+		//testTree = new ShowTree();
+		//=====================
 		
 		//showGroup = new ShowGroup(this);
 		eval = new JButton("Виконати");
@@ -58,7 +67,7 @@ public class ShowWork extends JDialog {
 		
 		// формуємо розміщення
 		setLayout(new BorderLayout());
-		Box headBox = Box.createVerticalBox();
+		headBox = Box.createVerticalBox();
 		//evalBox.setBorder(new EtchedBorder());
 		headBox.add(lWhat);
 		headBox.add(showDescription);
@@ -67,6 +76,9 @@ public class ShowWork extends JDialog {
 		evalBox.add(showForm);
 		evalBox.add(showFunction);
 		evalBox.add(showEval);
+		//========================
+		//evalBox.add(testTree);
+		//========================
 		evalBox.add(showSteps);
 		//-----------------------------
 		Box buttons = Box.createHorizontalBox();
@@ -90,7 +102,10 @@ public class ShowWork extends JDialog {
 		add(endBox, BorderLayout.SOUTH);  //buttons
 		showForm.setVisible(false);
 		showFunction.setVisible(false);
-		//setSize(200,500);
+		//========================
+		//testTree.setVisible(false);
+		//========================
+		setSize(200,500);
 		//pack();
 		
 		
@@ -107,7 +122,7 @@ public class ShowWork extends JDialog {
 		this.type = type;
 	    this.model = model;
 	    lWhat.setText("Робота з " + Model.title(type, 12));		
-	    if(type.equals("Recursive")){
+	    if(!type.equals("Recursive")){
 	    	isNumeric = model.getIsNumeric();
 	    	rank = model.getRank();
 	    	main = model.getMain();
@@ -131,6 +146,7 @@ public class ShowWork extends JDialog {
 	    showEval.setVisible(!type.equals("Post"));
 	    showEval.setModel(type, model);
 		show.setEnabled(false);
+		show.setVisible(!type.equals("Recursive"));
 		//System.out.println("setModel......panel");
 		showSteps.setVisible(false);
 		pack();
@@ -138,10 +154,27 @@ public class ShowWork extends JDialog {
 	
 	// викликається зразу після setModel !!!!! 
 	public void setFunction(Function f) {
+		this.f = f;
+		rank = f.getRank();
 		lWhat.setText("Робота з " + Model.title(type, 12) + ".  Функція " + f.getName() +".");
-		//showFunction.setVisible(true);
+								//showFunction.setVisible(true);
 		showFunction.setFunction(f);
 		showEval.setFunction(f);
+		//===============================
+		// тестування --показ структури тіла функції  == взаємодія вікон -- розміри
+		/*
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Edit Testing");
+		RecBody rb =((Recursive)model).map.get(f.getName());
+		rb.formTree(root);
+		if (testTree != null)evalBox.remove(testTree);
+		testTree = new ShowTree(root);
+		//testTree.setMaximumSize(new Dimension(600,100));
+		//testTree.setSize(100,100);
+		evalBox.add(testTree);
+		//testTree.setVisible(false);
+		pack();
+		*/
+		//============================
 	}
 
 	class LsEval implements ActionListener  {
@@ -150,41 +183,92 @@ public class ShowWork extends JDialog {
 			String text = "";
 			String input = "";
 			String sParam;
+			int nodef=0 ;
 			if (!type.equals("Post")){
-				if (isNumeric){
+				if(!type.equals("Recursive")){
+					if (isNumeric){
+						for (int i = 0; i < rank; i++) {
+							sParam = showEval.tParam[i].getText();
+							if(StringWork.isNatur(sParam)) {
+								if (i> 0) input = input + "#";
+								input = input + StringWork.toInternal(new Integer(sParam));
+							} else text = text + " " + sParam;
+						}
+						if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+					} else {
+						input = showEval.tInit.getText();
+						text = StringWork.isAlfa(main, input);
+						if(!text.isEmpty()) text = "Вхідне слово " + input + 
+											" містить символи " + text + " що не належать основному алфавіту !";
+					}
+					if(text.isEmpty()) {
+						sParam = showEval.tNodef.getText();
+						if(StringWork.isNatur(sParam)) 	text = "Кількість кроків " + sParam + " не натуральне число.";
+						else nodef = new Integer(showEval.tNodef.getText());
+					}	
+					if(text.isEmpty()) {
+						//=================================
+						sl = model.eval(input, nodef);
+						//text = ((Substitution)(sl.get(sl.size()- 1))).str;
+						//if (isNumeric) text = StringWork.transNumeric(text);
+						//if (sl.size() == nodef + 1) text = "Невизначено";
+						text = model.takeResult(sl, nodef);
+						showEval.tResult.setText(text);
+						showEval.tStep.setText(sl.size()+""); 
+						show.setEnabled(true);
+					}  else {
+						showEval.tResult.setText(text);
+						show.setEnabled(false);
+					}
+					//System.out.println("eval......panel");
+					showSteps.setVisible(false);
+					pack();
+				} else {
+					// Recursive !!!!!!
+					int[] arg = new int[rank];
 					for (int i = 0; i < rank; i++) {
 						sParam = showEval.tParam[i].getText();
+						//System.out.println("Recursive eval " + i + " = " + sParam +  " " + rank );
 						if(StringWork.isNatur(sParam)) {
-							if (i> 0) input = input + "#";
-							input = input + StringWork.toInternal(new Integer(sParam));
+							int a = new Integer(sParam);
+							arg[i] = a;
 						} else text = text + " " + sParam;
 					}
-					if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
-				} else {
-					input = showEval.tInit.getText();
-					text = StringWork.isAlfa(main, input);
-					if(!text.isEmpty()) text = "Вхідне слово " + input + 
-											" містить символи " + text + " що не належать основному алфавіту !";
+					if(text.isEmpty()){
+						sParam = showEval.tNodef.getText();
+						if(!StringWork.isNatur(sParam)) 	text = "Кількість кроків " + sParam + " не натуральне число.";
+						else nodef = new Integer(showEval.tNodef.getText());
+					} else text = "Аргументи:" + text + " - не натуральні числа";
+					if(text.isEmpty()){
+											//System.out.println("Recursive eval " + f.getName() + " = " + arg[0] +  " " + rank );
+						text = ((Recursive) model).evalFunction(f, arg, nodef);
+						showEval.tResult.setText(text);
+						showEval.tStep.setText(((Recursive) model).getAllStep()+""); 
+						//======================================================
+						//  тестування отримання дерева обрахунку для перегляду=== взаємодія вікон --розміри і т.і.
+						//      після підгону можна !!!!!!!!
+						/*
+						String sRoot = f.getName()+"("+StringWork.argString(arg) + ")=";
+						DefaultMutableTreeNode root = new DefaultMutableTreeNode(sRoot,true);
+						text = ((Recursive) model).testFunction(f, arg, nodef,root);
+						showEval.tResult.setText(text);
+						showEval.tStep.setText(((Recursive) model).getAllStep()+""); 
+						
+						if (testTree != null)evalBox.remove(testTree);
+						testTree = new ShowTree(root);
+						//testTree.setMaximumSize(new Dimension(600,100));
+						//testTree.setSize(100,100);
+						evalBox.add(testTree);
+						//testTree.setVisible(false);
+						pack();
+						*/
+						//=============================================================
+					}
+					else showEval.tResult.setText(text);
+					//System.out.println("Eval recursive begin:" + input + " " +   text);
 				}
-				if(text.isEmpty()) {
-					//=================================
-					int nodef = new Integer(showEval.tNodef.getText());
-					//System.out.println("Eval begin:" + input + " " + nodef);
-					sl = model.eval(input, nodef);
-					//text = ((Substitution)(sl.get(sl.size()- 1))).str;
-					//if (isNumeric) text = StringWork.transNumeric(text);
-					//if (sl.size() == nodef + 1) text = "Невизначено";
-					text = model.takeResult(sl, nodef);
-					showEval.tResult.setText(text);
-					showEval.tStep.setText(sl.size()+""); 
-					show.setEnabled(true);
-				}  else {
-					show.setEnabled(false);
-				}
-				//System.out.println("eval......panel");
-				showSteps.setVisible(false);
-				pack();
-			} else {
+			} 
+			else {
 				showEval.setVisible(false);
 				showSteps.setVisible(false);
 				show.setEnabled(false);

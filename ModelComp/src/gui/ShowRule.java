@@ -16,10 +16,12 @@ public class ShowRule extends JPanel {
 	private Machine mach = null;
 	private Post post = null;
 	private Recursive recur = null;
+	private Computer comp = null;
 	private String type = "Algorithm";
 	private int idCom = 0;  // Algorithm =>  порядковий номер, else => ключ в БД 
 	private String comAlfa;
 	private String what = "";
+	//private boolean initialBCod;
 	JLabel lModel;
 	JLabel lId;
 	JTextField state;     // стан або порядковий номер зовнішня ідентифікація == редагуємо при створенні !!!!!!!!
@@ -29,6 +31,20 @@ public class ShowRule extends JPanel {
 	JLabel labelRigth; 
 	JTextField sRigth;
 	JCheckBox checkEnd;
+	//----------------------Computer
+	JLabel lCod;
+	JComboBox bCod;
+	JLabel lReg1;
+	JTextField tReg1;
+	JLabel lReg2;
+	JTextField tReg2;
+	JLabel lNext;
+	JTextField tNext;
+	Box codBox;
+	Box reg1Box;
+	Box reg2Box;
+	Box nextBox;
+	//---------------
 	JLabel lChar[];
 	JTextField sMove[];
 	JLabel labelBody;
@@ -40,7 +56,7 @@ public class ShowRule extends JPanel {
 	Box leftBox;
 	Box rigthBox; 
 	Box bodyBox;
-	ShowTree testTree;
+	
 	//-------------------for Machine--------------
 	Box moveBox[];
 		
@@ -63,6 +79,30 @@ public class ShowRule extends JPanel {
 		sRigth.setMaximumSize(new Dimension(400,20));
 		                         //sRigth.setPreferredSize(new Dimension(100,20));
 		checkEnd = new JCheckBox("Заключна підстановка ?");
+		//----------------------Computer
+		String[] codl = {"Z","S","T","J"};
+		lCod = new JLabel("Код");
+		lCod.setAlignmentX(lCod.CENTER_ALIGNMENT);         
+		bCod = new JComboBox(codl);
+		//bCod.setPrototypeDisplayValue("11");
+		bCod.setBackground(Color.WHITE);
+		bCod.setMaximumSize(new Dimension(50,20));
+		lReg1 = new JLabel("Регістр 1");
+		lReg1.setAlignmentX(lReg1.CENTER_ALIGNMENT);      
+		tReg1 = new JTextField(4);
+		tReg1.setText("1");
+		tReg1.setMaximumSize(new Dimension(30,20));
+		//tReg1.setAlignmentX(lReg1.CENTER_ALIGNMENT);         
+		lReg2 = new JLabel("Регістр 2");
+		lReg2.setAlignmentX(lReg2.CENTER_ALIGNMENT);    
+		tReg2 = new JTextField(4);
+		tReg2.setMaximumSize(new Dimension(30,20));
+		lNext = new JLabel("Наступна");
+		lNext.setAlignmentX(lNext.CENTER_ALIGNMENT);    
+		tNext = new JTextField(5);
+		tNext.setMaximumSize(new Dimension(40,20));
+		//---------------
+				
 		//-------------------for Machine--------------
 		lChar = new JLabel[30];
 		sMove = new JTextField[30];
@@ -85,7 +125,7 @@ public class ShowRule extends JPanel {
 		//lTesting = new JLabel("....");
 		lTesting = new JTextField(50);
 		lTesting.setMaximumSize(new Dimension(700,20));
-		//testTree = new ShowTree();
+		
 		
 		
 		// формуємо розміщення
@@ -121,7 +161,31 @@ public class ShowRule extends JPanel {
 			moveBox[i].setPreferredSize(new Dimension(1000,60));
 														//moveBox[i].setBorder(new EtchedBorder());
 		}
-	 	
+	 	//---------------------Computer
+		codBox = Box.createVerticalBox();
+		codBox.add(lCod);
+		codBox.add(Box.createVerticalStrut(3));
+		codBox.add(bCod);
+		                                                  //codBox.setBorder(new EtchedBorder());
+		codBox.setPreferredSize(new Dimension(100,60));
+		reg1Box = Box.createVerticalBox();
+		reg1Box.add(lReg1);
+		reg1Box.add(Box.createVerticalStrut(3));
+		reg1Box.add(tReg1);
+		                                                 // reg1Box.setBorder(new EtchedBorder());
+		reg1Box.setPreferredSize(new Dimension(100,60));
+		reg2Box = Box.createVerticalBox();
+		reg2Box.add(lReg2);
+		reg2Box.add(Box.createVerticalStrut(3));
+		reg2Box.add(tReg2);
+		                                                 // reg2Box.setBorder(new EtchedBorder());
+		reg2Box.setPreferredSize(new Dimension(100,60));
+		nextBox = Box.createVerticalBox();
+		nextBox.add(lNext);
+		nextBox.add(Box.createVerticalStrut(3));
+		nextBox.add(tNext);
+		                                                //  nextBox.setBorder(new EtchedBorder());
+		nextBox.setPreferredSize(new Dimension(100,60));
 		//------------------------------
 		mainBox = Box.createHorizontalBox();
 		mainBox.add(checkAxiom);
@@ -158,6 +222,10 @@ public class ShowRule extends JPanel {
 		sRigth.addActionListener(new LssRigth());
 		for (int i = 0; i < 30; i++) sMove[i].addActionListener(new LsMove());
 		sBody.addActionListener(new LsBody());
+		bCod.addActionListener(new LsCod());
+		tReg1.addActionListener(new LsReg1());
+		tReg2.addActionListener(new LsReg2());
+		tNext.addActionListener(new LsNext());
 	}
 	
 	public void setRule(String type, Model model, int id, String what) {
@@ -177,6 +245,27 @@ public class ShowRule extends JPanel {
 		bodyBox.setVisible(type.equals("Recursive"));
 		lTesting.setVisible(type.equals("Recursive"));
 		//testTree.setVisible(false);
+		state.setMaximumSize(new Dimension(50,20));
+		//---------------------Computer
+		if (type.equals("Computer")){
+			mainBox.add(codBox);
+			mainBox.add(reg1Box);
+			mainBox.add(reg2Box);
+			mainBox.add(nextBox);	
+			mainBox.remove(checkAxiom);
+			mainBox.remove(leftBox);
+			mainBox.remove(rigthBox);
+			mainBox.remove(checkEnd);
+			for (int i = 0; i < 30; i++){
+				mainBox.remove(moveBox[i]);
+			}
+		} else {
+			mainBox.remove(codBox);
+			mainBox.remove(reg1Box);
+			mainBox.remove(reg2Box);
+			mainBox.remove(nextBox);		
+		}
+		//---------------------Computer
 		if (isAlgo) {
 			Rule rule;
 			algo = (Algorithm)model;
@@ -251,6 +340,7 @@ public class ShowRule extends JPanel {
 		else if (type.equals("Recursive")){
 			Function f;
 			recur = (Recursive)model;
+			state.setMaximumSize(new Dimension(100,20));
 			if (id==0) f = recur.newFunction(null);
 			else f = (Function)model.program.get(recur.findCommand(id));
 			sBody.setText(f.gettxBody());
@@ -275,7 +365,7 @@ public class ShowRule extends JPanel {
 			*/
 			//lTesting.enable(false);
 			
-		}else{
+		}else if (type.equals("Machine")){
 			State st;
 			mach = (Machine)model;
 			if (id == 0) st = mach.emptyState("@a0");
@@ -302,20 +392,67 @@ public class ShowRule extends JPanel {
 			for (int i = 0; (i < comAlfa.length()) && (i < 30); i++){
 			  mainBox.add(moveBox[i]);
 			}
+		} else if (type.equals("Computer")){
+			//System.out.println("Computer");
+			Instruction inst;
+			String cod;
+			String sReg2 = "";
+			String sNext = "";
+			boolean bZS = true;
+			boolean bJ = false;
+			comp = (Computer)model;
+			lId.setText(Model.title(type, 10) + "(" + idCom + ")");	
+			if (id == 0) inst = new Instruction(model.program.size()+1,"Z",1,0,0,"====",idCom);
+			else inst =  (Instruction)model.program.get( model.findCommand(id));                                   //(Derive)model.program.get(id-1);
+			state.setText("" + inst.getNum());
+			sComm.setText(inst.gettxComm());
+			state.enable(!isEdit);
+			cod = inst.getCod();
+			//initialBCod = true;
+			tReg1.setText("" + inst.getReg1());
+			bCod.setSelectedItem(cod);
+			
+			//tReg2.setText(""); tNext.setText("");
+			bZS = cod.equals("Z") ||cod.equals("S");
+			bJ = cod.equals("J"); 
+			if (!bZS) tReg2.setText("" + inst.getReg2());
+			if (bJ) tNext.setText("" + inst.getNext());
+			//tReg2.enable(!bZS);
+			//tNext.enable(bJ);
+			//initialBCod = false;
+			if (isEdit) {
+				bCod.requestFocus(); 
+			}
+			else {
+				state.requestFocus();
+			}
 		}
 	}
 	
-	public String testAllCommand(){
+	public ArrayList <String> testAllCommand(){
+		ArrayList <String> mes = new ArrayList <String> ();
 		String text = "";
 		if(type.equals("Machine")){
 			int i = 0;
-			if(what.equals("New"))text = mach.testState(state.getText());
-			while ((i < comAlfa.length()-1) && (i < 29) && text.isEmpty()){
+			if(what.equals("New")){
+				text = mach.testState(state.getText());
+				if(!text.isEmpty()) mes.add(text);
+			}
+			while ((i < comAlfa.length()-1) && (i < 29) ){
 				text = mach.testMove(sMove[i].getText());
+				if(!text.isEmpty()) mes.add(text);
 				i++;
 			}
+		} else if(type.equals("Computer")){
+			String cod = (String)bCod.getSelectedItem();
+			text = comp.testPart(cod, 1, tReg1.getText());
+			if(!text.isEmpty()) mes.add(text);
+			text = comp.testPart(cod, 2, tReg2.getText());
+			if(!text.isEmpty()) mes.add(text);
+			text = comp.testPart(cod, 3, tNext.getText());
+			if(!text.isEmpty()) mes.add(text);
 		}
-		return text;
+		return mes;
 	}
 	
 	public Command getCommand(){
@@ -351,6 +488,15 @@ public class ShowRule extends JPanel {
 			break;
 		case "Recursive":
 			com = new Function (idCom, st, sBody.getText(),sComm.getText()); break;
+		case "Computer":
+			int reg2 = 0;
+			int next = 0;
+			String cod = (String)bCod.getSelectedItem();
+			if (!cod.equals("Z") && !cod.equals("S")) {
+				reg2 = new Integer(tReg2.getText());
+				if (cod.equals("J"))next = new Integer(tNext.getText());  
+			}
+			com = new Instruction (new Integer(st), cod, new Integer(tReg1.getText()), reg2, next, sComm.getText(), idCom); break;	
 		}
 		return com;
 	}
@@ -378,6 +524,11 @@ public class ShowRule extends JPanel {
 				if (mes.size() == 0) {
 					if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
 				} else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				break;
+			case "Computer":
+				mes = comp.iswfNum(state.getText());
+				if (mes.size() == 0) bCod.requestFocus();
+				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
 				break;
 			case "Algorithm":
 				mes = algo.iswfNum(state.getText());
@@ -475,6 +626,45 @@ public class ShowRule extends JPanel {
 			String st = recur.fullAnalys(state.getText(), sBody.getText());
 			lTesting.setText(st);
 			if(st.isEmpty()) sComm.requestFocus();
+		}
+	}
+	class LsCod implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String cod = (String)bCod.getSelectedItem();
+			tReg2.setText(""); tReg2.enable(false);
+			tNext.setText(""); tNext.enable(false);
+			if(!cod.equals("Z") && !cod.equals("S")){
+				tReg2.setText("1"); tReg2.enable(true);
+				if (cod.equals("J")) {tNext.setText("1"); tNext.enable(true);}
+			}
+			
+			tReg1.requestFocus();
+		}
+	}
+	class LsReg1 implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String cod = (String)bCod.getSelectedItem();
+			String text = comp.testPart(cod, 1, tReg1.getText());
+			if (text.isEmpty()){  
+				if (cod.equals("Z") ||cod.equals("S")) sComm.requestFocus(); else tReg2.requestFocus();
+			} else 	JOptionPane.showMessageDialog(ShowRule.this,text);
+		}
+	}
+	class LsReg2 implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String cod = (String)bCod.getSelectedItem();
+			String text = comp.testPart(cod, 2, tReg2.getText());
+			if (text.isEmpty()){  
+				if (!cod.equals("J")) sComm.requestFocus();	else tNext.requestFocus();
+			} else JOptionPane.showMessageDialog(ShowRule.this,text);
+		}
+	}
+	class LsNext implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String text = comp.testPart((String)bCod.getSelectedItem(), 3, tNext.getText());
+			if (text.isEmpty())	sComm.requestFocus();
+			else JOptionPane.showMessageDialog(ShowRule.this,text);
+			
 		}
 	}
 }

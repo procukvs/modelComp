@@ -4,12 +4,59 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import db.DbAccess;
+import file.OutputText;
+
 public class Recursive extends Model {
 	public HashMap <String, RecBody> map;
 	public Recursive(int id, String name) {
 		super(id,name);
 		map = new HashMap <String, RecBody>();
 	}
+	
+	
+	public String getType() {return "Recursive";}  
+	public int dbNewAs() { 
+		return DbAccess.getDbRecursive().newRecursiveAs(this);
+	}
+	public boolean dbDelete() {
+		 return DbAccess.getDbRecursive().deleteRecursive(this);
+	}
+	//=================================
+	private int limit, step;
+	private String reasonUndef;
+	private boolean noUndef;
+	private int result;
+	//=================================
+	public String evalFunction(Function f, int[] arg, int limit){
+		RecBody bf;
+		this.limit = limit;	step = 0;
+		reasonUndef = ""; noUndef = true;
+		result = 0;
+		bf = map.get(f.getName());
+		result = bf.eval(arg, this);
+		if (!noUndef){
+			if (reasonUndef.equals("Limit")) return "Невизначено (вичерпана загальна кількість кроків)";
+			else return "Невизначено (при виконанні операції " + reasonUndef + ")";
+		} else	return "" + result;
+		
+	}
+	
+	public void stepEval() {
+		step++;
+		if (noUndef && (step>limit)){
+			noUndef = false; reasonUndef = "Limit";
+		}
+	}
+	
+	public void setUndef(String name){
+		noUndef = false; reasonUndef = name;
+	}
+	
+	public boolean getNoUndef() {return noUndef;}
+	public int getAllStep() {return step;}
 	
 	public void extend(){
 		Function f;
@@ -118,6 +165,28 @@ public class Recursive extends Model {
 		return rs + "\n]";
 	}
 
+	public String output(String name, OutputText out) {
+		String res = "";
+		String wr;
+		Function f;
+		if(out.open(name)) {
+			System.out.println("File " + name + " is open..");
+			if (!descr.isEmpty()) out.output("'" + descr);
+			out.output("Recursive " + this.name);
+			for (int i = 0; i < program.size(); i++){
+				f = (Function)program.get(i);
+				if (!(f.gettxComm().isEmpty())) out.output("   '" + f.gettxComm());
+				wr = f.getName() + ":" + f.getRank() + "=" +f.gettxBody(); 
+				out.output("   " + wr + ";");
+			}
+			out.output("end " + this.name);
+			out.close();
+			System.out.println("File " + name + " is close.."); 
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}		
+	
+	
 	public String fullAnalys(String name, String body){
 		String st = "";
 		RecBody rb = analysRecBody(body);
@@ -187,10 +256,17 @@ public class Recursive extends Model {
 	}
 	
 	public  RecBody analysRecBody(String text){
+		RecBody rb;
 		errorText = "";
 		textAnalys = text;	posAnalys = 0;
 		getChar(); get();
-		return recBody();
+		rb = recBody();
+		if (errorText.isEmpty()){
+			if (!eos) {
+				errorText = "Не знайдено кінця рядка!";rb = null;
+			}
+		}
+		return rb;
 	}
 	
 	public String getErrorText() {return errorText;}
@@ -335,4 +411,19 @@ public class Recursive extends Model {
 			else errorText = "Очікується " + what + " .";
 		}	
 	}	
+	
+	//===========================================
+	public String testFunction(Function f, int[] arg, int limit, DefaultMutableTreeNode  root){
+		RecBody bf;
+		this.limit = limit;	step = 0;
+		reasonUndef = ""; noUndef = true;
+		result = 0;
+		bf = map.get(f.getName());
+		result = bf.test(arg, this, root);
+		if (!noUndef){
+			if (reasonUndef.equals("Limit")) return "Невизначено (вичерпана загальна кількість кроків)";
+			else return "Невизначено (при виконанні операції " + reasonUndef + ")";
+		} else	return "" + result;
+		
+	}
 }

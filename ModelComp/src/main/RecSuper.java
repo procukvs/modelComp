@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class RecSuper extends RecBody {
 	RecBody f;
 	ArrayList <RecBody> af;
+	
 	public RecSuper(RecBody f, ArrayList <RecBody> af) {
 		//super(((af == null) || (af.size() == 0) || (af.get(0).rank <= 0))  ? -1 : af.get(0).rank , 
 		//		f.toString().equals("a1") && (af != null) && (af.size() == 1) && af.get(0).isConst);
@@ -74,14 +75,43 @@ public class RecSuper extends RecBody {
 		if (st.isEmpty() && (f.rank != af.size())) st = "Арність функції " + f.rank + " не дорівнює кількості аргументів.";
 		return st;
 	}
-	public DefaultMutableTreeNode formTree() { 
-		DefaultMutableTreeNode ft = f.formTree();
-		//DefaultMutableTreeNode ht = h.formTree();
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(toString(),true);
-		root.add(ft);
-		for(int i=0; i < af.size(); i++){
-			root.add(af.get(i).formTree());
+	
+	public int eval(int[] arg, Recursive set){
+		int res = 0;
+		if (set.getNoUndef()){
+			set.stepEval();
+			int[] argF = new int[af.size()];
+			for(int i = 0; i < argF.length; i++)
+				argF[i] = af.get(i).eval(arg, set);
+			res = f.eval(argF, set);
 		}
-		return root;
+		return res;
+	}
+	
+	
+	
+	public void formTree(DefaultMutableTreeNode root) { 
+		//DefaultMutableTreeNode ft = f.formTree();
+		//DefaultMutableTreeNode ht = h.formTree();
+		DefaultMutableTreeNode base = new DefaultMutableTreeNode(toString(),true);
+		//System.out.println(this.toString());
+		f.formTree(base);
+		for(int i=0; i < af.size(); i++) af.get(i).formTree(base);
+		root.add(base);
+	}
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		int res = 0;
+		if (set.getNoUndef()){
+			String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
+			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
+			set.stepEval();
+			int[] argF = new int[af.size()];
+			for(int i = 0; i < argF.length; i++)
+				argF[i] = af.get(i).test(arg, set,base);
+			res = f.test(argF, set, base);
+			base.setUserObject(sBase+res); 
+			root.add(base);
+		}
+		return res;
 	}
 }

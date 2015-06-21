@@ -26,13 +26,15 @@ public class ShowModels extends JFrame {
 		// створюємо випадаюче меню, що містить звичайні елементи меню
 		JMenu mModel= new JMenu("Модель обчислень");
 		// елемент меню - команда
+		JMenuItem computer = new JMenuItem(Model.title("Computer", 1));
+		JMenuItem machine = new JMenuItem(Model.title("Machine", 1));  		//("Машини Тьюрінга");
 		JMenuItem algorithm = new JMenuItem(Model.title("Algorithm", 1));	//(new AlgorithmAction()); // 
-		JMenuItem machine = new JMenuItem(Model.title("Machine", 1));  		//("Машини Тьюрінга"); 
-		JMenuItem post = new JMenuItem(Model.title("Post", 1));
+	 	JMenuItem post = new JMenuItem(Model.title("Post", 1));
 		JMenuItem rec = new JMenuItem(Model.title("Recursive", 1));
 		
-		mModel.add(algorithm);
+		mModel.add(computer);
 		mModel.add(machine);
+		mModel.add(algorithm);
 		mModel.add(post);
 		mModel.add(rec);
 		menuBar.add(mModel);
@@ -40,6 +42,7 @@ public class ShowModels extends JFrame {
 		menuBar.add(quit);
 		setJMenuBar(menuBar);
 		
+		computer.addActionListener(new LsComputer());
 		algorithm.addActionListener(new LsAlgorithm());
 		machine.addActionListener(new LsMachine());
 		post.addActionListener(new LsPost());
@@ -86,6 +89,10 @@ public class ShowModels extends JFrame {
 		//if (model != null )	System.out.println(model.show());
 		showModel.setModel(type,model);
 		modelButtons.setModel(type,model);
+	}
+	
+	class LsComputer implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {showModel("Computer",0);	}	
 	}
 	
 	class LsAlgorithm implements ActionListener  {

@@ -162,6 +162,7 @@ public class ShowDescription extends JPanel {
 	
 	public void setModel(String type,Model model) {
 		boolean isVisible = type.equals("Machine");
+		boolean isComputer = type.equals("Computer");
 		boolean isVisibleMany = !type.equals("Recursive");
 		this.type = type;
 	    this.model = model;
@@ -170,12 +171,12 @@ public class ShowDescription extends JPanel {
 	    if (model == null) showEmpty( );
 	    else showModel();
 	    
-	    txtMain.setVisible(isVisibleMany);
-	    sMain.setVisible(isVisibleMany);
-	    txtAdd.setVisible(isVisibleMany);
-	    sAdd.setVisible(isVisibleMany);
-	    txtNumeric.setVisible(isVisibleMany);
-	    isNumeric.setVisible(isVisibleMany);
+	    txtMain.setVisible(isVisibleMany && !isComputer);
+	    sMain.setVisible(isVisibleMany && !isComputer);
+	    txtAdd.setVisible(isVisibleMany && !isComputer);
+	    sAdd.setVisible(isVisibleMany && !isComputer);
+	    txtNumeric.setVisible(isVisibleMany && !isComputer);
+	    isNumeric.setVisible(isVisibleMany && !isComputer);
 	    txtRank.setVisible(isVisibleMany);
 	    iRank.setVisible(isVisibleMany);
 	    
