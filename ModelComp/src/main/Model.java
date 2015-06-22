@@ -88,6 +88,10 @@ public class Model {
 		return null;
 	}
 	
+	public ArrayList eval(int[] arg, int nodef){
+		return null;
+	}
+	
 	public ArrayList eval(ShowForm showForm, int step){
 		return null;
 	}

@@ -183,6 +183,7 @@ public class ShowWork extends JDialog {
 			String text = "";
 			String input = "";
 			String sParam;
+			int[] arg = new int[rank];
 			int nodef=0 ;
 			if (!type.equals("Post")){
 				if(!type.equals("Recursive")){
@@ -190,11 +191,19 @@ public class ShowWork extends JDialog {
 						for (int i = 0; i < rank; i++) {
 							sParam = showEval.tParam[i].getText();
 							if(StringWork.isNatur(sParam)) {
-								if (i> 0) input = input + "#";
-								input = input + StringWork.toInternal(new Integer(sParam));
+								arg[i] = new Integer(sParam);
+								//if (i> 0) input = input + "#";
+								//input = input + StringWork.toInternal(new Integer(sParam));
 							} else text = text + " " + sParam;
 						}
-						if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+						if(text.isEmpty()){
+							if (!type.equals("Computer"))
+								for (int i = 0; i < rank; i++) {
+									if (i> 0) input = input + "#";
+									input = input + StringWork.toInternal(arg[i]);		
+								}
+						} else text = "Аргументи:" + text + " - не натуральні числа";
+						
 					} else {
 						input = showEval.tInit.getText();
 						text = StringWork.isAlfa(main, input);
@@ -203,18 +212,20 @@ public class ShowWork extends JDialog {
 					}
 					if(text.isEmpty()) {
 						sParam = showEval.tNodef.getText();
-						if(StringWork.isNatur(sParam)) 	text = "Кількість кроків " + sParam + " не натуральне число.";
+						if(!StringWork.isNatur(sParam)) 	text = "Кількість кроків " + sParam + " не натуральне число.";
 						else nodef = new Integer(showEval.tNodef.getText());
 					}	
 					if(text.isEmpty()) {
 						//=================================
-						sl = model.eval(input, nodef);
+						if(type.equals("Computer")) sl = model.eval(arg, nodef);
+						else sl = model.eval(input, nodef);
 						//text = ((Substitution)(sl.get(sl.size()- 1))).str;
 						//if (isNumeric) text = StringWork.transNumeric(text);
 						//if (sl.size() == nodef + 1) text = "Невизначено";
 						text = model.takeResult(sl, nodef);
 						showEval.tResult.setText(text);
-						showEval.tStep.setText(sl.size()+""); 
+						if(type.equals("Computer")) showEval.tStep.setText((sl.size()-2) +""); 
+						else showEval.tStep.setText(sl.size()+""); 
 						show.setEnabled(true);
 					}  else {
 						showEval.tResult.setText(text);
@@ -225,7 +236,7 @@ public class ShowWork extends JDialog {
 					pack();
 				} else {
 					// Recursive !!!!!!
-					int[] arg = new int[rank];
+					
 					for (int i = 0; i < rank; i++) {
 						sParam = showEval.tParam[i].getText();
 						//System.out.println("Recursive eval " + i + " = " + sParam +  " " + rank );
@@ -329,7 +340,7 @@ public class ShowWork extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			show.setEnabled(false);
 			showSteps.setShowSteps(type, model, sl);
-											//System.out.println("show......panel");
+											//System.out.println("show......panel" + type + "ooo..");
 			showSteps.setVisible(true);
 			showSteps.showGroup.th.setSelected(true);
 			pack();

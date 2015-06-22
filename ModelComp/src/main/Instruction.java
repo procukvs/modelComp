@@ -35,5 +35,9 @@ public class Instruction extends Command {
 	      s = this.toCommand();
 	      if (txComm.length()>0) s = s +  " '" + txComm;
 	      return s;
-	    }
+	 }
+	 public int evalMaxReg(){
+		 if(cod.equals("Z") || cod.equals("S")) return reg1;
+		 else return ((reg1>reg2)?reg1:reg2); 
+	}
 }
