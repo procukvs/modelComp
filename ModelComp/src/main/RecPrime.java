@@ -2,8 +2,11 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecPrime extends RecBody {
 	RecBody g,h;
+	
 	public RecPrime(RecBody g, RecBody h){
 		this.g = g; this.h = h;
 	}
@@ -32,4 +35,57 @@ public class RecPrime extends RecBody {
 		}
 		return st;
 	}
+	
+	public int eval(int[] arg, Recursive set){
+		int res = 0;
+		if (set.getNoUndef()){
+			int k = arg.length;
+			int[] argG = new int[(k==1?1:k-1)];
+			int[] argH = new int[k+1];
+			set.stepEval();
+			int y = arg[k - 1];
+			for(int i = 0; i < (k-1); i++){
+				argG[i] = arg[i]; argH[i] = arg[i];
+			}
+			if(k==1) argG[0] = arg[0];
+			res = g.eval(argG, set);
+			for(int i = 0; i < y; i++){
+				argH[k-1] = i; argH[k] = res;
+				res = h.eval(argH, set);
+			}
+		}
+		return res;
+	}	
+	
+	public void formTree(DefaultMutableTreeNode root) { 
+		DefaultMutableTreeNode base = new DefaultMutableTreeNode(this.toString(),true);
+		//System.out.println(this.toString());
+		g.formTree(base);
+		h.formTree(base);
+		root.add(base);
+	}
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		int res = 0;
+		if (set.getNoUndef()){
+			String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
+			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
+			int k = arg.length;
+			int[] argG = new int[(k==1?1:k-1)];
+			int[] argH = new int[k+1];
+			set.stepEval();
+			int y = arg[k - 1];
+			for(int i = 0; i < (k-1); i++){
+				argG[i] = arg[i]; argH[i] = arg[i];
+			}
+			if(k==1) argG[0] = arg[0];
+			res = g.test(argG, set,base);
+			for(int i = 0; i < y; i++){
+				argH[k-1] = i; argH[k] = res;
+				res = h.test(argH, set,base);
+			}
+			base.setUserObject(sBase+res); 
+			root.add(base);
+		}
+		return res;
+	}	
 }

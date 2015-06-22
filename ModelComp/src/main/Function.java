@@ -18,10 +18,20 @@ public class Function extends Command {
 		return name + ":" + rank + ":" + isConst + ":" + iswf + ":" + txBody;
 	}
 	
+	public String show(String st1){
+		String st = name + ":" + rank + ":" + txBody;
+		if (!txComm.isEmpty()) st = st + "\n  '" + txComm;
+		if(!errorText.isEmpty()) st = st + "\n  " + errorText;
+		return st ;
+	}
+	
 	public String getName () {return name;}
 	public int getRank() {return rank;}
 	public boolean getisConst () {return isConst;}
 	public boolean getiswf () {return iswf;}
 	public String gettxBody () {return txBody;}
+	public String geterrorText () {return errorText;}
+	public void settxBody(String txBody){ this.txBody =txBody;}
+	
 	
 }

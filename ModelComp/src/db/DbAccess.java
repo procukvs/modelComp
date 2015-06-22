@@ -46,6 +46,7 @@ public class DbAccess {
   	private static DbMachine dbMach;
 	private static DbPost dbPost;
 	private static DbRecursive dbRec;
+	private static DbComputer dbComp;
 	private DbAccess(){ 
 		try
 	    {
@@ -56,6 +57,7 @@ public class DbAccess {
 		  dbMach = new DbMachine(this);
 		  dbPost = new DbPost(this);
 		  dbRec = new DbRecursive(this);
+		  dbComp = new DbComputer(this);
 	     }
 		catch(Exception ex)
         {
@@ -71,6 +73,7 @@ public class DbAccess {
 	public static DbMachine getDbMachine() { return dbMach;}
 	public static DbPost getDbPost() { return dbPost;}
 	public static DbRecursive getDbRecursive() { return dbRec;}
+	public static DbComputer getDbComputer() { return dbComp;}
 	//======================================================
 	
 	
@@ -222,6 +225,7 @@ public class DbAccess {
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
 		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
 		case "Post" : idModel = dbPost.addPost((Post)model); break; 
+		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break; 
 		}	
 		return idModel;
 	}
@@ -240,6 +244,7 @@ public class DbAccess {
 		case "Algorithm" : idModel = dbAlgo.newAlgorithm(); break;
 		case "Machine" : idModel = dbMach.newMachine(); break;
 		case "Post" : idModel = dbPost.newPost(); break;
+		case "Recursive" : idModel = dbRec.newRecursive(); break;
 		}	
 		return idModel;
 	}
@@ -267,30 +272,36 @@ public class DbAccess {
 		case "Machine": return dbMach.getMachine(id); 
 		case "Post": return dbPost.getPost(id); 
 		case "Recursive": return dbRec.getRecursive(id); 
+		case "Computer": return dbComp.getComputer(id); 
 		default: return null;
 		}
 	}
 	
 	public void editCommand(String type, Model model, int id, Command cmd){
 		switch(type){
+		case "Computer" : dbComp.editInstruction(model.id, (Instruction)cmd); break;
 		case "Algorithm" : dbAlgo.editRule(model.id, id, (Rule)cmd); break;
 		case "Machine": dbMach.editState((Machine)model, id, (State)cmd); break;
 		case "Post" : dbPost.editDerive(model.id, (Derive)cmd); break;
+		case "Recursive" : dbRec.editFunction(model.id, (main.Function)cmd); break;
 		default: System.out.println(">>> Not realise editCommand for: " + type + "!");
 		}
 	}
 	
 	public void newCommand(String type, Model model, Command cmd){
 		switch(type){
+		case "Computer" : dbComp.newInstruction(model.id, (Instruction)cmd); break;
 		case "Algorithm" : dbAlgo.newRule(model.id, (Rule)cmd); break;
 		case "Machine": dbMach.newState((Machine)model, (State)cmd); break;
 		case "Post" : dbPost.newDerive(model.id, (Derive)cmd); break;
+		case "Recursive" : dbRec.newFunction(model.id, (main.Function)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}
 	
 	public void deleteCommand(String type, int idModel, int id, Command cmd){
 		switch(type){
+		case "Computer" : dbComp.deleteInstruction(idModel, (Instruction)cmd); break;
 		case "Algorithm" : dbAlgo.deleteRule(idModel, id); break;
 		case "Machine": dbMach.deleteState(idModel, id); break;
 		case "Post" : dbPost.deleteDerive(idModel, (Derive)cmd); break;
@@ -370,17 +381,17 @@ public class DbAccess {
 	
 	private String tableModel(String type){
 		switch(type){
-		case "Computer" : return "mComputer";
 		case "Machine": return "tMachine";
 		case "Post" : return "pPost";
 		case "Recursive" : return "fRecursive";
+		case "Computer" : return "rComputer";
 		default: return "mAlgorithm";
 		}
 	}
 	
 	private String tableCommand(String type){
 		switch(type){
-		case "Computer" : return "mProgram";
+		case "Computer" : return "rInstruction";
 		case "Machine": return "tProgram";
 		case "Post" : return "pDerive";
 		case "Recursive" : return "fFunction";

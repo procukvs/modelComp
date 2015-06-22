@@ -53,5 +53,123 @@ public class DbRecursive {
 		}
 		return program;
 	}	
+	
+	// створює новий порожній набір функцій
+	public int newRecursive() {
+		String name = db.findName("Recursive","Set");
+		int cnt = db.maxNumber("REcursive")+1;
+		int rows;
+		try{
+			sql = "insert into fRecursive values(" + cnt + ",'" + name + "','new set')";
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0) cnt = 0;
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: newREcursive :" + sql + " "  + e.getMessage());
+		}
+		return cnt;
+	}	
+	
+	// створює нову систему на основі системи з model (включаючи всі аксіоми та правила виводу)
+	public int newRecursiveAs(Recursive model){
+		String name = db.findName("Recursive", model.name);
+		int cnt = db.maxNumber("Recursive")+1;
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into fRecursive select " + cnt + ",'" + name + "', descr from fRecursive where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				if (rows == 0) cnt =0;
+				sql = "insert into fFunction select " + cnt + ", id, name, txBody, txComm " +
+							" from fFunction where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: newRecursivetAs :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}
 
+	public boolean deleteRecursive(Recursive model){
+		int rows;
+		boolean res = false;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "delete from fFunction where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from fRecursive where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+				res = true;
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: deleteRecursive :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
+	}	
+	
+	// додає введений з файлу набір функцій model (включаючи всі функції)
+	public int addRecursive(Recursive model){
+		String name = model.name;
+		int cnt = db.maxNumber("Recursive")+1;
+		int rows;
+		Function f;
+		if (db.isModel("Recursive",name)) name = db.findName("Recursive", model.name);
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into fRecursive values(" + cnt + ",'" + name + "','" + model.descr + "')";  
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					f = (Function)model.program.get(i);
+					sql = "insert into fFunction values(" + cnt + "," + f.getId() + ",'" + f.getName() + "','" +  
+									f.gettxBody() + "','" + f.gettxComm() + "')";
+					rows=rows + db.s.executeUpdate(sql);
+				}
+			if (rows != model.program.size() + 1) cnt = 0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: addRecursive :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}			
+	
+	
+	public void editFunction(int id, Function fun) {
+		 try{	
+			sql = "update fFunction set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + fun.gettxComm() + "'" +
+		 			"	where idModel = " + id + " and id = " + fun.getId() ;
+		 	//System.out.println("Db.."+sql);
+		 	db.s.execute(sql);
+	  	 } catch (SQLException e) {
+			System.out.println("ERROR: editFunction: " + e.getMessage() );
+		 }  			
+	}
+	
+	public void newFunction(int idModel, Function fun) {
+		 try{	
+			sql = "insert into fFunction values(" + idModel + "," + fun.getId() + ",'" + fun.getName() +
+					"','" + fun.gettxBody() + "','" + fun.gettxComm() + "')";
+			db.s.execute(sql);
+	  	 } catch (SQLException e) {
+			System.out.println("ERROR: newFunction: " + e.getMessage() );
+		 }  			
+	}
 }

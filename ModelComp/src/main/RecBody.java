@@ -1,6 +1,8 @@
 package main;
 
 import java.util.*;
+import javax.swing.tree.*;
+
 
 public class RecBody {
 	int rank = -1;
@@ -15,6 +17,9 @@ public class RecBody {
 	public String toString() {return "";}
 	public String toTest() {return "";}
 	
+	public int eval(int[] arg, Recursive set){
+		return 0;
+	}
 	public RecBody fromString(String text){
 		return null;
 	}
@@ -23,5 +28,10 @@ public class RecBody {
 	public void setIswf(HashMap <String, RecBody> map) {}
 	public boolean isConst(HashMap <String, RecBody> map) {return false;};
 	public String iswf(HashMap <String, RecBody> map) {return "";}
+	
+	public void formTree(DefaultMutableTreeNode  root) { }
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode  root){
+		return 0;
+	}
 }
 

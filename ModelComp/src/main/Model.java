@@ -45,6 +45,7 @@ public class Model {
 	public int dbNewAs() { return 1;}
 	public void dbRenameState(String in,String out) {}
 	public String dbInsertModel(String nmInsert) { return "";}
+	public String dbInsertModel(int were, String nmInsert) { return "";}
 	
 	
 	private static String[][] titles = { 
@@ -59,7 +60,10 @@ public class Model {
 								"аксіому/правило виводу", "системою Поста","Всі теореми"},
 			{"Recursive", "Частково-рекурсивні функції","Набір функцій","набору","Функції набору", "набором", 
 									"набір","Новий", "Набір", "Нова","Функція",
-									"функцію", "набором функцій","Функції набору"} 	
+									"функцію", "набором функцій","Функції набору"},
+			{"Computer", "Машини з необмеженими регістрами","Машина","машини","Програма", "машиною", 
+									"машину","Нова", "Машину", "Нова","Команда",
+									"команду", "машиною","Послідовність конфігурацій машини"},
 								};
 				
 	Model(int id, String name) {
@@ -84,6 +88,10 @@ public class Model {
 		return null;
 	}
 	
+	public ArrayList eval(int[] arg, int nodef){
+		return null;
+	}
+	
 	public ArrayList eval(ShowForm showForm, int step){
 		return null;
 	}
@@ -105,9 +113,19 @@ public class Model {
 	}
 	
 	// знаходить максимальний номер команди в програмi
-	public int findMaxNumber() {
-		return program.size();
+	public int findMaxNumber(){
+		int cnt = 0;
+		int num;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ ){
+				num = ((Command)program.get(i)).getId();
+				if(cnt < num) cnt = num;
+			}	
+		}
+		return cnt;
 	}
+	
+	
 	// знаходить  порядковий номер команди за іі номером-ключом в БД id
 	public int findCommand(int id) {
 		int cnt = -1;

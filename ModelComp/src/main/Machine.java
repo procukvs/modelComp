@@ -49,8 +49,7 @@ public class Machine extends Model {
 		 DbAccess.getDbMachine().renameState(this, in, out);
 	}
 	public String dbInsertModel(String nmInsert) {
-		DbAccess.getDbMachine().insertMachine(this, nmInsert);
-		return "";
+		return DbAccess.getDbMachine().insertMachine(this, nmInsert);
 	}
 	/*public boolean isState(String st) {
 		boolean go = true;

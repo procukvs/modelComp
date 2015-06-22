@@ -112,6 +112,7 @@ public class ShowSteps extends JPanel {
 		header.setText(Model.title(type, 13));
 		ds = model.getStepSource(sl, type.equals("Algorithm"));
 		dbm.setDataSource(null);
+								//System.out.println("showStep....panel" + type + ".." + sl.size());
 		dbm.setInitialModel(findInform(type));
 		dbm.fireTableStructureChanged();
 		setColumnWidth();
@@ -287,6 +288,18 @@ public class ShowSteps extends JPanel {
 					{"Виведено","S","N"},
 					{"Попередньо виведене","S","N"}
 				}; break;
+				
+		case "Computer":
+			
+			int cnt = ((Computer)model).evalMaxReg() +3;
+			info = new String[cnt][3];
+			info[0][0] = "Крок"; info[0][1] = "I";  info[0][2] = "N"; 
+			info[1][0] = "№Команди"; info[1][1] = "I";  info[1][2] = "N"; 
+			info[2][0] = "Команда"; info[2][1] = "S";  info[2][2] = "N"; 
+			for(int i = 3; i < cnt; i++){
+				info[i][0] = "r"+(i-2); info[i][1] = "I";  info[i][2] = "N"; 
+			}
+			break;
 		default: 	info = new String[][]{
 				{"Крок","I","N"},
 				{"№ підст.","I","N"},
@@ -321,6 +334,13 @@ public class ShowSteps extends JPanel {
 		case "Algorithm" : w = new int[]{100,75,300,300}; break;
 		case "Machine":  w = new int[]{75,350,350}; break;
 		case "Post":  w = new int[]{25,275,475}; break;
+		case "Computer":
+			//int cnt = ((ArrayList)(sl.get(0))).size();
+			int cnt = ((Computer)model).evalMaxReg() +3;
+			w = new int[cnt];
+			for(int i=0; i<cnt; i++) w[i]=25;
+			w[2]=40;
+			break;
 		default:  w = new int[]{100,75,300,300}; 
 		}
 		return w;

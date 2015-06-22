@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class RecSolve extends RecBody {
 	RecBody g;
 	int max;
@@ -27,5 +29,59 @@ public class RecSolve extends RecBody {
 		String st =  g.iswf(map);
 		if (st.isEmpty() && (g.rank <= 1)) st = "Невірна арність " + g.rank + " у функції операції мінімізації.";
 		return st;		
+	}
+	
+	public int eval(int[] arg, Recursive set){
+		int res = 0;
+		int resg; 
+		boolean go = true;
+		if (set.getNoUndef()){
+			int k = arg.length;
+			set.stepEval();
+			int[] argG = new int[k + 1];
+			for( int i = 0; i < k; i++) argG[i] = arg[i];
+			argG[k] = 0;
+			resg = g.eval(argG, set);
+			while (go && (resg !=0) && set.getNoUndef()){
+				res++; argG[k] = res;
+				go = (res <= max);
+				if (go) resg = g.eval(argG, set);
+			}
+			if (!go) set.setUndef(this.toString());
+		}
+		return res;
+	}
+	
+	
+	public void formTree(DefaultMutableTreeNode root) { 
+		//DefaultMutableTreeNode gt = g.formTree();
+		DefaultMutableTreeNode base = new DefaultMutableTreeNode(toString(),true);
+		g.formTree(base);
+		//System.out.println(this.toString());
+		root.add(base);
+	}
+	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		int res = 0;
+		int resg; 
+		boolean go = true;
+		if (set.getNoUndef()){
+			int k = arg.length;
+			String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
+			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
+			set.stepEval();
+			int[] argG = new int[k + 1];
+			for( int i = 0; i < k; i++) argG[i] = arg[i];
+			argG[k] = 0;
+			resg = g.eval(argG, set);
+			while (go && (resg !=0) && set.getNoUndef()){
+				res++; argG[k] = res;
+				go = (res <= max);
+				if (go) resg = g.test(argG, set,base);
+			}
+			if (!go) set.setUndef(this.toString());
+			base.setUserObject(sBase+res); 
+			root.add(base);
+		}
+		return res;
 	}
 }

@@ -20,6 +20,8 @@ public class ShowCommandButtons extends JPanel {
 	private Model model = null;
 	private ShowCommand workCommand;
 	private Command command;
+	private ShowWork showWork; 
+	JButton test;
 	JButton add;
 	JButton addAs ;
 	JButton up ;
@@ -34,7 +36,7 @@ public class ShowCommandButtons extends JPanel {
 	ShowCommandButtons(DbAccess db, ShowModelTable table, ShowModels owner){
 	//ShowCommandButtons(DbAccess db, ShowModelTable table, ShowModelAll owner, ShowMenu frame){
 		//сформувати необхідні gui-елементи 
-		JButton test = new JButton("Перевірка");
+		test = new JButton("Перевірка");
 		add = new JButton("Нова");
 		addAs = new JButton("Новий на основі");
 		JButton edit = new JButton("Редагувати");
@@ -44,10 +46,12 @@ public class ShowCommandButtons extends JPanel {
 		rename = new JButton("Переіменувати");
 		insert = new JButton("Вставити програму");
 		see = new JButton("Переглянути");
-		eval = new JButton("Обрахувати");
+		eval = new JButton("Виконати");
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		workCommand = new ShowCommand(owner);
+		showWork = new ShowWork(showMain);
+		
 		//workCommand = new ShowCommand(frame);
 		this.db = db;
 		this.table = table;
@@ -88,22 +92,25 @@ public class ShowCommandButtons extends JPanel {
 		down.addActionListener(new LsDown());
 		addAs.addActionListener(new LsAddAs());
 		rename.addActionListener(new LsRename());
-		insert.addActionListener(new LsInsert());	
+		insert.addActionListener(new LsInsert());
+		eval.addActionListener(new LsEval());	
 	}
 	
 	public void setModel(String type, Model model){
 		boolean isVisible = type.equals("Machine");
 		boolean rec = type.equals("Recursive");
+		boolean comp = type.equals("Computer");
 		this.type = type;
 		this.model = model;
 		
+		test.setVisible(!comp);
 		add.setText(Model.title(type, 9));
 		addAs.setVisible(isVisible);
 		up.setVisible(!isVisible && !rec);
 		down.setVisible(!isVisible && !rec);
 		rename.setVisible(isVisible);
-		insert.setVisible(isVisible);
-		see.setVisible(rec);
+		insert.setVisible(isVisible || comp);
+		see.setVisible(false);
 		eval.setVisible(rec);
 	}	
 	
@@ -146,7 +153,7 @@ public class ShowCommandButtons extends JPanel {
 	class LsEdit implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null) {
-				Rule rule;
+				//Rule rule;
 				int row = table.selectedRule();
 				//System.out.println("ShowCommandButton ..Edit"+row);
 				if (row > 0){
@@ -187,7 +194,7 @@ public class ShowCommandButtons extends JPanel {
 				//System.out.println("LsDelet row1= " + row1);
 				int row1 = model.findCommand(row);
 				Command c = (Command) model.program.get(row1);                 //get(row1-1);
-				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + "..",  c.show(model.getAllChar())} ;
+				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar())} ;
 				UIManager.put("OptionPane.yesButtonText", "Так");
 				UIManager.put("OptionPane.noButtonText", "Ні");	
 				int response = 
@@ -283,6 +290,8 @@ public class ShowCommandButtons extends JPanel {
  	
  	class LsInsert implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			int row = 0;
+			String sWhere = "";
 		/*	if (model != null){
 				int row = table.selectedRule();
 				if (row > 1) {
@@ -291,6 +300,12 @@ public class ShowCommandButtons extends JPanel {
 					table.showPrevRow(false);
 				}
 			} */
+			if (model == null) return;
+			if (type.equals("Computer")){
+				row = table.numberSelectedRow();
+				if (row == 0) return;
+				sWhere = "після команди " + row + " "; 
+			}
 			String text;
 			ArrayList <String> all = db.getAllModel(type);
 			String name1;
@@ -306,10 +321,12 @@ public class ShowCommandButtons extends JPanel {
 			UIManager.put("OptionPane.cancelButtonText", "Вийти");
 			Object res = 
 					JOptionPane.showInputDialog(ShowCommandButtons.this, 
-							"Вставити програму машини", "Вибір програми", JOptionPane.QUESTION_MESSAGE, null,  values, values[0]);
+							"Вставити " + sWhere + "програму машини", "Вибір програми", JOptionPane.QUESTION_MESSAGE, null,  values, values[0]);
 			//res = JOptionPane.showInputDialog
 			//JOptionPane.showMessageDialog(InputDialogs.this,res);
-			text = model.dbInsertModel((String)res);	
+			if (type.equals("Computer"))
+				 text = model.dbInsertModel(row, (String)res);
+			else text = model.dbInsertModel((String)res);	
 			if (text.isEmpty()) showMain.showModel(type, model.id);
 			else JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
 		}	
@@ -329,5 +346,24 @@ public class ShowCommandButtons extends JPanel {
 			
 			}
 		}	
-	} 	
+	} 
+ 	class LsEval implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			if (model != null){
+				int row = table.selectedRule();
+				//System.out.println("ShowCommandButton ..Edit"+row);
+				if (row > 0){
+					Function f;
+					//recur = (Recursive)model;
+					f = (Function)model.program.get(model.findCommand(row));
+					if (f.getiswf())
+						showWork.setModel(type, model);
+						showWork.setFunction(f);
+						showWork.show();
+						
+					  //JOptionPane.showMessageDialog(ShowCommandButtons.this,"обрахувати функцію " + f.getName() + ".");
+				}
+			}
+		}	
+	}
 }

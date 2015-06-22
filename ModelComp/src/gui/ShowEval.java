@@ -107,24 +107,33 @@ public class ShowEval extends JPanel {
 		this.model = model;
 		this.type = type;
 		boolean isPost = type.equals("Post");
-		rank = model.getRank();
-		main = model.getMain();
-		for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
-    	lInit.setVisible(!model.getIsNumeric());
-    	tInit.setVisible(!model.getIsNumeric());
-    	lParam.setVisible(model.getIsNumeric());
-    	if(model.getIsNumeric()){
-	    	for(int i = 0; i < rank; i++){
-	    		tParam[i].setVisible(true);
-	    		tParam[i].setText("");
-	    	//	if (i < model.rank-1) tParam[i].setNextFocusableComponent(tParam[i+1]);
-	    	}
-	    	//tParam[0].setFocusable(true);
-	    	tParam[0].requestFocus();
-	    } else {
-	    	tInit.setText(""); 
-	    	tInit.requestFocus();
-	    }
+		if(!type.equals("Recursive")){
+			rank = model.getRank();
+			main = model.getMain();
+			
+			for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
+			lInit.setVisible(!model.getIsNumeric());
+			tInit.setVisible(!model.getIsNumeric());
+			lParam.setVisible(model.getIsNumeric());
+			if(model.getIsNumeric()){
+				for(int i = 0; i < rank; i++){
+					tParam[i].setVisible(true);
+					tParam[i].setText("");
+					//	if (i < model.rank-1) tParam[i].setNextFocusableComponent(tParam[i+1]);
+				}
+				//tParam[0].setFocusable(true);
+				tParam[0].requestFocus();
+			} else {
+				tInit.setText(""); 
+				tInit.requestFocus();
+			}
+		} else{
+			for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
+			lInit.setVisible(false);
+			tInit.setVisible(false);
+			lParam.setVisible(true);	
+		}
+		
 		tNodef.setText("1000");	
 		tResult.setText("");
 		tStep.setText("");
@@ -134,6 +143,16 @@ public class ShowEval extends JPanel {
 		lStep.setVisible(!isPost);
 		tStep.setVisible(!isPost);
 		see.setVisible(isPost); 
+	}
+	
+	public void setFunction(Function f) {
+		rank = f.getRank();
+		for(int i = 0; i < f.getRank(); i++){
+			tParam[i].setVisible(true);
+			tParam[i].setText("");
+			//	if (i < model.rank-1) tParam[i].setNextFocusableComponent(tParam[i+1]);
+		}
+		tParam[0].requestFocus();
 	}
 	
 	class LtParam implements ActionListener  {
