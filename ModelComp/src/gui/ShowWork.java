@@ -111,8 +111,9 @@ public class ShowWork extends JDialog {
 	    
 	    showDescription.setModel(type, model);
 	    if (type.equals("Post")){
-	    	//evalBox.add(showForm);
+	    					//evalBox.add(showForm);
 	    	showForm.tMessage.setText("");
+	    	//showForm.lMessage.setText("");
 	    	eval.setText("Формувати дані");
 	    	show.setText("Переглянути дані");
 	    } else{
@@ -188,15 +189,17 @@ public class ShowWork extends JDialog {
 					for(int i = 0; i < step; i++){
 						cur = new Date(); 
 						showForm.tMessage.setText(text + formatter.format(cur) + " крок " + i + " .. " + cnt +".");
-						//showForm.revalidate();
-						//showForm.repaint();
-						//System.out.println(text + formatter.format(cur) + " крок " + i + " .. " + cnt + ".");
+						//showForm.lMessage.setText(text + formatter.format(cur) + " крок " + i + " .. " + cnt +".");
+								//showForm.revalidate();
+								//showForm.repaint();
+								//System.out.println(text + formatter.format(cur) + " крок " + i + " .. " + cnt + ".");
 						cnt = post.stepForm(i+1);
 					}
 					cur = new Date();
 					sl = post.finalForm();
 					showForm.tMessage.setText(text + formatter.format(cur) + " закінчено. За " + step + " кроків створено " + sl.size() + ".");
-					//System.out.println(text + formatter.format(cur) + " закінчено .. " + cnt + ".");
+					//showForm.lMessage.setText(text + formatter.format(cur) + " закінчено. За " + step + " кроків створено " + sl.size() + ".");
+									//System.out.println(text + formatter.format(cur) + " закінчено .. " + cnt + ".");
 					showEval.setVisible(post.getIsNumeric());
 					pack();
 					show.setEnabled(true);
@@ -205,6 +208,7 @@ public class ShowWork extends JDialog {
 				else {
 					text = "Кількість кроків - не натуральнe число!";
 					showForm.tMessage.setText(text);
+					//showForm.lMessage.setText(text);
 					showForm.tStep.requestFocus();
 				}	
 				//JOptionPane.showMessageDialog(ShowWork.this,"Forming dat Post!!! " + showForm.tStep.getText());

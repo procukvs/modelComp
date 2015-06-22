@@ -7,6 +7,7 @@ import javax.swing.border.*;
 public class ShowForm extends JPanel {
 	public JTextField tStep;
 	public JTextField tMessage;
+	//public JLabel lMessage;
 	//ShowWork owner1;
 	ShowForm(ShowWork owner) {
 		//owner1 = owner;
@@ -16,9 +17,10 @@ public class ShowForm extends JPanel {
 		tStep = new JTextField(2);
 		tStep.setMaximumSize(new Dimension(10,20));
 		tStep.setText("3");
+		//lMessage = new JLabel("Формування даних..................");
 		tMessage = new JTextField(50);
-		tMessage.setMaximumSize(new Dimension(100,20));
-		tMessage.enable(false);
+		//tMessage.setMaximumSize(new Dimension(100,20));
+		//tMessage.enable(false);
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -35,6 +37,7 @@ public class ShowForm extends JPanel {
 		step.add(tStep);
 		step.add(Box.createHorizontalStrut(22));
 		step.add(tMessage);
+		//step.add(lMessage);
 		step.add(Box.createHorizontalStrut(30));
 		step.add(Box.createGlue());
 		//----------------------------
