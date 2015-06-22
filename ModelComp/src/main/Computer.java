@@ -98,23 +98,24 @@ public class Computer extends Model {
 		while (go){
 			com = (Instruction)program.get(next-1);
 			r1 = com.getReg1()-1;
+			//-------------------------------
+			asl = new int[3];
+			asl[0]=next; asl[1]=-1; asl[2]=-1;
+			switch(com.getCod()){
+			case "Z": asl[1] = r1; asl[2] = 0;break;
+			case "S": asl[1] = r1; asl[2] = allReg[r1]+1; break;
+			case "T": asl[1] =com.getReg2()-1; asl[2]= allReg[r1]; break;
+			case "J": 
+			}
+			sl.add(asl);
+			//----------------------------------
 			switch(com.getCod()){
 			case "Z": allReg[r1] = 0; break;
 			case "S": allReg[r1] = allReg[r1]+1; break;
 			case "T": allReg[com.getReg2()-1] = allReg[r1]; break;
 			case "J": if(allReg[com.getReg2()-1] == allReg[r1]) next = com.getNext()-1;
 			}
-			//-------------------------------
-			asl = new int[3];
-			asl[0]=next; asl[1]=0; asl[2]=0;
-			switch(com.getCod()){
-			case "Z": asl[1] = r1; break;
-			case "S": asl[1] = r1; asl[2] = allReg[r1]; break;
-			case "T": asl[1] =com.getReg2()-1; asl[2]= allReg[r1]; break;
-			case "J": 
-			}
-			sl.add(asl);
-			//----------------------------------
+			
 			next++;
 			step++;
 			go = (next > 0) && (next <= sPr) && (step < nodef);
@@ -156,11 +157,12 @@ public class Computer extends Model {
 			for(int i = 1; i < sl.size()-1; i++ ){
 				asl = (int[])sl.get(i);
 				row = new ArrayList();
-				row.add(i+1);
+				row.add(i);
 				row.add(asl[0]);
 				com = (Instruction)program.get(asl[0]-1); 
+				//com = (Instruction)program.get(0);
 				row.add(com.toCommand());
-				if (asl[1] > 0) allReg[asl[1]] = asl[2];
+				if (asl[1] >= 0) allReg[asl[1]] = asl[2];
 				for (int j = 0; j < mr; j++) row.add(allReg[j]);
 				data.add(row);
 			}
