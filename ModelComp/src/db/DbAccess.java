@@ -222,6 +222,7 @@ public class DbAccess {
 	public int addModel(String type, Model model) {
 		int idModel = 0;
 		switch(type){
+		case "Computer" : idModel = dbComp.addComputer((Computer)model); break; 
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
 		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
 		case "Post" : idModel = dbPost.addPost((Post)model); break; 
@@ -233,6 +234,7 @@ public class DbAccess {
 	
 	public void editModel(String type, Model model) {
 		switch(type){
+		case "Computer" : dbComp.editComputer((Computer)model); break;
 		case "Algorithm" : dbAlgo.editAlgorithm((Algorithm)model); break;
 		case "Machine" : dbMach.editMachine((Machine)model); break;
 		case "Post" : dbPost.editPost((Post)model); break;
@@ -241,6 +243,7 @@ public class DbAccess {
 	public int newModel(String type) {
 		int idModel = 0;
 		switch(type){
+		case "Computer" : idModel = dbComp.newComputer(); break;
 		case "Algorithm" : idModel = dbAlgo.newAlgorithm(); break;
 		case "Machine" : idModel = dbMach.newMachine(); break;
 		case "Post" : idModel = dbPost.newPost(); break;

@@ -236,30 +236,30 @@ public class ShowModelTable extends JPanel {
 		switch(type){
 		case "Computer" : 
 			info = new String[][]{
-									{"№","I","N"},
+									{"№К","I","N"},
 									{"Команда","S","N"},
 									{"Коментар","S","N"},
-									{"№К","I","N"},
+									{"№","I","N"},
 									{"№M","I","N"}
 								}; break;
 		case "Algorithm" : 
 			info = new String[][]{
-									{"№","I","N"},
+									{"№П","I","N"},
 									{"Ліва частина підстановки","S","N"},
 									{"Права частина підстановки","S","N"},
 									{"Заключна ?","B","N"},
 									{"Коментар","S","N"},
-									{"№П","I","N"},
+									{"№","I","N"},
 									{"№Ал","I","N"}
 								}; break;
 		case "Post" : 
 			info = new String[][]{
-									{"№","I","N"},
+									{"№Пр","I","N"},
 									{"Аксіома ?","B","N"},
 									{"Ліва частина правила","S","N"},
 									{"Права частина правила","S","N"},
 									{"Коментар","S","N"},
-									{"№Пр","I","N"},
+									{"№","I","N"},
 									{"№С","I","N"}
 								}; break;
 		case "Recursive" : 
@@ -270,7 +270,7 @@ public class ShowModelTable extends JPanel {
 									{"Вірна","B","N"},
 									{"Тіло функції","S","N"},
 									{"Коментар","S","N"},
-									{"№Ф","I","N"},
+									{"№","I","N"},
 									{"№Н","I","N"}
 								}; break;						
 		case "Machine": 
@@ -290,16 +290,16 @@ public class ShowModelTable extends JPanel {
 				info[i][0] = allS.substring(i-1,i); info[i][1] ="S"; info[i][2] ="N";
 			}
 			info[l+1][0] = "Коментар"; info[l+1][1] ="S"; info[l+1][2] ="N";
-			info[l+2][0] = "№Ст"; info[l+2][1] ="I"; info[l+2][2] ="N";
-			info[l+3][0] = "№М"; info[l+3][1] ="I"; info[l+3][2] ="N";
+			info[l+2][0] = "№"; info[l+2][1] ="I"; info[l+2][2] ="N";
+			info[l+3][0] = "№МТ"; info[l+3][1] ="I"; info[l+3][2] ="N";
 			break;
 		default: 	info = new String[][]{
-				{"№","I","N"},
+				{"№П","I","N"},
 				{"Ліва частина підстановки","S","E"},
 				{"Права частина підстановки","S","E"},
 				{"Заключна ?","B","E"},
 				{"Коментар","S","E"},
-				{"№П","I","N"},
+				{"№","I","N"},
 				{"№Ал","I","N"}
 			};
 			

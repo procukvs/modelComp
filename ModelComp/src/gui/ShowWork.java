@@ -22,6 +22,7 @@ public class ShowWork extends JDialog {
 	private ShowForm showForm;
 	private Box evalBox ;
 	Box headBox; 
+	Box endBox;
 		
 	//private ShowTest showTest;
 	ShowSteps showSteps;
@@ -90,7 +91,7 @@ public class ShowWork extends JDialog {
 		buttons.add(quit);
 		buttons.add(Box.createGlue());
 		//---------------------
-		Box endBox = Box.createVerticalBox();
+		endBox = Box.createVerticalBox();
 		//endBox.add(showGroup);
 		endBox.add(buttons);
 		//--------------------
@@ -259,7 +260,7 @@ public class ShowWork extends JDialog {
 						//======================================================
 						//  тестування отримання дерева обрахунку для перегляду=== взаємодія вікон --розміри і т.і.
 						//      після підгону можна !!!!!!!!
-						/*
+						
 						String sRoot = f.getName()+"("+StringWork.argString(arg) + ")=";
 						DefaultMutableTreeNode root = new DefaultMutableTreeNode(sRoot,true);
 						text = ((Recursive) model).testFunction(f, arg, nodef,root);
@@ -268,12 +269,13 @@ public class ShowWork extends JDialog {
 						
 						if (testTree != null)evalBox.remove(testTree);
 						testTree = new ShowTree(root);
-						//testTree.setMaximumSize(new Dimension(600,100));
-						//testTree.setSize(100,100);
+								//testTree.setMaximumSize(new Dimension(1600,100));
+								//testTree.setSize(100,100);
 						evalBox.add(testTree);
-						//testTree.setVisible(false);
+							//endBox.add(testTree);
+									//testTree.setVisible(false);
 						pack();
-						*/
+						
 						//=============================================================
 					}
 					else showEval.tResult.setText(text);

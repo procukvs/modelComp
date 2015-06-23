@@ -93,14 +93,15 @@ public class WorkFile {
 		    if (lex == 1) {
 		    	type = valueLex; lex = 20;
 		    	switch (type){
+		    	case "Computer": model = computer(txComm); break;
 		    	case "Algorithm": model = algorithm(txComm); break;
 		    	case "Machine" : model = machine(txComm); break;
 		    	case "System": model = post(txComm); break;
 		    	case "Recursive": model = recursive(txComm); break;
-		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive !";	
+		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
 		    	}
 		    	
-		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive !";
+		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
 		   // model = algorithm();
 		  	in.close();
 			System.out.println("File " + name + " is close.."); 
@@ -474,7 +475,113 @@ public class WorkFile {
 			return new Function(id, name, txBody, txComm);
 		else return null;
 	}		
+
+	private Computer computer (String txComm) {
+		Computer model = null;
+		Instruction r;
+		int id = 0;
+		ArrayList rules = new ArrayList();
+		//if (lex == 4) {txComm = valueLex; get();} 
+		//System.out.println("init algorithm: lex =" + lex + " valueLex ="+ valueLex);
+		exam(20,"службове слово Computer");
+		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя машини");
+		if (errorText.isEmpty()) {
+			model = new Computer(0,valuePrev);
+			model.descr = txComm;
+			model.program = rules;
+			exam(15,"символ :");
+			if (errorText.isEmpty()) {
+				exam(3, "число - арність машини");
+				if (errorText.isEmpty()) {
+					model.rank = new Integer(valuePrev);
+					exam(13,"символ ;"); 
+				}
+			}
+		}
+		while ((errorText.isEmpty()) && (lex != 23)){
+			id++;
+			r = instruction(id);
+			if (r != null) model.program.add(r);
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 23){
+				get();
+				exam(1, "ідентифікатор - імя машини");
+				if (errorText.isEmpty()) {
+					if (!(model.name.equals(valuePrev)))
+						errorText = "Заключне імя " + valuePrev  + " не співпадає з іменем машини " + model.name + "!";
+				}
+			} else errorText = "Очікується службове слово end !";
+		}	
+		if (errorText.isEmpty()) 
+			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		if (!errorText.isEmpty()) model = null; 
+		return model;		
+	}	
 	
+	private Instruction instruction(int id) {
+		String cod = "Z";
+		String txComm = "";
+		int num = 0, reg1 = 0, reg2 = 0, next = 0;
+		exam(3, "ціле - номер команди");
+		if (errorText.isEmpty()) {
+			num = new Integer(valuePrev);
+			exam (15,"символ :");
+		}
+		if (errorText.isEmpty()) {
+			cod = valueLex;
+			switch(lex){
+			case 31: case 32:
+				get();
+				exam (17,"символ (");
+				if (errorText.isEmpty()) {
+					exam(3, "ціле - регістр 1");
+					if (errorText.isEmpty()) {
+						reg1 = new Integer(valuePrev); exam (18,"символ )");
+					}
+				}
+				break;
+			case 33:
+				get();
+				exam (17,"символ (");
+				if (errorText.isEmpty()) {
+					exam(3, "ціле - регістр 1");
+					if (errorText.isEmpty()) {
+						reg1 = new Integer(valuePrev); exam (12,"символ ,");
+					}
+					exam(3, "ціле - регістр 2");
+					if (errorText.isEmpty()) {
+						reg2 = new Integer(valuePrev); exam (18,"символ )");
+					}
+				}
+				break;
+			case 34:
+				get();
+				exam (17,"символ (");
+				if (errorText.isEmpty()) {
+					exam(3, "ціле - регістр 1");
+					if (errorText.isEmpty()) {
+						reg1 = new Integer(valuePrev); exam (12,"символ ,");
+					}
+					exam(3, "ціле - регістр 2");
+					if (errorText.isEmpty()) {
+						reg2 = new Integer(valuePrev); exam (12,"символ ,");
+					}
+					exam(3, "ціле - номер наступної команди");
+					if (errorText.isEmpty()) {
+						reg2 = new Integer(valuePrev); exam (18,"символ )");
+					}
+				}
+				break;
+			default: errorText = "Очікується код команди Z/S/T/J !";
+			}
+		}	
+		if (errorText.isEmpty()) {
+			if (lex == 4) {txComm = valueLex; get();}
+			//System.out.println(".." + num + ".." + cod + ".." + reg1 + ".." + reg2 + ".." +next + ".." +txComm + ".." +id);
+			return new Instruction(num, cod, reg1,reg2, next, txComm, id);
+		} else return null;
+	}			
 	
 	private void exam(int lx, String what) {
 		if (lex == lx) {
@@ -527,10 +634,15 @@ public class WorkFile {
 					case "Alphabet": lex = 21; break;
 					case "Numerical": lex = 22; break;
 					case "end": lex = 23; break;
+					case "Computer": if(type.equals("Computer"))lex = 20; break;
 					case "Machine": if(type.equals("Machine"))lex = 20; break;
 					case "Initial": if(type.equals("Machine"))lex = 24; break;
 					case "Final": if(type.equals("Machine"))lex = 25; break;
 					case "System": if(type.equals("Post"))lex = 20; break;
+					case "Z": if(type.equals("Computer"))lex = 31; break;
+					case "S": if(type.equals("Computer"))lex = 32; break;
+					case "T": if(type.equals("Computer"))lex = 33; break;
+					case "J": if(type.equals("Computer"))lex = 34; break;
 				}
 			} else if (StringWork.isDigit(next)) {
 				lex = 3;
@@ -545,8 +657,10 @@ public class WorkFile {
 					case ';': lex = 13; getChar(); break;
 					case '-': getChar(); 
 						if (next == '>') {lex = 14; getChar();}	break;
-					case ':': if(type.equals("Machine") || type.equals("Recursive")) lex = 15; getChar(); break;
+					case ':': if(type.equals("Machine") || type.equals("Recursive") || type.equals("Computer")) lex = 15; getChar(); break;
 					case '=': if(type.equals("Recursive")) lex = 16; getChar(); break;
+					case '(': if(type.equals("Computer")) lex = 17; getChar(); break;
+					case ')': if(type.equals("Computer")) lex = 18; getChar(); break;
 					//case '\n':	
 					default: getChar();	
 				}

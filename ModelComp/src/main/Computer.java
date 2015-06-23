@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 
 import db.DbAccess;
+import file.OutputText;
 
 public class Computer extends Model {
 	public int rank = 1;
@@ -19,7 +20,13 @@ public class Computer extends Model {
 	//-----work DB ------- 
 	public String dbInsertModel(int where, String nmInsert) {
 		return DbAccess.getDbComputer().insertComputer(this.id, where, nmInsert, this.findMaxNumber());
-	}	
+	}
+	public boolean  dbDelete() {
+		return DbAccess.getDbComputer().deleteComputer(this);
+	}
+	public int dbNewAs() { 
+		return DbAccess.getDbComputer().newComputertAs(this);
+	}
 	
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
@@ -169,4 +176,31 @@ public class Computer extends Model {
 		}
 	    return data;
 	}
+	
+	public String output(String name, OutputText out) {
+		String res = "";
+		String wr;
+		String s0 = "00000";
+		String empty = "          ";
+		String num;
+		Instruction inst;
+		if(out.open(name)) {
+			System.out.println("File " + name + " is open..");
+			if (!descr.isEmpty()) out.output("'" + descr);
+			out.output("Computer " + this.name + " : " + this.rank + ";");
+			for (int i = 0; i < program.size(); i++){
+				inst = (Instruction)program.get(i);
+				num = ""+(i+1);
+				if(num.length() < 3) num = s0.substring(1,3-num.length()) + num; 
+				wr = inst.toCommand();
+				if(wr.length() < 11) wr = num + " : " + wr + empty.substring(1,12-wr.length()); 
+				if (!(inst.txComm.isEmpty())) wr = wr + " '" + inst.txComm;
+			    out.output(wr);
+			}
+			out.output("end " + this.name);
+			out.close();
+			System.out.println("File " + name + " is close.."); 
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}	
 }

@@ -13,8 +13,9 @@ public class ShowTree extends JPanel {
 		JTree tree = new JTree(root,true);
 		JScrollPane p = new JScrollPane(tree);
 						//p.setSize(600,600);
-						//p.setMaximumSize(new Dimension(200,100));
-		p.setPreferredSize(new Dimension(650, 110));
+						//p.setMaximumSize(new Dimension(1300,110));
+		p.setPreferredSize(new Dimension(600, 210));
+		//p.setMinimumSize(new Dimension(100,50));
 		add(p);
 							//setSize(200,200);
 	}

@@ -40,6 +40,7 @@ public class Model {
 		return DbAccess.getDbAccess().getNumber(getTypeModel(), id); 
 	}
 	static public int dbNew(String type){
+		//повертає id нової моделі в БД
 		return DbAccess.getDbAccess().newModel(type);
 	}
 	public int dbNewAs() { return 1;}

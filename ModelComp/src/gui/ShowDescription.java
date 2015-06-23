@@ -372,12 +372,12 @@ public class ShowDescription extends JPanel {
 			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {
-				Algorithm algo = (Algorithm)model;
+				//Algorithm algo = (Algorithm)model;
 				if(StringWork.isPosNumber(srank)){
 					rank = new Integer(srank); 
-					if (algo.rank != rank) {
-						algo.rank = rank;
-						db.editModel(type,algo);
+					if (model.getRank() != rank) {
+						model.setRank(rank);
+						db.editModel(type,model);
 						//showMain.showModel(type, model.id);
 					}
 				} else{

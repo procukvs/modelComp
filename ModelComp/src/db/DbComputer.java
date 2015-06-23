@@ -55,6 +55,120 @@ public class DbComputer {
 		return program;
 	}
 	
+	// створює нову машину з порожньою програмою
+	public int newComputer() {
+		String name = db.findName("Computer","Computer");
+		int cnt = db.maxNumber("Computer")+1;
+		int rows;
+		try{
+			sql = "insert into rComputer values(" + cnt + ",'" + name + "',1,'new')";
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0) cnt = 0;
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: newComputer :" + sql + " "  + e.getMessage());
+		}
+		return cnt;
+	}	
+
+	// модифікує відредаговану машину
+	public void editComputer(Computer model) {
+		int rows;
+		try{
+			sql = "update rComputer set name = '" + model.name + "', " +
+						" Rank = " + model.rank + ", descr  = '" + model.descr + "' where id = " + model.id;
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0)
+				System.out.println("editComputer: Не змінило відредаговану " + model.name + "!");
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: editComputer :" + e.getMessage());
+		}
+	}		
+		
+	
+	// створює нову машину на основі машини з model (включаючи всю програму)
+	public int newComputertAs(Computer model){
+		String name = db.findName("Computer", model.name);
+		int cnt = db.maxNumber("Computer")+1;
+		int rows;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into rComputer select " + cnt + ",'" + name + "'," + 
+							" Rank, descr from rComputer where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				if (rows == 0) cnt =0;
+				sql = "insert into rInstruction select " + cnt + ", id, num, cod,reg1, reg2, next, txComm " +
+							" from rInstruction where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: newComputerAs :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}
+
+	public boolean deleteComputer(Computer model){
+		int rows;
+		boolean res = false;
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "delete from rInstruction where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from rComputer where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				db.conn.commit();
+				res = true;
+			}
+			catch (Exception e) {
+				db.conn.rollback();
+				System.out.println("ERROR: deleteComputer :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
+	}
+	
+	// додає введену з файлу машину model (включаючи всі команди програми)
+	public int addComputer(Computer model){
+		String name = model.name;
+		int cnt = db.maxNumber("Computer")+1;
+		int rows;
+		Instruction r;
+		if (db.isModel("Computer",name)) name = db.findName("Computer", model.name);
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				sql = "insert into rComputer values(" + cnt + ",'" + name + "'," + model.rank + ",'" + model.descr + "')";  
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					r = (Instruction)model.program.get(i);
+					sql = "insert into rInstruction values(" + cnt + "," + (i+1) + "," + r.getNum() + ",'" + r.getCod() +
+							"','" + r.getReg1() + "'," + r.getReg2() + "," + r.getNext() + ",'" + r.gettxComm() + "')";
+					rows=rows + db.s.executeUpdate(sql);
+				}
+				if (rows != model.program.size() + 1) cnt = 0;
+				db.conn.commit();
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: addComputer :" + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return cnt;
+	}		
+	
 	public void newInstruction(int comp, Instruction inst) {
 		try {
 			db.conn.setAutoCommit(false);
