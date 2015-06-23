@@ -23,6 +23,8 @@ public class ShowModelButtons extends JPanel {
 	
 	private JButton add;
 	private JButton addBase;
+	private JButton delete;
+	private JButton quit;
 	private JButton work ;
 	private JButton output;
 	private JButton input ;
@@ -34,7 +36,7 @@ public class ShowModelButtons extends JPanel {
 		add = new JButton("Новий");
 		addBase = new JButton("Новий на основі");
 		JButton report = new JButton("Звіти");
-		JButton delete = new JButton("Вилучити");
+		delete = new JButton("Вилучити");
 		JButton file = new JButton("Файл ...");
 		nmFile = new JTextField(70);
 		nmFile.setMaximumSize(new Dimension(300,100));
@@ -42,7 +44,7 @@ public class ShowModelButtons extends JPanel {
 		work = new JButton("Рoбота з алгоритмом");
 		output = new JButton("Вивести алгоритм в файл");
 		input = new JButton("Ввести алгоритм з файлу");
-		JButton quit = new JButton("Вийти");
+		quit = new JButton("Вийти");
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		showWork = new ShowWork(showMain);
 		//showWork = new ShowWork(frame);
@@ -96,15 +98,27 @@ public class ShowModelButtons extends JPanel {
 	}
 	
 	public void setModel(String type, Model model) {
+		boolean isFile = (type.equals("Input")) || (type.equals("Output"));
 		this.type = type;
 		this.model = model; 
+		add.setVisible(!isFile);
+		addBase.setVisible(!isFile);
+		delete.setVisible(!isFile);
+		work.setVisible(!isFile && !type.equals("Recursive"));
+		quit.setVisible(!isFile);
+		
 		// встановити надписи на кнопках
 		add.setText(Model.title(type, 7));
 		addBase.setText(Model.title(type, 7) + " на основі");
 		work.setText("Рoбота з " + Model.title(type, 5));
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
-		work.setVisible(!type.equals("Recursive"));
+		if (isFile){
+			input.setText("Вийти" );
+			if (type.equals("Output")) output.setText("Вивести " + Model.title(type, 6) + " в файл" );
+			else output.setText("Ввести " + Model.title(type, 6) + " з файлу");
+		}
+	
 	}
 	
 	//описуємо класи - слухачі !!!!!!
@@ -146,26 +160,31 @@ public class ShowModelButtons extends JPanel {
 			//Algorithm model;
 			//model = showModel.getAlgorithm();
 			String text = "Файл для виведення не вказано !";
-			if (model != null) {
-				String name = nmFile.getText();
-				if (!name.isEmpty()){
-					//text = "Вивести модель " + model.nmAlgo + 
-					//		" в файл " + fc.getSelectedFile().getAbsolutePath() + "...";
-					//String[] wr = new String[model.asub.size()];
-					//Rule r ; 
-					//for (int i = 0; i < model.asub.size(); i++ ) {
-					//	r = (Rule)model.asub.get(i);
-					//	wr[i] = r.getsLeft() + "->" + r.getsRigth();
-					//}
-					WorkFile wf = new WorkFile();
-					text = model.output(name, (wf.getOut()));
-					//text = wf.outputAlgorithm(name,(Algorithm)model);
-					if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
-				}	
-				JOptionPane.showMessageDialog(ShowModelButtons.this,text);
+			if (type.equals("Input") || type.equals("Output")) {
+				JOptionPane.showMessageDialog(ShowModelButtons.this," Input / Output modeles !!!");
+				//showMain.showModel("NoModel", 0);
+			} else {
+				if (model != null) {
+					String name = nmFile.getText();
+					if (!name.isEmpty()){
+						//text = "Вивести модель " + model.nmAlgo + 
+						//		" в файл " + fc.getSelectedFile().getAbsolutePath() + "...";
+						//String[] wr = new String[model.asub.size()];
+						//Rule r ; 
+						//for (int i = 0; i < model.asub.size(); i++ ) {
+						//	r = (Rule)model.asub.get(i);
+						//	wr[i] = r.getsLeft() + "->" + r.getsRigth();
+						//}
+						WorkFile wf = new WorkFile();
+						text = model.output(name, (wf.getOut()));
+						//text = wf.outputAlgorithm(name,(Algorithm)model);
+						if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
+					}	
+					JOptionPane.showMessageDialog(ShowModelButtons.this,text);
+				}
+				
 			}
-			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelOutput...");
-		}	
+		}
 	}
 	class ModelInput implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
@@ -173,26 +192,30 @@ public class ShowModelButtons extends JPanel {
 			String name = nmFile.getText();
 			//Algorithm model;
 			Model model;
-			if (!name.isEmpty()) {
-				//text = "Ввести модель з файлу " 
-				//		+ fc.getSelectedFile().getAbsolutePath() + "...";
-				WorkFile wf = new WorkFile();
-				//model = wf.inputAlgorithm(name);
-				model = wf.inputModel(name);
-				if (model != null) {
-					type = model.getType();
-					String nameIn = model.name;
-					int idModel = db.addModel(type, model);
-					if (idModel > 0) {
-						showMain.showModel(type, idModel);
-						text = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
+			if (type.equals("Input") || type.equals("Output")) {
+				//JOptionPane.showMessageDialog(ShowModelButtons.this," Output from form !!!");
+				showMain.showModel("NoModel", 0);
+			} else {
+				if (!name.isEmpty()) {
+					//text = "Ввести модель з файлу " 
+					//		+ fc.getSelectedFile().getAbsolutePath() + "...";
+					WorkFile wf = new WorkFile();
+					//model = wf.inputAlgorithm(name);
+					model = wf.inputModel(name);
+					if (model != null) {
+						type = model.getType();
+						String nameIn = model.name;
+						int idModel = db.addModel(type, model);
+						if (idModel > 0) {
+							showMain.showModel(type, idModel);
+							text = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
+						}
+						else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 					}
-					else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
-				}
-				else text = wf.getErrorText();
-				//JOptionPane.showMessageDialog(ShowModelButtons.this,text + " ??");
-			}	
-			JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
+					else text = wf.getErrorText();
+				}	
+				JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
+			}
 		}	
 	}
 	class Quit implements ActionListener  {

@@ -178,6 +178,41 @@ public class DbAccess {
 		return all;
 	}
 	
+	// знаходить список всіх моделей для виводу 
+	public ArrayList getAllModel(){
+		ArrayList all = new ArrayList ();
+		ArrayList row;
+		String[] select = {
+				"select 'Algorithm', name, descr, isNumeric, rank, id from mAlgorithm order by name",
+				"select 'Computer', name, descr, 1, rank,  id from rComputer order by name",
+				"select 'Machine', name, descr, isNumeric, rank, id from tMachine order by name",
+				"select 'Post', name, descr, isNumeric, rank,  id from pPost order by name",
+				"select 'Recursive', name, descr, 1, rank,  id from mAlgorithm order by name"
+			};
+		try{ 
+			for (int i = 0; i < 5; i++ ){
+				sql = select[i];
+				//System.out.println("getAllModel " + sql );
+				s.execute(sql);
+				ResultSet rs = s.getResultSet();
+				while((rs!=null) && (rs.next())) {
+					row = new ArrayList();
+					row.add(rs.getString(1));
+					row.add(rs.getString(2));
+					row.add(rs.getString(3));
+					row.add(rs.getBoolean(4));
+					row.add(rs.getInt(5));
+					row.add(false);
+					row.add(rs.getInt(6));
+					all.add(row);
+				}
+			}
+		}catch (Exception e){
+			System.out.println("ERROR: getAllModel :" + e.getMessage());
+		}
+		return all;
+	}	
+	
 	//знаходить найбільший номер у існуючих моделей типа type 
 	public int maxNumber(String type){
 		int i = 0;

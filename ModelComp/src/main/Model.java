@@ -65,6 +65,12 @@ public class Model {
 			{"Computer", "Машини з необмеженими регістрами","Машина","машини","Програма", "машиною", 
 									"машину","Нова", "Машину", "Нова","Команда",
 									"команду", "машиною","Послідовність конфігурацій машини"},
+			{"Input", "Введення моделей з файлу","Input2","Input3","Input4", "Input5",
+									"моделі","Input7", "Input8", "Input9","Input10",
+									"Input11", "Input12","Input13"},
+			{"Output", "Виведення моделей в файл","Output2","Output3","Output4", "Output5", 
+									"моделі","Output7", "Output8", "Outpu9t","Output10",
+									"Output11", "Output12","Output13"}
 								};
 				
 	Model(int id, String name) {
