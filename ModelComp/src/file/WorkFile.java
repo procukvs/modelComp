@@ -2,11 +2,13 @@ package file;
 
 import java.util.ArrayList;
 
+import db.DbAccess;
 import main.*;
 
 public class WorkFile {
-	private InputText in = new InputText();
-	private OutputText out = new OutputText();
+	private static WorkFile workFile = null;
+	private static InputText in = new InputText();
+	private static OutputText out = new OutputText();
 	//=========
 	private String line = "";
 	private int nLine;
@@ -16,11 +18,18 @@ public class WorkFile {
 	private String valueLex, valuePrev;
 	private String errorText;
 	private String type = "Algorithm";
+	//======================
+	private ArrayList listModel;
 	
 	public void setType(String type) {this.type = type;}
 	public String getErrorText() {return errorText;}
 	public OutputText getOut() {return out;}
+	public ArrayList getListModel() {return listModel;}
 	
+	public static WorkFile getWorkFile() {
+		if(workFile == null) workFile = new WorkFile();
+		return workFile;
+	}
 	
 	public String testingInput(String name) {
 		String s = "";
@@ -50,9 +59,9 @@ public class WorkFile {
 		return s;
 	}
 	
-	public String outputModel(String name, Model model){
-		return model.output(name, out); 
-	}
+	//public String outputModel( Model model){
+	//	return model.output(out); 
+	//}
 	public String outputAlgorithm(String name, Algorithm model) {
 		String res = "";
 		String wr;
@@ -79,6 +88,63 @@ public class WorkFile {
 		return res;
 	}
 	
+	
+	public boolean inputListModel(DbAccess db, String name){
+		boolean bres = true;
+		boolean go = true;
+		listModel = new ArrayList ();
+		ArrayList row = null;
+		Model model = null;
+		String txComm = "";
+		errorText = "";
+		if(in.open(name)) {
+			type = "Model";
+		    line = ""; nLine = 0; nextChar = 1;
+		    getChar(); get();
+		    while((errorText.isEmpty()) && (lex != 10)){
+		   	  if (lex == 4) {txComm = valueLex; get();} 
+			  if (lex == 1) {
+			   	type = valueLex; lex = 20;
+			   	switch (type){
+			   	case "Computer": model = computer(txComm); break;
+			   	case "Algorithm": model = algorithm(txComm); break;
+			   	case "Machine" : model = machine(txComm); break;
+			   	case "System": model = post(txComm); break;
+			   	case "Recursive": model = recursive(txComm); break;
+			   	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
+			   	}
+			  } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
+			  if (errorText.isEmpty()) {
+				 if(model != null){
+					 String nameIn = model.name;
+					 String type1 = ((type.equals("System"))?"Post":type);  
+					 int idModel = db.addModel(type1, model);
+					 //System.out.println("File " + name + " model " + nameIn + " type " + type1 + " id " + idModel); 
+					 if (idModel > 0) {
+						row = new ArrayList();
+						row.add(type1);
+						row.add(db.getModelName(type1,idModel)); //??????????????????????????
+						row.add(model.descr);
+						row.add(model.getIsNumeric());
+						row.add(model.getRank());
+						row.add(idModel);
+						listModel.add(row);
+						//errorText = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
+					}
+					else errorText = Model.title(type1, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
+				 } else errorText = "Дивна ситуація (тип " + type + "): Не введена модель і немає повідомлення про помилку !!";
+			  }
+		    }
+			if (errorText.isEmpty()) 
+				if (lex != 10) errorText = "Не знайдено кінця файлу ";
+			if (errorText.isEmpty()) errorText = "Введено " + listModel.size() + " моделей з файла " + name + ".";
+			else errorText = "." + nLine + ": " + errorText;
+		}  else {
+			bres = false; errorText = "Not open input file " + name + "!"; 
+		}
+		return bres;
+	}
+	
 	public Model inputModel(String name) {
 		Model model = null;
 		String txComm = "";
@@ -100,9 +166,12 @@ public class WorkFile {
 		    	case "Recursive": model = recursive(txComm); break;
 		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
 		    	}
-		    	
 		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
-		   // model = algorithm();
+		    
+			if (errorText.isEmpty()) 
+				if (lex != 10) errorText = "Не знайдено кінця файлу ";
+			if (!errorText.isEmpty()) model = null; 
+			
 		  	in.close();
 			System.out.println("File " + name + " is close.."); 
 			if (!errorText.isEmpty()) errorText = "." + nLine + ": " + errorText;
@@ -188,8 +257,8 @@ public class WorkFile {
 				}
 			} else errorText = "Очікується службове слово end !";
 		}	
-		if (errorText.isEmpty()) 
-			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
 		if (!errorText.isEmpty()) model = null; 
 		return model;		
 	}
@@ -287,10 +356,9 @@ public class WorkFile {
 				}
 			} else errorText = "Очікується службове слово end !";
 		}	
-		if (errorText.isEmpty()) 
-			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
 		if (!errorText.isEmpty()) model = null; 
-		//if (model != null) model.show();
 		return model;		
 	}	
 
@@ -391,8 +459,8 @@ public class WorkFile {
 				}
 			} else errorText = "Очікується службове слово end !";
 		}	
-		if (errorText.isEmpty()) 
-			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
 		if (!errorText.isEmpty()) model = null; 
 		return model;		
 	}	
@@ -446,8 +514,8 @@ public class WorkFile {
 				}
 			} else errorText = "Очікується службове слово end !";
 		}	
-		if (errorText.isEmpty()) 
-			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
 		if (!errorText.isEmpty()) model = null; 
 		return model;
 	}
@@ -463,7 +531,7 @@ public class WorkFile {
 		if (errorText.isEmpty()) {
 			if(lex == 3) rank = new Integer(valueLex);
 			exam(3, "натуральне число - арність функції");
-			exam(16, "символ =");
+			if (errorText.isEmpty()) exam(16, "символ =");
 		}
 		if (errorText.isEmpty()){
 		   while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){
@@ -513,8 +581,8 @@ public class WorkFile {
 				}
 			} else errorText = "Очікується службове слово end !";
 		}	
-		if (errorText.isEmpty()) 
-			if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
 		if (!errorText.isEmpty()) model = null; 
 		return model;		
 	}	

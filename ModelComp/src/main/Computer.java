@@ -1,9 +1,8 @@
 package main;
 
-import java.util.ArrayList;
-
-import db.DbAccess;
-import file.OutputText;
+import java.util.*;
+import db.*;
+import file.*;
 
 public class Computer extends Model {
 	public int rank = 1;
@@ -177,15 +176,15 @@ public class Computer extends Model {
 	    return data;
 	}
 	
-	public String output(String name, OutputText out) {
+	public String output(OutputText out) {
 		String res = "";
 		String wr;
 		String s0 = "00000";
 		String empty = "          ";
 		String num;
 		Instruction inst;
-		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+		//if(out.open(name)) {
+		//	System.out.println("File " + name + " is open..");
 			if (!descr.isEmpty()) out.output("'" + descr);
 			out.output("Computer " + this.name + " : " + this.rank + ";");
 			for (int i = 0; i < program.size(); i++){
@@ -198,9 +197,9 @@ public class Computer extends Model {
 			    out.output(wr);
 			}
 			out.output("end " + this.name);
-			out.close();
-			System.out.println("File " + name + " is close.."); 
-		} else res = "Not open output file " + name + "!"; 
+		//	out.close();
+		//	System.out.println("File " + name + " is close.."); 
+		//} else res = "Not open output file " + name + "!"; 
 		return res;
 	}	
 }

@@ -73,7 +73,7 @@ public class ShowModels extends JFrame {
 		//-------------------------------
 		showFiles = new ShowFiles (db);
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		modelButtons = new ShowModelButtons(db,this);
+		modelButtons = new ShowModelButtons(db,this, showFiles);
 		//===============================
 		// розташуємо їх
 		//-----------------------------

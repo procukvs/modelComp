@@ -185,12 +185,14 @@ public class Algorithm extends Model {
 		return res;
 	}
 	
-	public String output(String name, OutputText out) {
+	
+	
+	public String output(OutputText out) {
 		String res = "";
 		String wr;
 		Rule r;
-		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+		//if(out.open(name)) {
+		//	System.out.println("File " + name + " is open..");
 			if (!descr.isEmpty()) out.output("'" + descr);
 			out.output("Algorithm " + this.name);
 			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
@@ -203,9 +205,9 @@ public class Algorithm extends Model {
 			    out.output(wr);
 			}
 			out.output("end " + this.name);
-			out.close();
-			System.out.println("File " + name + " is close.."); 
-		} else res = "Not open output file " + name + "!"; 
+		//	out.close();
+		//	System.out.println("File " + name + " is close.."); 
+		//} else res = "Not open output file " + name + "!"; 
 		return res;
 	}	
 }

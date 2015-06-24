@@ -123,6 +123,18 @@ public class DbAccess {
 		return cnt;
 	}
 	
+	public String getModelName(String type, int idModel) {
+		String name = "";
+		try{
+			sql = "select name from " + tableModel(type) + " where id = " + idModel;
+			s.execute(sql);
+			rs = s.getResultSet();
+            if((rs!=null) && (rs.next()))name = rs.getString(1);
+       	}
+		catch (Exception e) {System.out.println(e.getMessage());}
+		return name;
+	}
+	
 	// знаходить id моделі типа type, яка по порядку order
 	public int getNumber(String type, int order){
 		int number = 0;
@@ -187,7 +199,7 @@ public class DbAccess {
 				"select 'Computer', name, descr, 1, rank,  id from rComputer order by name",
 				"select 'Machine', name, descr, isNumeric, rank, id from tMachine order by name",
 				"select 'Post', name, descr, isNumeric, rank,  id from pPost order by name",
-				"select 'Recursive', name, descr, 1, rank,  id from mAlgorithm order by name"
+				"select 'Recursive', name, descr, 0, 0,  id from fRecursive order by name"
 			};
 		try{ 
 			for (int i = 0; i < 5; i++ ){
@@ -263,6 +275,7 @@ public class DbAccess {
 		case "Post" : idModel = dbPost.addPost((Post)model); break; 
 		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break; 
 		}	
+		//System.out.println("db.addModel: type " + type + " id " + idModel); 
 		return idModel;
 	}
 	

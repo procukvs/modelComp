@@ -18,6 +18,9 @@ public class Recursive extends Model {
 	
 	
 	public String getType() {return "Recursive";}  
+	public boolean getIsNumeric() {return false;}
+	public int getRank() {return 0;}
+	
 	public int dbNewAs() { 
 		return DbAccess.getDbRecursive().newRecursiveAs(this);
 	}
@@ -165,24 +168,24 @@ public class Recursive extends Model {
 		return rs + "\n]";
 	}
 
-	public String output(String name, OutputText out) {
+	public String output( OutputText out) {
 		String res = "";
 		String wr;
 		Function f;
-		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+		//if(out.open(name)) {
+		//	System.out.println("File " + name + " is open..");
 			if (!descr.isEmpty()) out.output("'" + descr);
 			out.output("Recursive " + this.name);
 			for (int i = 0; i < program.size(); i++){
 				f = (Function)program.get(i);
 				if (!(f.gettxComm().isEmpty())) out.output("   '" + f.gettxComm());
-				wr = f.getName() + ":" + f.getRank() + "=" +f.gettxBody(); 
+				wr = f.getName() + ":" + ((f.getRank())<0?0:f.getRank()) + "=" +f.gettxBody(); 
 				out.output("   " + wr + ";");
 			}
 			out.output("end " + this.name);
-			out.close();
-			System.out.println("File " + name + " is close.."); 
-		} else res = "Not open output file " + name + "!"; 
+		//	out.close();
+		//	System.out.println("File " + name + " is close.."); 
+		//} else res = "Not open output file " + name + "!"; 
 		return res;
 	}		
 	

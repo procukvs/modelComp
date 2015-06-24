@@ -197,6 +197,7 @@ public class DbPost {
 	// додає введену з файлу систему ПОста model (включаючи всі аксіоми/правила виводу)
 	public int addPost(Post model){
 		String name = model.name;
+		String namein = name;
 		int cnt = db.maxNumber("Post")+1;
 		int rows;
 		Derive r;
@@ -214,7 +215,7 @@ public class DbPost {
 							"','" + r.getsRigth() + "'," + (r.getisAxiom()?1:0) + ",'" + r.gettxComm() + "')";
 					rows=rows + db.s.executeUpdate(sql);
 				}
-			if (rows != model.program.size() + 1) cnt = 0;
+			//if (rows != model.program.size() + 1) cnt = 0;
 				db.conn.commit();
 			}
 			catch (Exception e) {
@@ -225,6 +226,7 @@ public class DbPost {
 			db.conn.setAutoCommit(true);
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
+		//System.out.println("dbPost.addPost: nameIn " + namein  + " name "  + name +  " id " + cnt); 
 		return cnt;
 	}		
 }

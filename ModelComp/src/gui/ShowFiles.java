@@ -50,6 +50,23 @@ public class ShowFiles extends JPanel {
 		if ((fs != null) && (fs.size() > 0)) dbm.setDataSource(fs);
 	}
 	
+	public ArrayList getOutputModel(){
+		ArrayList ml = new ArrayList();
+		ArrayList row;
+		for(int i = 0; i < dbm.getRowCount(); i++){
+			if((boolean)dbm.getValueAt(i, 5)){
+				row = new ArrayList();
+				row.add(dbm.getValueAt(i, 0));
+				row.add(dbm.getValueAt(i, 6));
+				ml.add(row);
+			}
+		}
+		return ml;
+	}
+	
+	public void showInputModel(ArrayList ml){
+		if ((ml != null) && (ml.size() > 0)) dbm.setDataSource(ml);
+	}
 	// інформація про колонки = назва + тип + редагуємість	
 	private String[][] findInform(boolean output){
 		String[][] info = null;

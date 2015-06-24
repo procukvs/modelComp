@@ -4,6 +4,7 @@ import db.*;
 import main.*;
 import file.*;
 
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,7 +16,7 @@ public class ShowModelButtons extends JPanel {
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private ShowModels showMain;
-	//private ShowModelAll showMain;
+	private ShowFiles showFiles;
 	private String type = "Algorithm";
 	private Model model = null;
 	ShowWork showWork; 
@@ -28,9 +29,11 @@ public class ShowModelButtons extends JPanel {
 	private JButton work ;
 	private JButton output;
 	private JButton input ;
-	
+	private Box fileBox;
+	private Box buttons;
+  	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	ShowModelButtons(DbAccess db, ShowModels showMain){
+	ShowModelButtons(DbAccess db, ShowModels showMain, ShowFiles showFiles){
 	//ShowModelButtons(DbAccess db, ShowModelAll showMain, ShowMenu frame){
 		//сформувати необхідні gui-елементи 
 		add = new JButton("Новий");
@@ -51,19 +54,21 @@ public class ShowModelButtons extends JPanel {
 		
 		this.db = db;
 		this.showMain = showMain;
+		this.showFiles = showFiles;
 		
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		Box fileBox = Box.createHorizontalBox();
+		fileBox = Box.createHorizontalBox();
 		fileBox.add(file);
 	    fileBox.add(nmFile);
 		fileBox.add(Box.createHorizontalStrut(5));
 		fileBox.add(output);
 		fileBox.add(Box.createHorizontalStrut(5));
 		fileBox.add(input);
+		fileBox.add(Box.createHorizontalStrut(5));
 		//----------------------------------
-		Box buttons = Box.createHorizontalBox();
+		buttons = Box.createHorizontalBox();
 		buttons.add(add);
 		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(addBase);
@@ -85,6 +90,7 @@ public class ShowModelButtons extends JPanel {
 				//mainBox.add(box1);
 				//mainBox.add(box2);
 			//	buttons.add(mainBox);
+		
 		// встановити слухачів !!!			
 		add.addActionListener(new Add());
 		addBase.addActionListener(new AddAs());
@@ -100,12 +106,23 @@ public class ShowModelButtons extends JPanel {
 	public void setModel(String type, Model model) {
 		boolean isFile = (type.equals("Input")) || (type.equals("Output"));
 		this.type = type;
-		this.model = model; 
+		this.model = model;
+		//==== розташування елементів 
+		if (isFile){
+			buttons.remove(quit);
+			fileBox.add(quit);
+		} else{
+			fileBox.remove(quit);
+			buttons.add(quit);		
+		}
+		//====== видимість елементів 
+		output.setVisible(!type.equals("Input"));
+		input.setVisible(!type.equals("Output"));
 		add.setVisible(!isFile);
 		addBase.setVisible(!isFile);
 		delete.setVisible(!isFile);
 		work.setVisible(!isFile && !type.equals("Recursive"));
-		quit.setVisible(!isFile);
+		//quit.setVisible(!isFile);
 		
 		// встановити надписи на кнопках
 		add.setText(Model.title(type, 7));
@@ -113,11 +130,6 @@ public class ShowModelButtons extends JPanel {
 		work.setText("Рoбота з " + Model.title(type, 5));
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
-		if (isFile){
-			input.setText("Вийти" );
-			if (type.equals("Output")) output.setText("Вивести " + Model.title(type, 6) + " в файл" );
-			else output.setText("Ввести " + Model.title(type, 6) + " з файлу");
-		}
 	
 	}
 	
@@ -159,31 +171,46 @@ public class ShowModelButtons extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//Algorithm model;
 			//model = showModel.getAlgorithm();
+			WorkFile wf= WorkFile.getWorkFile();
+			OutputText out = wf.getOut();
 			String text = "Файл для виведення не вказано !";
-			if (type.equals("Input") || type.equals("Output")) {
-				JOptionPane.showMessageDialog(ShowModelButtons.this," Input / Output modeles !!!");
-				//showMain.showModel("NoModel", 0);
-			} else {
-				if (model != null) {
-					String name = nmFile.getText();
-					if (!name.isEmpty()){
-						//text = "Вивести модель " + model.nmAlgo + 
-						//		" в файл " + fc.getSelectedFile().getAbsolutePath() + "...";
-						//String[] wr = new String[model.asub.size()];
-						//Rule r ; 
-						//for (int i = 0; i < model.asub.size(); i++ ) {
-						//	r = (Rule)model.asub.get(i);
-						//	wr[i] = r.getsLeft() + "->" + r.getsRigth();
-						//}
-						WorkFile wf = new WorkFile();
-						text = model.output(name, (wf.getOut()));
-						//text = wf.outputAlgorithm(name,(Algorithm)model);
+			String name = nmFile.getText();
+			if (!name.isEmpty()){
+				if (type.equals("Output")) {
+					ArrayList ml = showFiles.getOutputModel();
+					ArrayList row;
+					Model outModel = null;
+					int i = 0;
+					if ((ml !=null) && (ml.size() > 0)){
+						if(out.open(name)) {
+							text = "";
+							while((i < ml.size()) && (text.isEmpty())){
+								row = (ArrayList)ml.get(i);
+								outModel = db.getModel((String)row.get(0), (int)row.get(1));
+								if (i > 0)  out.output("");
+								text = outModel.output(out);
+								i++;
+							}
+							out.close();
+							if (text.isEmpty()) text = "Виведено " + i + " моделей в файл " + name + ".";
+						} else text = "Not open output file " + name + "!"; 	
+					} else text = "Не вказано жодної моделі для виводу !";
+				} else {
+					if (model != null) {
+						text = model.output(name,out);
 						if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
-					}	
-					JOptionPane.showMessageDialog(ShowModelButtons.this,text);
-				}
+						/*
+						if(out.open(name)) {
+							text = model.output(out);
+							out.close();
+							if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
+						} else text = "Not open output file " + name + "!";
+						*/ 		
+					} 
+				} 
 				
 			}
+			if (type.equals("Output") || (model != null) )  JOptionPane.showMessageDialog(ShowModelButtons.this,text);
 		}
 	}
 	class ModelInput implements ActionListener  {
@@ -191,15 +218,21 @@ public class ShowModelButtons extends JPanel {
 			String text = "Файл для введення не вказано !";
 			String name = nmFile.getText();
 			//Algorithm model;
-			Model model;
-			if (type.equals("Input") || type.equals("Output")) {
-				//JOptionPane.showMessageDialog(ShowModelButtons.this," Output from form !!!");
-				showMain.showModel("NoModel", 0);
-			} else {
-				if (!name.isEmpty()) {
+			Model model = null;
+			if (!name.isEmpty()) {
+				WorkFile wf = WorkFile.getWorkFile();
+				if (type.equals("Input")) {
+					if(wf.inputListModel(db, name)) {
+						showFiles.showInputModel(wf.getListModel());
+					}
+					text = wf.getErrorText();
+					//JOptionPane.showMessageDialog(ShowModelButtons.this,text);
+					//text = " Input  models form file !!!";
+				} else {
+				
 					//text = "Ввести модель з файлу " 
 					//		+ fc.getSelectedFile().getAbsolutePath() + "...";
-					WorkFile wf = new WorkFile();
+				
 					//model = wf.inputAlgorithm(name);
 					model = wf.inputModel(name);
 					if (model != null) {
@@ -214,8 +247,8 @@ public class ShowModelButtons extends JPanel {
 					}
 					else text = wf.getErrorText();
 				}	
-				JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
 			}
+			JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
 		}	
 	}
 	class Quit implements ActionListener  {

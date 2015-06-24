@@ -353,13 +353,13 @@ public class Machine extends Model {
         return data;
 	}
 	
-	public String output(String name, OutputText out) {
+	public String output(OutputText out) {
 		String allCh = "_" + main + add + no;
 		String res = "";
 		String wr;
 		State st;
-		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+		//if(out.open(name)) {
+		//	System.out.println("File " + name + " is open..");
 			if (!descr.isEmpty()) out.output("'" + descr);
 			out.output("Machine " + this.name);
 			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
@@ -374,9 +374,9 @@ public class Machine extends Model {
 			    out.output(wr);
 			}
 			out.output("end " + this.name);
-			out.close();
-			System.out.println("File " + name + " is close.."); 
-		} else res = "Not open output file " + name + "!"; 
+		//	out.close();
+		//	System.out.println("File " + name + " is close.."); 
+		//} else res = "Not open output file " + name + "!"; 
 		return res;
 	}	
 		

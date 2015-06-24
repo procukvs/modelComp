@@ -107,7 +107,16 @@ public class Model {
 		 return "Model-show";
 	}
 	
-	public String output(String name, OutputText out) {return "outputModel";};
+	public String output(OutputText out) {return "outputModel";}
+	
+	public String output(String name, OutputText out) {
+		String res = "";
+		if(out.open(name)) {
+			res = this.output(out);
+			out.close();
+		} else res = "Not open output file " + name + "!"; 
+		return res;
+	}
 	
 	static public String title(String type, int num) {
 		String rs = "";
