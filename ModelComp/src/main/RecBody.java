@@ -30,8 +30,8 @@ public class RecBody {
 	public String iswf(HashMap <String, RecBody> map) {return "";}
 	
 	public void formTree(DefaultMutableTreeNode  root) { }
-	public int test(int[] arg, Recursive set, DefaultMutableTreeNode  root){
-		return 0;
+	public String test(int[] arg, Recursive set, DefaultMutableTreeNode  root){
+		return "..";
 	}
 }
 

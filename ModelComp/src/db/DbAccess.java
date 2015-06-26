@@ -87,7 +87,7 @@ public class DbAccess {
 		      conn = DriverManager.getConnection("jdbc:sqlite:" + nmDb);
 		      s = conn.createStatement();
 		      nameDB = nmDb;
-		      System.out.println("Is connection to DB " + nameDB);
+		     // System.out.println("Is connection to DB " + nameDB);
 		      return true;
 	        } catch (SQLException e) {
 				System.out.println("ERROR: Could not connect to the database " + nmDb + ".");
@@ -99,7 +99,7 @@ public class DbAccess {
 		 try{
 		        conn.close();	
 		        conn = null;
-		        System.out.println("Is disconnecting from DB " + nameDB);
+		        //System.out.println("Is disconnecting from DB " + nameDB);
 		        nameDB = "Is driver"; 
 	        } catch (SQLException e) {
 				System.out.println("ERROR: Could not disconnect.");

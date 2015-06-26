@@ -155,6 +155,48 @@ public class ShowEval extends JPanel {
 		tParam[0].requestFocus();
 	}
 	
+	// перевіряє встановлені аргументи і кількiсть кроків на коректність !!! 
+	public String testArguments(){
+		String text = "";
+		if (!type.equals("Post")){
+			if(type.equals("Recursive") || type.equals("Computer") || model.getIsNumeric()){
+				for(int i=0; i < rank; i++) 
+					if(!StringWork.isNatur(tParam[i].getText())) text = text + tParam[i].getText() + ":"; 
+				if(!text.isEmpty()) text = "Аргументи:" + text + " - не натуральні числа";
+			}	
+			else text = testInitial();
+			if (text.isEmpty()) 
+				if(!StringWork.isNatur(tNodef.getText())) text = "Кількість кроків " + tNodef.getText() + " не натуральне число.";
+		}
+		return text;
+	}
+	
+	private String testInitial() {
+		String sInit = tInit.getText();
+		String noAlfa = StringWork.isAlfa(main, sInit);
+		if(!noAlfa.isEmpty())
+			noAlfa = "Вхідне слово " + sInit + " містить символи " + noAlfa + " що не належать основному алфавіту !"; 
+		return noAlfa;
+	}
+	
+	public Object getArguments() {
+		if(type.equals("Recursive") || type.equals("Computer")|| model.getIsNumeric()){
+			int[] arg = new int[rank];
+			for(int i=0; i < rank; i++)  arg[i] = new Integer(tParam[i].getText());
+			return arg;
+		} 
+		else return tInit.getText();
+	}
+	
+	public int getNodef() { 
+		return new Integer(tNodef.getText());
+	}
+	
+	public void setResult(String text,int step)	{
+		tResult.setText(text); 
+		if (step == -1) tStep.setText(""); else tStep.setText("" + step);
+	}
+	
 	class LtParam implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			String sindex = e.getActionCommand();

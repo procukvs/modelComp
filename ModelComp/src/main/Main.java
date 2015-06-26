@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import db.*;
@@ -18,6 +19,7 @@ public class Main {
 		//====================
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		gui = new ShowModels(db);
+		//gui.setListener(gui);
 		System.out.println("Forming GUI");
 	    if (db.connectionDb("Model.db")) { 
 	       	// після встановлення звязку з БД створюємо обробник запитів opr
@@ -37,6 +39,11 @@ public class Main {
 		// Вікно створюємо в потоці обробки подій.
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run(){
+				// підключення ще ОДНОГО зовнішнього вигляду !!!!
+				try {
+					UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
+				}
+				catch (Exception ex) { System.err.println(ex);}
 				new Main();
 			}
 		});

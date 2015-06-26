@@ -1,6 +1,6 @@
 package gui;
 
-import java.awt.Dimension;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.tree.*;

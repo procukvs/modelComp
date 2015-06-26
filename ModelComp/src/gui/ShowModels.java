@@ -18,6 +18,8 @@ public class ShowModels extends JFrame {
 	private ShowFiles showFiles;
 	private ShowModelButtons modelButtons;
 	//private Box mainBox ;
+	//private UIManager.LookAndFeelInfo[] plafs;
+	//private JMenu plafmenu;
 	
 	private ShowTesting sTest;
 	
@@ -52,6 +54,23 @@ public class ShowModels extends JFrame {
 		mFile.add(output);
 		menuBar.add(mFile);
 		
+		
+		JMenu plafmenu = createPlafMenu(); // Створюємо меню
+		menuBar.add(plafmenu);                  // Додаємо меню в полосу меню
+
+		//================================================================
+		/*
+		plafmenu = new JMenu("Look and Feel");
+		plafs = UIManager.getInstalledLookAndFeels();
+		for(int i = 0; i < plafs.length; i++) {
+			String plafName = plafs[i].getName();
+			String plafClassName = plafs[i].getClassName();
+			plafmenu.add(new JMenuItem(plafName));
+		}
+		menuBar.add(plafmenu);
+		//=============================================================
+		  
+		 */
 		menuBar.add(quit);
 		setJMenuBar(menuBar);
 		
@@ -90,7 +109,7 @@ public class ShowModels extends JFrame {
 		//pack();
 	}	
 	
-	private void setVisiblePane(String type) {
+	private void setVisiblePane( String type) {
 		boolean close = type.equals("NoModel");
 		boolean files = type.equals("Input") || type.equals("Output");
 		label.setVisible(!close);
@@ -99,6 +118,61 @@ public class ShowModels extends JFrame {
 		modelButtons.setVisible(!close);
 	}
 	
+	private JMenu createPlafMenu() {
+		JMenu plafmenu = new JMenu("Зовнішній вигляд");
+		//ButtonGroup radiogroup = new ButtonGroup();
+		UIManager.LookAndFeelInfo[] plafs = 
+				UIManager.getInstalledLookAndFeels();
+		
+		for(int i = 0; i < plafs.length; i++) {
+			String plafName = plafs[i].getName();
+			final String plafClassName = plafs[i].getClassName();
+			
+			//JMenuItem item = plafmenu.add(new JRadioButtonMenuItem(plafName));
+			JMenuItem item = plafmenu.add(new JMenuItem(plafName));
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e){
+					try {
+						UIManager.setLookAndFeel(plafClassName);
+						SwingUtilities.updateComponentTreeUI(ShowModels.this);
+						//ShowModels.this.pack();
+						modelButtons.setLookAndFeel(plafClassName);
+						showModel.setLookAndFeel(plafClassName);
+					}
+					catch (Exception ex) { System.err.println(ex);}
+				}
+			});
+			//radiogroup.add(item);
+		}
+		return plafmenu;
+	}
+	
+	
+	/*
+	public void setListener(final JFrame show){
+		Component[] itemA =  plafmenu.getComponents();
+		System.out.println("setListener " + itemA.length + " " +plafs.length );
+		
+		for(int i = 0; i < plafs.length; i++) {
+			String plafName = plafs[i].getName();
+			final String plafClassName = plafs[i].getClassName();
+			
+			//for(int i=0;i < plafmenu)
+			//JMenuItem item = plafmenu.add(new JRadioButtonMenuItem(plafName));
+			
+			((JMenuItem) itemA[i]).addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e){
+					try {
+						UIManager.setLookAndFeel(plafClassName);
+						SwingUtilities.updateComponentTreeUI(show);
+						pack();
+					}
+					catch (Exception ex) { System.err.println(ex);}
+				}
+			});
+		}
+	}
+	*/
 	public void showModel(String type, int id) {
 		boolean files = type.equals("Input") || type.equals("Output");
 		String text = Model.title(type, 1);
@@ -128,8 +202,11 @@ public class ShowModels extends JFrame {
 		label.setText(text);
 	/*		
 	*/		
-			
 	}
+	
+		
+		
+	
 	
 	class LsComputer implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {showModel("Computer",0);	}	

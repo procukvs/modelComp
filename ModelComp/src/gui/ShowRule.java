@@ -21,6 +21,7 @@ public class ShowRule extends JPanel {
 	private int idCom = 0;  // Algorithm =>  порядковий номер, else => ключ в БД 
 	private String comAlfa;
 	private String what = "";
+	private ShowCommand showCommand;
 	//private boolean initialBCod;
 	JLabel lModel;
 	JLabel lId;
@@ -60,8 +61,9 @@ public class ShowRule extends JPanel {
 	//-------------------for Machine--------------
 	Box moveBox[];
 		
-	ShowRule() {
+	ShowRule(ShowCommand owner) {
 		//сформувати необхідні gui-елементи 
+		showCommand = owner;
 		lModel = new JLabel("Algorithm   NNNNN    # xxx");
 		lId = new JLabel("Rule   (yyy)");
 		state = new JTextField(5);
@@ -356,13 +358,7 @@ public class ShowRule extends JPanel {
 			}
 			state.enable(!isEdit);
 			lTesting.setEditable(false);
-			/*
-			if(f.getiswf()){
-				RecBody rb = recur.map.get(f.getName());
-				testTree.setTree(rb.formTree());
-				testTree.setVisible(true);
-			}
-			*/
+			
 			//lTesting.enable(false);
 			
 		}else if (type.equals("Machine")){
@@ -487,7 +483,8 @@ public class ShowRule extends JPanel {
 			//System.out.println(com.output());
 			break;
 		case "Recursive":
-			com = new Function (idCom, st, sBody.getText(),sComm.getText()); break;
+			com = new Function (idCom, st, sBody.getText(),sComm.getText());
+			break;
 		case "Computer":
 			int reg2 = 0;
 			int next = 0;
@@ -624,6 +621,8 @@ public class ShowRule extends JPanel {
 	class LsBody implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			String st = recur.fullAnalys(state.getText(), sBody.getText());
+			showCommand.showTree.setVisible(false);
+			showCommand.pack();
 			lTesting.setText(st);
 			if(st.isEmpty()) sComm.requestFocus();
 		}

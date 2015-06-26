@@ -99,16 +99,20 @@ public class RecSuper extends RecBody {
 		for(int i=0; i < af.size(); i++) af.get(i).formTree(base);
 		root.add(base);
 	}
-	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
-		int res = 0;
+	public String test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		String res = "..";
 		if (set.getNoUndef()){
 			String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
 			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
 			set.stepEval();
 			int[] argF = new int[af.size()];
-			for(int i = 0; i < argF.length; i++)
-				argF[i] = af.get(i).test(arg, set,base);
-			res = f.test(argF, set, base);
+			for(int i = 0; i < argF.length; i++){
+				if (set.getNoUndef()) {
+					res = af.get(i).test(arg, set,base);
+					if (set.getNoUndef()) argF[i] = new Integer(res);
+				}
+			}	
+			if (set.getNoUndef()) res = f.test(argF, set, base);
 			base.setUserObject(sBase+res); 
 			root.add(base);
 		}

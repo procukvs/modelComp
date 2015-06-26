@@ -60,9 +60,10 @@ public class RecSolve extends RecBody {
 		//System.out.println(this.toString());
 		root.add(base);
 	}
-	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
-		int res = 0;
+	public String test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		String res = "..";
 		int resg; 
+		int ires = 0;
 		boolean go = true;
 		if (set.getNoUndef()){
 			int k = arg.length;
@@ -71,14 +72,18 @@ public class RecSolve extends RecBody {
 			set.stepEval();
 			int[] argG = new int[k + 1];
 			for( int i = 0; i < k; i++) argG[i] = arg[i];
-			argG[k] = 0;
+			argG[k] = ires;
 			resg = g.eval(argG, set);
 			while (go && (resg !=0) && set.getNoUndef()){
-				res++; argG[k] = res;
-				go = (res <= max);
-				if (go) resg = g.test(argG, set,base);
+				ires++; argG[k] = ires;
+				go = (ires <= max);
+				if (go){
+					res = g.test(argG, set, base);
+					if(set.getNoUndef()) resg = new Integer(res);
+				}
 			}
 			if (!go) set.setUndef(this.toString());
+			if(set.getNoUndef()) res = ""+ ires; 
 			base.setUserObject(sBase+res); 
 			root.add(base);
 		}

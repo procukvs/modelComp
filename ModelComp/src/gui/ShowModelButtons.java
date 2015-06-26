@@ -133,6 +133,15 @@ public class ShowModelButtons extends JPanel {
 	
 	}
 	
+	public void setLookAndFeel(String className){
+		try {
+			UIManager.setLookAndFeel(className);
+			if(showWork != null) SwingUtilities.updateComponentTreeUI(showWork);
+			//ShowModels.this.pack();
+		}
+		catch (Exception ex) { System.err.println(ex);}
+	}
+	
 	//описуємо класи - слухачі !!!!!!
 	class Add implements ActionListener  {
 		// 

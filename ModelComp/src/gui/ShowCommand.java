@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.util.*;
 import java.awt.*;
@@ -12,11 +13,14 @@ public class ShowCommand extends JDialog  {
 	JLabel lWhat;
 	ShowRule showRule;
 	JButton test;
+	JButton structure;
 	JButton yes;
 	JButton cancel;
 	Command command = null;
 	private String type = "Algorithm";
 	private Model model = null;
+	private Box mainBox ;
+	ShowTree showTree;
 	
 	ShowCommand(Frame owner){
 		super(owner, "Command");
@@ -27,13 +31,17 @@ public class ShowCommand extends JDialog  {
 		lWhat = new JLabel("Edit");
 		lWhat.setHorizontalAlignment(lWhat.CENTER);
 		lWhat.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,16));
-		showRule = new ShowRule();
+		showRule = new ShowRule(this);
 		yes = new JButton("Зберегти");
 		test = new JButton("Тестувати");
+		structure = new JButton("Структура");
 		cancel = new JButton("Не зберігати");
 		
 		// формуємо розміщення
 		setLayout(new BorderLayout());
+		//-----------------------------
+		mainBox = Box.createVerticalBox();
+		mainBox.add(showRule);
 		//---------------------------		
 		Box buttonBox = Box.createHorizontalBox();
 		buttonBox.add(Box.createGlue());
@@ -42,10 +50,12 @@ public class ShowCommand extends JDialog  {
 		buttonBox.add(yes);
 		buttonBox.add(Box.createHorizontalStrut(15));
 		buttonBox.add(cancel);
+		buttonBox.add(Box.createHorizontalStrut(15));
+		buttonBox.add(structure);
 		buttonBox.add(Box.createGlue());
 		//---------------------
 		add(lWhat, BorderLayout.NORTH);
-		add(showRule, BorderLayout.CENTER);
+		add(mainBox, BorderLayout.CENTER);
 		add(buttonBox, BorderLayout.SOUTH);
 		pack();
 		//setSize(400,200);
@@ -53,6 +63,7 @@ public class ShowCommand extends JDialog  {
 		test.addActionListener(new LsTest());
 		yes.addActionListener(new LsYes());
 		cancel.addActionListener(new LsCancel());
+		structure.addActionListener(new LsStructure());
 	}
 	
 	//описуємо класи - слухачі !!!!!!
@@ -91,11 +102,40 @@ public class ShowCommand extends JDialog  {
 		}
 	}
 	
+	class LsStructure implements ActionListener  {
+		public void actionPerformed(ActionEvent e) {
+			Recursive r = (Recursive)model;
+			Function f = (Function)showRule.getCommand();
+			//System.out.println("LsStructure" + f.getName() + " ...." + f.gettxBody()+ ".."+  f.getiswf() );
+			//showRule.lTesting.setText(r.fullAnalys(f.getName(), f.gettxBody()));
+			RecBody rb = r.analysRecBody(f.gettxBody());
+			if(rb != null){
+				//RecBody rb = r.map.get(f.getName());
+				String sRoot = f.getName() + "...";
+				DefaultMutableTreeNode root = new DefaultMutableTreeNode(sRoot,true);
+				rb.formTree(root);
+				if (showTree != null) mainBox.remove(showTree);
+				showTree = new ShowTree(root);
+										//testTree.setMaximumSize(new Dimension(1600,100));
+										//testTree.setSize(100,100);
+				mainBox.add(showTree);
+										//endBox.add(testTree);
+									//testTree.setVisible(false);
+				pack();
+				//testTree.setTree(rb.formTree());
+				//testTree.setVisible(true);
+			}
+			
+		}
+	}	
+	
 	public void setCommand(String what, String type, Model model,  int id){
 		command = null;
 		this.type = type; this.model = model;
 		if (what == "Add") lWhat.setText(Model.title(type, 9)); else lWhat.setText("Редагувати");
+		if (showTree != null) mainBox.remove(showTree);
 		test.setVisible(type.equals("Recursive"));
+		structure.setVisible(type.equals("Recursive"));
 		showRule.setRule(type, model, id, what);
 	}
 	public Command getCommand() { return command;}

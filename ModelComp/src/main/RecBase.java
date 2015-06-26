@@ -44,10 +44,13 @@ public class RecBase extends RecBody {
 		//System.out.println(this.toString());
 		root.add(new DefaultMutableTreeNode(name,false));
 	}
-	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
-		int res = this.eval(arg,set);
-		String sh = name + "<" + StringWork.argString(arg) + ">=" + res;
-		root.add(new DefaultMutableTreeNode(sh,false));
+	public String test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		String res = "..";
+		if (set.getNoUndef()){
+			res = "" + this.eval(arg,set);
+			String sh = name + "<" + StringWork.argString(arg) + ">=" + res;
+			root.add(new DefaultMutableTreeNode(sh,false));
+		}	 	
 		return res;
 	}
 	

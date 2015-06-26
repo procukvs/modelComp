@@ -114,6 +114,16 @@ public class ShowCommandButtons extends JPanel {
 		eval.setVisible(rec);
 	}	
 	
+	public void setLookAndFeel(String className){
+		try {
+			UIManager.setLookAndFeel(className);
+			if(showWork != null) SwingUtilities.updateComponentTreeUI(showWork);
+			if(workCommand != null) SwingUtilities.updateComponentTreeUI(workCommand);
+			//ShowModels.this.pack();
+		}
+		catch (Exception ex) { System.err.println(ex);}
+	}
+	
 	// Класи слухачі 
 	class LsTesting implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
@@ -356,11 +366,12 @@ public class ShowCommandButtons extends JPanel {
 					Function f;
 					//recur = (Recursive)model;
 					f = (Function)model.program.get(model.findCommand(row));
-					if (f.getiswf())
+					//System.out.println("ShowCommandButton..LsEval " + f.getName() + "  iswf=" + f.getiswf()); 
+					if (f.getiswf()){
 						showWork.setModel(type, model);
 						showWork.setFunction(f);
 						showWork.show();
-						
+					}	
 					  //JOptionPane.showMessageDialog(ShowCommandButtons.this,"обрахувати функцію " + f.getName() + ".");
 				}
 			}

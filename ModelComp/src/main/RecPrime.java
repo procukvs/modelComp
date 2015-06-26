@@ -64,28 +64,32 @@ public class RecPrime extends RecBody {
 		h.formTree(base);
 		root.add(base);
 	}
-	public int test(int[] arg, Recursive set, DefaultMutableTreeNode root){
-		int res = 0;
+	public String test(int[] arg, Recursive set, DefaultMutableTreeNode root){
+		String res = "..";
+		String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
+		DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
 		if (set.getNoUndef()){
-			String sBase = this.toString() + "<" + StringWork.argString(arg) + ">=";
-			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
 			int k = arg.length;
 			int[] argG = new int[(k==1?1:k-1)];
 			int[] argH = new int[k+1];
 			set.stepEval();
-			int y = arg[k - 1];
-			for(int i = 0; i < (k-1); i++){
-				argG[i] = arg[i]; argH[i] = arg[i];
-			}
-			if(k==1) argG[0] = arg[0];
-			res = g.test(argG, set,base);
-			for(int i = 0; i < y; i++){
-				argH[k-1] = i; argH[k] = res;
-				res = h.test(argH, set,base);
-			}
+			if(set.getNoUndef()){ 
+				int y = arg[k - 1];
+				for(int i = 0; i < (k-1); i++){
+					argG[i] = arg[i]; argH[i] = arg[i];
+				}
+				if(k==1) argG[0] = arg[0];
+				res = g.test(argG, set,base);
+				for(int i = 0; i < y; i++){
+					if (!res.equals("..")){
+						argH[k-1] = i; argH[k] = new Integer(res);
+						res = h.test(argH, set, base);
+					}	
+				}
+			}	
 			base.setUserObject(sBase+res); 
-			root.add(base);
 		}
+		root.add(base);
 		return res;
 	}	
 }

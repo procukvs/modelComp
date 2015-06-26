@@ -2,7 +2,9 @@ package gui;
 
 import main.*;
 import db.*;
+
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -45,7 +47,9 @@ public class ShowModelProgram extends JPanel {
 		
 	}
 
-	
+	public void setLookAndFeel(String className){
+		buttons.setLookAndFeel(className);
+	}
 	
 	//===============================
 /*	JButton test = new JButton("Перевірка");

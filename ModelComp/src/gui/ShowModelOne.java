@@ -92,6 +92,9 @@ public class ShowModelOne extends JPanel {
     	selection.setText(selected + " : " + r);
 	}
 	
+	public void setLookAndFeel(String className){
+		program.setLookAndFeel(className);
+	}
 	// класи - слухачі виділення (selection...)
 	class SelectFirst implements ActionListener  {
 		public void actionPerformed(ActionEvent event){

@@ -60,6 +60,7 @@ public class Recursive extends Model {
 	
 	public boolean getNoUndef() {return noUndef;}
 	public int getAllStep() {return step;}
+	public int getResult() {return result;}
 	
 	public void extend(){
 		Function f;
@@ -418,9 +419,9 @@ public class Recursive extends Model {
 	//===========================================
 	public String testFunction(Function f, int[] arg, int limit, DefaultMutableTreeNode  root){
 		RecBody bf;
+		String result = "..";
 		this.limit = limit;	step = 0;
 		reasonUndef = ""; noUndef = true;
-		result = 0;
 		bf = map.get(f.getName());
 		result = bf.test(arg, this, root);
 		if (!noUndef){
