@@ -334,11 +334,15 @@ public class ShowCommandButtons extends JPanel {
 							"Вставити " + sWhere + "програму машини", "Вибір програми", JOptionPane.QUESTION_MESSAGE, null,  values, values[0]);
 			//res = JOptionPane.showInputDialog
 			//JOptionPane.showMessageDialog(InputDialogs.this,res);
-			if (type.equals("Computer"))
-				 text = model.dbInsertModel(row, (String)res);
-			else text = model.dbInsertModel((String)res);	
-			if (text.isEmpty()) showMain.showModel(type, model.id);
-			else JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
+			//System.out.println("ShowCommandButton..LsInsert0 ..." + (String) res + "...  "); 
+			if(res != null){
+				if (type.equals("Computer"))
+					text = model.dbInsertModel(row, (String)res);
+				else text = model.dbInsertModel((String)res);	
+				//System.out.println("ShowCommandButton..LsInsert1 ..." + text + "...  "); 
+				if (text.isEmpty()) showMain.showModel(type, model.id);
+				else JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
+			}
 		}	
 	}
 	
