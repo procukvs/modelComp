@@ -20,14 +20,14 @@ public class Main {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		gui = new ShowModels(db);
 		//gui.setListener(gui);
-		System.out.println("Forming GUI");
+		System.out.println("Forming GUI-- version Teacher...");
 	    if (db.connectionDb("Model.db")) { 
 	       	// після встановлення звязку з БД створюємо обробник запитів opr
 	        gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        gui.addWindowListener(new EndWork());
 	        gui.setVisible(true);
 	    } 
-	    else System.out.println("No connection to DB Model.db");
+	    else System.out.println("No connection to DB Model.db -- version Teacher..");
 	
 	   // Testing.testSubstitution();
 	   // Testing.test();
