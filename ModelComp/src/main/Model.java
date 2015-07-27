@@ -70,7 +70,13 @@ public class Model {
 									"Input11", "Input12","Input13"},
 			{"Output", "Виведення моделей в файл","Output2","Output3","Output4", "Output5", 
 									"моделі","Output7", "Output8", "Outpu9t","Output10",
-									"Output11", "Output12","Output13"}
+									"Output11", "Output12","Output13"},
+     		{"State", "Стан параметрів","State2","State3","State4", "Змінити", 
+	    							"State6","State7", "State8", "State9","State10",
+									"State11", "State12","State13"},
+		    {"Parameters", "Встановлення параметрів","Parameters2","Parameters3","Parameters4", "Редагувати коментар", 
+									"Parameters6","Нове значення параметру", "Parameters8", "Parameters9","Parameters10",
+									"Parameters11", "Parameters12","Parameters13"}									
 								};
 				
 	Model(int id, String name) {

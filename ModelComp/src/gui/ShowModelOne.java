@@ -22,6 +22,7 @@ public class ShowModelOne extends JPanel {
 	private int selected = 0;
 		
 	private JLabel selection;
+	private JLabel section;
 	private ShowDescription description;
 	private ShowModelProgram program;
 	
@@ -47,6 +48,7 @@ public class ShowModelOne extends JPanel {
 		next.setMaximumSize(new Dimension(20,20));
 		JButton last = new JButton(">|");
 		last.setMaximumSize(new Dimension(20,20));
+		section = new JLabel("");  
 		
 		this.db = db; 
 		showMain = owner;
@@ -65,6 +67,11 @@ public class ShowModelOne extends JPanel {
 		select.add(next); 
 		select.add(last);
 		select.add(Box.createHorizontalGlue());
+		if(Parameters.getRegime().equals("teacher")){
+		  select.add(section);
+		  select.add(Box.createHorizontalStrut(15));
+		  section.setText(Parameters.getSection());
+		}  
 		//-------------------------------------
 		Box mainBox = Box.createVerticalBox();
 		mainBox.add(program);
@@ -90,7 +97,8 @@ public class ShowModelOne extends JPanel {
     	//System.out.println("setModel  " + selected + "  cnt = " + r);
     	if (selected > r) selected = r;
     	selection.setText(selected + " : " + r);
-	}
+    	if(Parameters.getRegime().equals("teacher")) section.setText(Parameters.getSection());
+  	}
 	
 	public void setLookAndFeel(String className){
 		program.setLookAndFeel(className);
@@ -139,5 +147,12 @@ public class ShowModelOne extends JPanel {
 			showMain.showModel(type, db.getNumber(type, selected));
 		}
 	}
-
+	/*
+	private void setSection(){
+		boolean reg = false;
+		reg = Parameters.getRegime().equals("teacher");
+		if (reg)section.setText(Parameters.getSection());
+		section.setVisible(reg);
+	}
+   */
 }

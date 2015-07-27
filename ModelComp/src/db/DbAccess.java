@@ -58,7 +58,7 @@ public class DbAccess {
 		  dbPost = new DbPost(this);
 		  dbRec = new DbRecursive(this);
 		  dbComp = new DbComputer(this);
-	     }
+	    }
 		catch(Exception ex)
         {
  			nameDB = "No driver";
@@ -224,6 +224,7 @@ public class DbAccess {
 		}
 		return all;
 	}	
+	
 	
 	//знаходить найбільший номер у існуючих моделей типа type 
 	public int maxNumber(String type){
@@ -449,4 +450,169 @@ public class DbAccess {
 		default: return "mRule";
 		}
 	}
+	
+	//==================================================
+	//... робота з параметрами  --- таблиці pState + pParameters
+	//... лише в режимі teacher !!!!
+	//==================================================
+	// встановлення глобальних параметрів -- при запуску програми + при змінні pState !! 
+	public void setParameters(){
+		sql = "select name, value  from pState order by name";
+		try{ 
+			s.execute(sql);
+	        ResultSet rs = s.getResultSet();
+	        while((rs!=null) && (rs.next())) {
+	        	//System.out.println("setParameters:"+ rs.getString(1) + "- " + rs.getString(2));
+	        	switch(rs.getString(1)){
+	    		case "Section": Parameters.setSection(rs.getString(2)); break;
+	    		case "PostVar" : Parameters.setPostVar(rs.getString(2)); break;
+	    		case "RecurSubst" : Parameters.setRecurSubst(rs.getString(2)); break;
+	    		default: System.out.println("Db:setParameters: невідомий параметр - "
+	    		                     + rs.getString(1) + ", значення - " + rs.getString(2));
+	    		}
+	        }
+		}catch (Exception e){
+			System.out.println("ERROR: setParameters :" + e.getMessage());
+		}
+	}
+
+	// знаходить стан всіх параметрів 
+	public ArrayList getStateParameter(){
+		ArrayList state = new ArrayList ();
+		ArrayList row;
+		String select = "select name, value, descr from pState where name <> 'Regime' order by name";
+		try{ 
+			//System.out.println("getAllModel " + sql );
+			s.execute(select);
+			ResultSet rs = s.getResultSet();
+			while((rs!=null) && (rs.next())) {
+				row = new ArrayList();
+				row.add(rs.getString(1));
+				row.add(rs.getString(2));
+				row.add(rs.getString(3));
+				state.add(row);
+			}
+		}catch (Exception e){
+			System.out.println("ERROR: getStateParameter :" + e.getMessage());
+		}
+		return state;
+	}
+	
+	// знаходить всі значення всіх параметрів 
+	public ArrayList getAllParameter(){
+		ArrayList all = new ArrayList ();
+		ArrayList row;
+		String select = "select name, value, descr from pParameters where name <> 'Regime' order by name, value";
+		try{ 
+			s.execute(select);
+			ResultSet rs = s.getResultSet();
+			while((rs!=null) && (rs.next())) {
+				row = new ArrayList();
+				row.add(rs.getString(1));
+				row.add(rs.getString(2));
+				row.add(rs.getString(3));
+				all.add(row);
+			}
+		}catch (Exception e){
+			System.out.println("ERROR: getAllParameter :" + e.getMessage());
+		}
+		return all;
+	}		
+
+	// знаходить всі значення параметра name 
+	public ArrayList getParameterValue(String name){
+		ArrayList all = new ArrayList ();
+		String select = "select value from pParameters where name = '" + name + "' order by value";
+		try{ 
+			//System.out.println("getAllModel " + sql );
+			s.execute(select);
+			ResultSet rs = s.getResultSet();
+			while((rs!=null) && (rs.next())) {
+				all.add(rs.getString(1));
+			}
+		}catch (Exception e){
+			System.out.println("ERROR: getParameterValue :" + e.getMessage());
+		}
+		return all;
+	}		
+	
+	// перевіряє чи є в таблиці вказане значення параметру
+	public boolean isParameterValue (String name, String value) {
+		boolean is = false;
+		try{
+			sql = "select descr from pParameters where name = '" + name + "' and value = '" + value + "'";
+			s.execute(sql);
+			rs = s.getResultSet();
+	        if((rs!=null) && (rs.next()))is = true;
+	   	}
+		catch (Exception e) {System.out.println("ERROR: isParameterValue: " + e.getMessage());}
+		return is;		
+	}
+	
+	//  додає нове значення параметру
+	public void setParameterValue (String name, String value, String desc) {
+		try{	
+			sql = "insert into pParameters values('" + name + "', '" + value + "', '" + desc + "')";
+			s.execute(sql);
+		} catch (SQLException e) {
+			System.out.println("ERROR: setParameterValue: " + e.getMessage());
+	    }  	
+	}
+	
+	//  встановлює нове значення параметру в стані
+	public void updateStateParameter (String name, String value) {
+		String desc = "";
+		try{
+			sql = "select descr from pParameters where name = '" + name + "' and value = '" + value + "'";
+			s.execute(sql);
+			rs = s.getResultSet();
+	        if((rs!=null) && (rs.next()))desc = rs.getString(1);
+			sql = "update pState  set value = '" + value + "', descr = '" + desc + "' where name = '" + name + "' ";
+			s.execute(sql);
+		} catch (SQLException e) {
+			System.out.println("ERROR: updateStateParameter: " + e.getMessage());
+	    }  	
+	}
+
+	//  модифікує опис (коментар) вказаного значення параметру
+	public void updateParameterDesc (String name, String value, String desc) {
+		try{	
+			sql = "update pParameters set descr = '" + desc + "'" + 
+		          " where name = '" + name + "' and value = '" + value + "'";
+			s.execute(sql);
+			sql = "update pState set descr = '" + desc + "'" + 
+			          " where name = '" + name + "' and value = '" + value + "'";
+				s.execute(sql);	
+		} catch (SQLException e) {
+			System.out.println("ERROR: updateParameterDesc: " + e.getMessage());
+	    }  	
+	}	
+	
+	// підраховує кількість моделей в розділі section
+	public int getSectionCount(String section) {
+		int cnt = 0;
+		String [] table = {"mAlgorithm", "rComputer", "tMachine", "pPost", "fRecursive"};
+		try{
+			for (int i = 0; i < table.length; i++){
+				sql = "select count(*) from " + table[i] + " where section = '" + section + "'";
+				s.execute(sql);
+				rs = s.getResultSet();
+				if((rs!=null) && (rs.next()))cnt = cnt + rs.getInt(1);
+			}
+       	}
+		catch (Exception e) {System.out.println("ERROR: getSectionCount: " + e.getMessage());}
+		return cnt;
+	}	
+	//  вилучає вказане значення параметру
+	public void deleteParameterValue (String name, String value) {
+		try{	
+			sql = "delete from pParameters where name = '" + name + "' and value = '" + value + "'";
+			s.execute(sql);
+			sql = "update pState set value = 'Nothing', descr = 'Параметр вилучено !!!'" + 
+			          " where name = '" + name + "' and value = '" + value + "'";
+				s.execute(sql);	
+		} catch (SQLException e) {
+			System.out.println("ERROR: deleteParameterValue: " + e.getMessage());
+	    }  	
+	}		
 }

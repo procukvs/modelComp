@@ -31,6 +31,9 @@ public class ShowModelButtons extends JPanel {
 	private JButton input ;
 	private Box fileBox;
 	private Box buttons;
+	private JLabel lSection;
+	//private JComboBox section;
+	//private String[] sectSet = {"base"};
   	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ShowModelButtons(DbAccess db, ShowModels showMain, ShowFiles showFiles){
@@ -48,6 +51,10 @@ public class ShowModelButtons extends JPanel {
 		output = new JButton("Вивести алгоритм в файл");
 		input = new JButton("Ввести алгоритм з файлу");
 		quit = new JButton("Вийти");
+		lSection = new JLabel("base");
+		//section = new JComboBox();
+		//section.setPrototypeDisplayValue("Family Ivanov");
+
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		showWork = new ShowWork(showMain);
 		//showWork = new ShowWork(frame);
@@ -60,6 +67,8 @@ public class ShowModelButtons extends JPanel {
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		fileBox = Box.createHorizontalBox();
+		fileBox.add(lSection);
+		fileBox.add(Box.createHorizontalStrut(15));
 		fileBox.add(file);
 	    fileBox.add(nmFile);
 		fileBox.add(Box.createHorizontalStrut(5));
@@ -105,29 +114,43 @@ public class ShowModelButtons extends JPanel {
 	
 	public void setModel(String type, Model model) {
 		boolean isFile = (type.equals("Input")) || (type.equals("Output"));
+		boolean isParameter = (type.equals("State")) || (type.equals("Parameters"));
 		this.type = type;
 		this.model = model;
+		lSection.setText( Parameters.getSection());
 		//==== розташування елементів 
 		if (isFile){
 			buttons.remove(quit);
 			fileBox.add(quit);
-		} else{
-			fileBox.remove(quit);
-			buttons.add(quit);		
+		} else {
+		  	fileBox.remove(quit);
+		  	buttons.add(quit);
+		  	if (isParameter) buttons.remove(addBase);
 		}
 		//====== видимість елементів 
-		output.setVisible(!type.equals("Input"));
-		input.setVisible(!type.equals("Output"));
-		add.setVisible(!isFile);
-		addBase.setVisible(!isFile);
-		delete.setVisible(!isFile);
-		work.setVisible(!isFile && !type.equals("Recursive"));
-		//quit.setVisible(!isFile);
+		if (isParameter){
+			fileBox.setVisible(false);
+			work.setVisible(true);
+			quit.setVisible(true);
+			add.setVisible(type.equals("Parameters"));
+			delete.setVisible(type.equals("Parameters"));
+		} else{
+			fileBox.setVisible(true);
+			lSection.setVisible(type.equals("Input") && Parameters.getRegime().equals("teacher") );
+			output.setVisible(!type.equals("Input"));
+			input.setVisible(!type.equals("Output"));
+			add.setVisible(!isFile);
+			addBase.setVisible(!isFile);
+			delete.setVisible(!isFile);
+			work.setVisible(!isFile && !type.equals("Recursive"));
+			//quit.setVisible(!isFile);
+		}	
 		
 		// встановити надписи на кнопках
 		add.setText(Model.title(type, 7));
 		addBase.setText(Model.title(type, 7) + " на основі");
-		work.setText("Рoбота з " + Model.title(type, 5));
+		if (isParameter) work.setText(Model.title(type, 5));
+		else work.setText("Рoбота з " + Model.title(type, 5));
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
 	
@@ -146,9 +169,33 @@ public class ShowModelButtons extends JPanel {
 	class Add implements ActionListener  {
 		// 
 		public void actionPerformed(ActionEvent e) {
-			int idModel = Model.dbNew(type);  // db.newModel(type); 
-			showMain.showModel(type, idModel);
-		   	//JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
+			if (type.equals("Parameters")){
+					//JOptionPane.showMessageDialog(ShowModelButtons.this,"Parameters...New");
+				int row = showFiles.getSelectedRow();
+				String namePar = "namePar";
+				String valuePar = "valuePar";
+				String descPar = "description";
+				//System.out.println(" Row = " + row);
+				if(row>=0){
+					//System.out.println(" 1: " + showFiles.getValue(row, 0) + " 2: " + 
+				    //                      showFiles.getValue(row, 1) + " 3: " + showFiles.getValue(row, 2));
+					namePar = showFiles.getValue(row, 0);
+					valuePar = showFiles.getValue(row, 1);
+					descPar = showFiles.getValue(row, 2);
+				}
+				if (addParameter(namePar, valuePar, descPar)){
+					System.out.println("....Add New value param..");
+					ArrayList pl = null;
+					pl = db.getAllParameter();
+					showFiles.showInputModel(pl);
+				}  
+				else System.out.println("...Nothing...");  
+			}	
+			else { 
+				int idModel = Model.dbNew(type);  // db.newModel(type); 
+				showMain.showModel(type, idModel);
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
+			}	
 		}	
 	}
 	class AddAs implements ActionListener  {
@@ -257,6 +304,7 @@ public class ShowModelButtons extends JPanel {
 					else text = wf.getErrorText();
 				}	
 			}
+			//System.out.println(" Section = " + section.getSelectedItem());
 			JOptionPane.showMessageDialog(ShowModelButtons.this,text); // text);
 		}	
 	}
@@ -277,7 +325,48 @@ public class ShowModelButtons extends JPanel {
 	}
 	class ModelDelete implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			if (model != null){ 
+			if (type.equals("Parameters")){
+				int row = showFiles.getSelectedRow();
+				boolean del = true;
+				String namePar = "", valuePar = "", descPar = "";
+				if(row>=0){
+					namePar = showFiles.getValue(row, 0);
+					valuePar = showFiles.getValue(row, 1);
+					descPar = showFiles.getValue(row, 2);
+					String text = " параметру " + namePar + " : " + valuePar + " <" + descPar + ">";
+					if (namePar.equals("Section")){
+						int cnt = db.getSectionCount(valuePar);
+						if (cnt>0){
+							del = false;
+							JOptionPane.showMessageDialog(ShowModelButtons.this,
+									 "Значення " + text + "- НЕ можна вилучити. \nРозділ " + valuePar + " містить " + cnt + 
+									 " моделей.\n Для вилучення цього значення необхідно вилучити з розділу ВСІ моделі!");
+						}
+					}	
+					if (del){
+						UIManager.put("OptionPane.yesButtonText", "Так");
+						UIManager.put("OptionPane.noButtonText", "Ні");
+						int res = JOptionPane.showConfirmDialog(ShowModelButtons.this,
+														"Вилучити значення " + text,"Вилучити ?", JOptionPane.YES_NO_OPTION );
+						if (res == JOptionPane.YES_OPTION) {
+							ArrayList pl = null;
+							db.deleteParameterValue(namePar, valuePar);
+							pl = db.getAllParameter();
+							showFiles.showInputModel(pl);
+							//JOptionPane.showMessageDialog(ShowModelButtons.this,"Parameters...Delete");
+						}
+					}
+					
+				} //else System.out.println("...Nothing...Row = " + row);  
+				/*
+				ArrayList sl = db.getParameterValue("Section");
+				for(int i = 0; i < sl.size(); i ++){
+					System.out.println("Section: " + (String)sl.get(i) + ".." + db.getSectionCount((String)sl.get(i)) + "..");  
+				}
+				JOptionPane.showMessageDialog(ShowModelButtons.this,"Parameters...Delete");
+				*/	
+			}
+			else if (model != null){ 
 				String text = "Вилучити " + Model.title(type, 6) + " "+ model.name + " з номером " + model.id + " ?";
 				UIManager.put("OptionPane.yesButtonText", "Так");
 				UIManager.put("OptionPane.noButtonText", "Ні");
@@ -296,7 +385,46 @@ public class ShowModelButtons extends JPanel {
 	}
 	class ModelWork implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			if (model != null){
+			if (type.equals("State")) {
+				int row = showFiles.getSelectedRow();
+				String namePar = "", valuePar = "", descPar = "";
+				if(row>=0){
+					//System.out.println(" 1: " + showFiles.getValue(row, 0) + " 2: " + 
+					//                      showFiles.getValue(row, 1) + " 3: " + showFiles.getValue(row, 2));
+					namePar = showFiles.getValue(row, 0);
+					valuePar = showFiles.getValue(row, 1);
+					descPar = showFiles.getValue(row, 2);
+					//System.out.println("....Update param.." + namePar + " " + valuePar);
+					if (setParameter(namePar, valuePar, descPar)) {
+						//System.out.println("....Update param..");
+						db.setParameters();
+						ArrayList pl = null;
+						pl = db.getStateParameter();
+						showFiles.showInputModel(pl);
+					}  
+					//else System.out.println("...Nothing...");  
+				} //else System.out.println("...Nothing...Row = " + row);  	
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,"State...Update");
+			}    
+			else if (type.equals("Parameters")){
+				int row = showFiles.getSelectedRow();
+				String namePar = "", valuePar = "", descPar = "";
+				if(row>=0){
+					namePar = showFiles.getValue(row, 0);
+					valuePar = showFiles.getValue(row, 1);
+					descPar = showFiles.getValue(row, 2);
+					//System.out.println("....Update param.." + namePar + " " + valuePar);
+					if (updateParameterDesc(namePar, valuePar, descPar)) {
+						//System.out.println("....Update desc..");
+						ArrayList pl = null;
+						pl = db.getAllParameter();
+						showFiles.showInputModel(pl);
+					}  
+				     //boolean updateParameterDesc(String name, String value, String desc)	
+				}	
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,"Parameters...Edit");
+			}	
+			else if (model != null){
 				//System.out.println(model.getDbOrder());
 				showWork.setModel(type, model);
 				showWork.show();
@@ -305,5 +433,98 @@ public class ShowModelButtons extends JPanel {
 		}
 	}	
 
-
+	// true => додає нове значення деякого параметру в список всіх значень параметрів
+	private boolean addParameter(String name, String value, String desc) {
+		boolean rs = false;
+		// формуємо Діалогове вікно "Нове значення параметру"
+		//  ..... компоненти діалогового вікна
+		String[] textButtons = {"Зберегти", "Вийти"};
+		JPanel panelPar = new JPanel();
+		JTextField namePar = new JTextField(6);
+		JTextField valuePar = new JTextField(6);
+		JTextField descPar = new JTextField(20);
+		panelPar.add(new JLabel("Назва"));
+	    panelPar.add(namePar);
+		panelPar.add(new JLabel("Значення"));
+		panelPar.add(valuePar);
+		panelPar.add(new JLabel("Коментар"));
+		panelPar.add(descPar);
+		namePar.setText(name);
+		valuePar.setText(value);
+		descPar.setText(desc);
+		//  ... відкриття вікна
+		int res = JOptionPane.showOptionDialog(ShowModelButtons.this, panelPar, "Нове значення параметру",
+				 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
+		//  ... обробка результату встановлення нового значення параметру
+		if (res == JOptionPane.OK_OPTION){
+			String name1 = namePar.getText();
+			String value1 = valuePar.getText();
+			String desc1 = descPar.getText();
+			if (!db.isParameterValue(name1, value1)){
+				db.setParameterValue(name1, value1, desc1);
+				rs = true;
+			}
+			else JOptionPane.showMessageDialog(ShowModelButtons.this, "Значення параметру " + name1 + " : " + value1 + " -- ВЖЕ єсть!! ");
+			
+			/*
+			if (!((Machine)model).isState(name1)) {
+				//db.moveUp(type, model.id, row);
+				//showMain.showModel(type, model.id);
+				//table.showPrevRow(false);
+				model.dbRenameState(name, name1);
+				showMain.showModel(type, model.id);
+				table.showRow(false,model.findCommand(name1)+1);
+				//JOptionPane.showMessageDialog(ShowCommandButtons.this, "Rename.." + name + " -> " + name1);
+			}
+			else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
+			*/
+		}
+		return rs;
+	}
+	
+	// true => змінює коментар desc у значення параметру (name+value)
+	private boolean setParameter(String name, String value, String desc){
+     	boolean rs = false;
+		ArrayList <String> all = db.getParameterValue(name);
+		int j;
+		String[] values = new String [all.size()];
+		j = 0;
+		//System.out.println("..values ..." + all.size());  
+		for (int i = 0; i < all.size(); i++){
+			values[i] = all.get(i);
+			if(values[i].equals(value)) j = i;
+		}
+		UIManager.put("OptionPane.okButtonText", "Так");
+		UIManager.put("OptionPane.cancelButtonText", "Вийти");
+		String text = "Параметр " + name + " : " + value + " <" + desc + ">";
+		Object res = JOptionPane.showInputDialog(ShowModelButtons.this, 
+						text, "Змінити значення параметру", JOptionPane.QUESTION_MESSAGE, null,  values, values[j]);
+		if(res != null){
+			if (!value.equals((String)res)){
+				db.updateStateParameter (name, (String)res);
+				rs = true;
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,"Нове значення параметру " + (String)res);
+			}	
+			//else JOptionPane.showMessageDialog(ShowModelButtons.this,"Значення параметру не Змінено " + text ); 
+		}
+		return rs;
+	}
+	
+	// true => модифікує опис значення параметру
+	private boolean updateParameterDesc(String name, String value, String desc) {
+		boolean rs = false;	
+		String text = "Параметр " + name + " : " + value + " <" + desc + ">";
+		Object res = JOptionPane.showInputDialog(ShowModelButtons.this, 
+						text, "Відредагувати опис параметру", JOptionPane.QUESTION_MESSAGE, null,null, desc );
+		if(res != null){
+			if (!desc.equals((String)res)){
+				//db.updateStateParameter (name, (String)res);
+				db.updateParameterDesc (name, value,(String)res);
+				rs = true;
+				//JOptionPane.showMessageDialog(ShowModelButtons.this,"Новий опис параметру " + (String)res);
+			}	
+			//else JOptionPane.showMessageDialog(ShowModelButtons.this,"Опис параметру не Змінено " + text ); 
+		}
+		return rs;
+	}	
 }

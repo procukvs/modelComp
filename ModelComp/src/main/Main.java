@@ -20,8 +20,9 @@ public class Main {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		gui = new ShowModels(db);
 		//gui.setListener(gui);
-		System.out.println("Forming GUI-- version Teacher...");
+		System.out.println("Forming GUI-- version " + Parameters.getRegime() + "..");
 	    if (db.connectionDb("Model.db")) { 
+	  	   if (Parameters.getRegime().equals("teacher")) db.setParameters();
 	       	// після встановлення звязку з БД створюємо обробник запитів opr
 	        gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        gui.addWindowListener(new EndWork());
@@ -36,6 +37,9 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
+		if (args.length > 0) {
+			 if(args[0].equals("Teacher")) Parameters.setRegime("teacher");
+		}
 		// Вікно створюємо в потоці обробки подій.
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run(){

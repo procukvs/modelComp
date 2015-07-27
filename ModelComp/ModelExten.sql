@@ -1,4 +1,6 @@
+
 PRAGMA foreign_keys=OFF;
+
 BEGIN TRANSACTION;
  drop table if exists mAlgorithm;
  create table mAlgorithm
@@ -25,32 +27,32 @@ BEGIN TRANSACTION;
  );   
 DELETE FROM mAlgorithm;
 INSERT INTO mAlgorithm VALUES(1,'base','EqFunct','#|','',1,1,' f(x) = x');
-INSERT INTO mAlgorithm VALUES(2,'base','NoExist','#|','',1,1,' f(x) = íåâèçíà÷åíî');
+INSERT INTO mAlgorithm VALUES(2,'base','NoExist','#|','',1,1,' f(x) = Ð½ÐµÐ²Ð¸Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¾');
 INSERT INTO mAlgorithm VALUES(3,'base','EqTwo','#|','',1,1,' f(x) = 2');
 INSERT INTO mAlgorithm VALUES(4,'base','Sum','#|','',1,2,' f(x,y) = x+y');
-INSERT INTO mAlgorithm VALUES(5,'base','InsBegin','ab','',0,0,'Äîäàòè abb íà ïî÷àòêó ñëîâà');
-INSERT INTO mAlgorithm VALUES(6,'base','InsEnd','ab','c',0,0,'Äîäàòè abb â ê³íåöü ñëîâà');
+INSERT INTO mAlgorithm VALUES(5,'base','InsBegin','ab','',0,0,'Ð”Ð¾Ð´Ð°Ñ‚Ð¸ abb Ð½Ð° Ð¿Ð¾Ñ‡Ð°Ñ‚ÐºÑƒ ÑÐ»Ð¾Ð²Ð°');
+INSERT INTO mAlgorithm VALUES(6,'base','InsEnd','ab','c',0,0,'Ð”Ð¾Ð´Ð°Ñ‚Ð¸ abb Ð² ÐºÑ–Ð½ÐµÑ†ÑŒ ÑÐ»Ð¾Ð²Ð°');
 INSERT INTO mAlgorithm VALUES(7,'base','Multiply','#|','abc',1,2,' f(x,y) = x*y');
 
 DELETE FROM mRule;
-INSERT INTO mRule VALUES(1,1,1, '','',1,' í³÷îãî íå ðîáèìî ');
-INSERT INTO mRule VALUES(2,1,1, '','',0,'çàöèêëþºìîñÿ  ');
-INSERT INTO mRule VALUES(3,1,1,'','',0,'âèêèäàºìî âñ³ | ');
-INSERT INTO mRule VALUES(3,2,2, '','||',1,'äîäàºìî || ');
-INSERT INTO mRule VALUES(4,1,1, '#','',1,' ïðîñòî âèêèíóëè #');
-INSERT INTO mRule VALUES(5,1,1, '','abb',1,'ïðîñòî âñòàâèëè abb ');
-INSERT INTO mRule VALUES(6,1,1, 'ca','ac',0,'ïðîá³ãàºìî a ');
-INSERT INTO mRule VALUES(6,2,2, 'cb','bc',0,'ïðîá³ãàºìî b ');
-INSERT INTO mRule VALUES(6,3,3, 'c','abb',1,' íàê³íåöü âñòàâëÿºìî abb');
-INSERT INTO mRule VALUES(6,4,4, '','c',0,'íàì ïîòð³áíî ñ ');
-INSERT INTO mRule VALUES(7,1,1, 'a|','|ba',0,'íà êîæíó | äîäàºìî îäèí b ');
-INSERT INTO mRule VALUES(7,2,2, 'a','',0,' a âæå íå ïîòð³áíå');
-INSERT INTO mRule VALUES(7,3,3, 'b|','|b',0,'ñîðòóºìî | ³ b');
-INSERT INTO mRule VALUES(7,4,4, '|#','#a',0,'êîæíà | ïîðîäèòü a');
-INSERT INTO mRule VALUES(7,5,5, '#','c',0,'ïîòð³áíî ñ äëÿ çàâåðøåííÿ ');
-INSERT INTO mRule VALUES(7,6,6, 'c|','c',0,'| âæå íå ïîòð³áíî ');
-INSERT INTO mRule VALUES(7,7,7, 'cb','|c',0,'b ïåðåòâîðþºìî â |');
-INSERT INTO mRule VALUES(7,8,8, 'c','',1,'ñ ñâîþ ñïðàâó çðîáèëî ! ');
+INSERT INTO mRule VALUES(1,1,1, '','',1,' Ð½Ñ–Ñ‡Ð¾Ð³Ð¾ Ð½Ðµ Ñ€Ð¾Ð±Ð¸Ð¼Ð¾ ');
+INSERT INTO mRule VALUES(2,1,1, '','',0,'Ð·Ð°Ñ†Ð¸ÐºÐ»ÑŽÑ”Ð¼Ð¾ÑÑ  ');
+INSERT INTO mRule VALUES(3,1,1,'','',0,'Ð²Ð¸ÐºÐ¸Ð´Ð°Ñ”Ð¼Ð¾ Ð²ÑÑ– | ');
+INSERT INTO mRule VALUES(3,2,2, '','||',1,'Ð´Ð¾Ð´Ð°Ñ”Ð¼Ð¾ || ');
+INSERT INTO mRule VALUES(4,1,1, '#','',1,' Ð¿Ñ€Ð¾ÑÑ‚Ð¾ Ð²Ð¸ÐºÐ¸Ð½ÑƒÐ»Ð¸ #');
+INSERT INTO mRule VALUES(5,1,1, '','abb',1,'Ð¿Ñ€Ð¾ÑÑ‚Ð¾ Ð²ÑÑ‚Ð°Ð²Ð¸Ð»Ð¸ abb ');
+INSERT INTO mRule VALUES(6,1,1, 'ca','ac',0,'Ð¿Ñ€Ð¾Ð±Ñ–Ð³Ð°Ñ”Ð¼Ð¾ a ');
+INSERT INTO mRule VALUES(6,2,2, 'cb','bc',0,'Ð¿Ñ€Ð¾Ð±Ñ–Ð³Ð°Ñ”Ð¼Ð¾ b ');
+INSERT INTO mRule VALUES(6,3,3, 'c','abb',1,' Ð½Ð°ÐºÑ–Ð½ÐµÑ†ÑŒ Ð²ÑÑ‚Ð°Ð²Ð»ÑÑ”Ð¼Ð¾ abb');
+INSERT INTO mRule VALUES(6,4,4, '','c',0,'Ð½Ð°Ð¼ Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±Ð½Ð¾ Ñ ');
+INSERT INTO mRule VALUES(7,1,1, 'a|','|ba',0,'Ð½Ð° ÐºÐ¾Ð¶Ð½Ñƒ | Ð´Ð¾Ð´Ð°Ñ”Ð¼Ð¾ Ð¾Ð´Ð¸Ð½ b ');
+INSERT INTO mRule VALUES(7,2,2, 'a','',0,' a Ð²Ð¶Ðµ Ð½Ðµ Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±Ð½Ðµ');
+INSERT INTO mRule VALUES(7,3,3, 'b|','|b',0,'ÑÐ¾Ñ€Ñ‚ÑƒÑ”Ð¼Ð¾ | Ñ– b');
+INSERT INTO mRule VALUES(7,4,4, '|#','#a',0,'ÐºÐ¾Ð¶Ð½Ð° | Ð¿Ð¾Ñ€Ð¾Ð´Ð¸Ñ‚ÑŒ a');
+INSERT INTO mRule VALUES(7,5,5, '#','c',0,'Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±Ð½Ð¾ Ñ Ð´Ð»Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð½Ñ ');
+INSERT INTO mRule VALUES(7,6,6, 'c|','c',0,'| Ð²Ð¶Ðµ Ð½Ðµ Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±Ð½Ð¾ ');
+INSERT INTO mRule VALUES(7,7,7, 'cb','|c',0,'b Ð¿ÐµÑ€ÐµÑ‚Ð²Ð¾Ñ€ÑŽÑ”Ð¼Ð¾ Ð² |');
+INSERT INTO mRule VALUES(7,8,8, 'c','',1,'Ñ ÑÐ²Ð¾ÑŽ ÑÐ¿Ñ€Ð°Ð²Ñƒ Ð·Ñ€Ð¾Ð±Ð¸Ð»Ð¾ ! ');
 
 drop table if exists pState;
 create table pState
@@ -67,16 +69,16 @@ create table pParameters
  primary key (name, value)
 );
 DELETE FROM pState;
-INSERT INTO pState VALUES('Section','base','Áàçîâèé íàá³ð ìîäåëåé');
-INSERT INTO pState VALUES('PostVar','duplicate','Äîïóñêàþòüñÿ îäíàêîâ³ çì³íí³ â ë³â³é ÷àñòèí³ ïðàâèëà âèâîäó');
-INSERT INTO pState VALUES('RecurSubst','operation','Ï³äñòàíîâêà âêàçóºòüñÿ îïåðàòîðîì @S');
+INSERT INTO pState VALUES('Section','base','Ð‘Ð°Ð·Ð¾Ð²Ð¸Ð¹ Ð½Ð°Ð±Ñ–Ñ€ Ð¼Ð¾Ð´ÐµÐ»ÐµÐ¹');
+INSERT INTO pState VALUES('PostVar','duplicate','Ð”Ð¾Ð¿ÑƒÑÐºÐ°ÑŽÑ‚ÑŒÑÑ Ð¾Ð´Ð½Ð°ÐºÐ¾Ð²Ñ– Ð·Ð¼Ñ–Ð½Ð½Ñ– Ð² Ð»Ñ–Ð²Ñ–Ð¹ Ñ‡Ð°ÑÑ‚Ð¸Ð½Ñ– Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð° Ð²Ð¸Ð²Ð¾Ð´Ñƒ');
+INSERT INTO pState VALUES('RecurSubst','operation','ÐŸÑ–Ð´ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð²ÐºÐ°Ð·ÑƒÑ”Ñ‚ÑŒÑÑ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð¾Ð¼ @S');
 
 DELETE FROM pParameters;
-INSERT INTO pParameters VALUES('Section','base','Áàçîâèé íàá³ð ìîäåëåé');
-INSERT INTO pParameters VALUES('PostVar','unique','Âñ³ çì³íí³ â ë³â³é ÷àñòèí³ ïðàâèëà âèâîäó - ð³çí³');
-INSERT INTO pParameters VALUES('PostVar','duplicate','Äîïóñêàþòüñÿ îäíàêîâ³ çì³íí³ â ë³â³é ÷àñòèí³ ïðàâèëà âèâîäó');
-INSERT INTO pParameters VALUES('RecurSubst','operation','Ï³äñòàíîâêà âêàçóºòüñÿ îïåðàòîðîì @S');
-INSERT INTO pParameters VALUES('RecurSubst','brackets','Ï³äñòàíîâêà âêàçóºòüñÿ íåÿâíî äóæêàìè');
+INSERT INTO pParameters VALUES('Section','base','Ð‘Ð°Ð·Ð¾Ð²Ð¸Ð¹ Ð½Ð°Ð±Ñ–Ñ€ Ð¼Ð¾Ð´ÐµÐ»ÐµÐ¹');
+INSERT INTO pParameters VALUES('PostVar','unique','Ð’ÑÑ– Ð·Ð¼Ñ–Ð½Ð½Ñ– Ð² Ð»Ñ–Ð²Ñ–Ð¹ Ñ‡Ð°ÑÑ‚Ð¸Ð½Ñ– Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð° Ð²Ð¸Ð²Ð¾Ð´Ñƒ - Ñ€Ñ–Ð·Ð½Ñ–');
+INSERT INTO pParameters VALUES('PostVar','duplicate','Ð”Ð¾Ð¿ÑƒÑÐºÐ°ÑŽÑ‚ÑŒÑÑ Ð¾Ð´Ð½Ð°ÐºÐ¾Ð²Ñ– Ð·Ð¼Ñ–Ð½Ð½Ñ– Ð² Ð»Ñ–Ð²Ñ–Ð¹ Ñ‡Ð°ÑÑ‚Ð¸Ð½Ñ– Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð° Ð²Ð¸Ð²Ð¾Ð´Ñƒ');
+INSERT INTO pParameters VALUES('RecurSubst','operation','ÐŸÑ–Ð´ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð²ÐºÐ°Ð·ÑƒÑ”Ñ‚ÑŒÑÑ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð¾Ð¼ @S');
+INSERT INTO pParameters VALUES('RecurSubst','brackets','ÐŸÑ–Ð´ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð²ÐºÐ°Ð·ÑƒÑ”Ñ‚ÑŒÑÑ Ð½ÐµÑÐ²Ð½Ð¾ Ð´ÑƒÐ¶ÐºÐ°Ð¼Ð¸');
 
  drop table if exists fRecursive;
  create table fRecursive
@@ -96,10 +98,10 @@ INSERT INTO pParameters VALUES('RecurSubst','brackets','Ï³äñòàíîâêà âêàçóºòüñÿ í
   primary key (idModel, id)
  );   
 DELETE FROM fRecursive;
-INSERT INTO fRecursive VALUES(1,'base','a','Ïðîñòèé íàá³ð');
-INSERT INTO fRecursive VALUES(2,'base','Class07pi','Çàíÿòòÿ 07 (ïðîãð.³íæ.)');
+INSERT INTO fRecursive VALUES(1,'base','a','ÐŸÑ€Ð¾ÑÑ‚Ð¸Ð¹ Ð½Ð°Ð±Ñ–Ñ€');
+INSERT INTO fRecursive VALUES(2,'base','Class07pi','Ð—Ð°Ð½ÑÑ‚Ñ‚Ñ 07 (Ð¿Ñ€Ð¾Ð³Ñ€.Ñ–Ð½Ð¶.)');
 INSERT INTO fRecursive VALUES(3,'base','RecFunSet01','x1 div x2 = SUM(k:1,x1,nsg(k*x2-:x1))');
-INSERT INTO fRecursive VALUES(4,'base','Test1','Ïîáóäîâà [x/y] - ö³ëà ÷àñòèíà â³ä ä³ëåííÿ x  íà y');
+INSERT INTO fRecursive VALUES(4,'base','Test1','ÐŸÐ¾Ð±ÑƒÐ´Ð¾Ð²Ð° [x/y] - Ñ†Ñ–Ð»Ð° Ñ‡Ð°ÑÑ‚Ð¸Ð½Ð° Ð²Ñ–Ð´ Ð´Ñ–Ð»ÐµÐ½Ð½Ñ x  Ð½Ð° y');
 
 DELETE FROM fFunction;
 INSERT INTO fFunction VALUES(1,1,'sub1','@R(z1,i21)','New Comments bbbb');
@@ -110,7 +112,7 @@ INSERT INTO fFunction VALUES(1,5,  'abs','@S(add,[subxy,subyx])','');
 INSERT INTO fFunction VALUES(1,6, 'absxyz','@S(abs,[i31,@S(add,[i32,i33])])','');
 INSERT INTO fFunction VALUES(1,7,  'minus','@M(absxyz,100)', 'jhkjhkjh');
 INSERT INTO fFunction VALUES(1,8,  'test1','@S(sub1,[i33])','');
-INSERT INTO fFunction VALUES(1,9,  'CostTwo','@S(a1,[@S(a1,[z1])])','Öå êîíñòàíòà 2 ===!!');
+INSERT INTO fFunction VALUES(1,9,  'CostTwo','@S(a1,[@S(a1,[z1])])','Ð¦Ðµ ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ð° 2 ===!!');
 INSERT INTO fFunction VALUES(1,10,  'Zero','z1','hhhh');
 INSERT INTO fFunction VALUES(1,11,  'BigZero','@S(z1,[i93])','-----Testing Arg');
 
@@ -120,8 +122,8 @@ INSERT INTO fFunction VALUES(2,2,  'subxy','@R(i11,@S(sub1,[i33]))','subxy(x,y) 
 INSERT INTO fFunction VALUES(2,3, 'subyx','@S(subxy,[i22,i21])','subyx(x,y) = if y>x then y-x else 0');
 INSERT INTO fFunction VALUES(2,4,  'add','@R(i11,@S(a1,[i33]))','add(x,y) = x+y');
 INSERT INTO fFunction VALUES(2,5,  'absMinus','@S(add,[subxy,subyx])','absMinus(x,y) = |x-y|');
-INSERT INTO fFunction VALUES(2,6,  'const2','@S(a1,[@S(a1,[z1])])','const2(x) = 2  ---- êîíñòàíòà 2');
-INSERT INTO fFunction VALUES(2,7,  'const4','@S(a1,[@S(a1,[const2])])','const4(x) = 4  -- êîíñòàíòà 4');
+INSERT INTO fFunction VALUES(2,6,  'const2','@S(a1,[@S(a1,[z1])])','const2(x) = 2  ---- ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ð° 2');
+INSERT INTO fFunction VALUES(2,7,  'const4','@S(a1,[@S(a1,[const2])])','const4(x) = 4  -- ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ð° 4');
 INSERT INTO fFunction VALUES(2,8,  'mul','@R(z1,@S(add,[i33,i31]))',' mul(x1,x2) = x1*x2 --> mul(x1,0) = 0 / mul(x1,x2+1) = x1*x2+x1');
 INSERT INTO fFunction VALUES(2,9,  'multiply', '@R(z1,@S(add,[i33,i31]))','multiply(x1,x2) = x1*x2 --> multiply(x1,0) = 0/multiply(x1,x2+1) = x1*x2+x1');
 INSERT INTO fFunction VALUES(2,10,  'absMinusx4','@S(absMinus,[i11,const4])','absMinusx4(x) = |x-4|');

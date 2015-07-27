@@ -33,14 +33,24 @@ public class ShowFiles extends JPanel {
 	}
 	
 	public void showTableFiles(String what, ArrayList fs){
-		boolean output = what.equals("Output");
+		//boolean output = what.equals("Output");
+		String titleSt = "";
 		TableColumn column = null;
-		int[] widthCol = findWidth(output); //{10,100,100,10,400,10};
-		if (output) border.setTitle("Список моделей");
-		else border.setTitle("Список введених моделей");
+		int[] widthCol = findWidth(what); //{10,100,100,10,400,10};
+		
+		switch (what){
+		case "Input":	titleSt = "Список введених моделей"; break;
+		case "Output":	titleSt = "Список моделей"; break;
+		case "State":	titleSt = "Список встановлених параметрів"; break;
+		case "Parameters":	titleSt = "Список всіх допустимих значень параметрів"; break;
+		}	
+		border.setTitle(titleSt);
+		//if (output) border.setTitle("Список моделей");
+		//else border.setTitle("Список введених моделей");
 		//setTableStructure();
+		//if (what.equals("State") || what.equals("Parameters")) return;
 		dbm.setDataSource(null);
-		dbm.setInitialModel(findInform(output));
+		dbm.setInitialModel(findInform(what));
 		dbm.fireTableStructureChanged();
 		for (int i = 0; i < widthCol.length; i++) {
 	        column = table.getColumnModel().getColumn(i);
@@ -68,8 +78,42 @@ public class ShowFiles extends JPanel {
 		if ((ml != null) && (ml.size() > 0)) dbm.setDataSource(ml);
 	}
 	// інформація про колонки = назва + тип + редагуємість	
-	private String[][] findInform(boolean output){
+	private String[][] findInform(String type){
 		String[][] info = null;
+		switch (type){
+		case "Input":	
+			info = new String[][]{
+				{"Тип","S","N"},
+				{"Назва","S","N"},
+				{"Коментар","S","N"},
+				{"Числова?","B","N"},
+				{"Арність","I","N"},
+				{"№","I","N"}
+			}; break;
+		case "Output":
+			info = new String[][]{
+				{"Тип","S","N"},
+				{"Назва","S","N"},
+				{"Коментар","S","N"},
+				{"Функція?","B","N"},
+				{"Арність","I","N"},
+				{"Вивести?","B","E"},
+				{"№","I","N"}
+			}; break;
+		case "State":	
+			info = new String[][]{
+				{"Назва","S","N"},
+				{"Значення","S","N"},
+				{"Коментар","S","N"}
+			}; break;
+		case "Parameters":	
+			info = new String[][]{
+				{"Назва","S","N"},
+				{"Значення","S","N"},
+				{"Коментар","S","N"}
+			}; break;
+		}	
+		/*
 		if(output) info = new String[][]{
 									{"Тип","S","N"},
 									{"Назва","S","N"},
@@ -86,13 +130,27 @@ public class ShowFiles extends JPanel {
 									{"Числова?","B","N"},
 									{"Арність","I","N"},
 									{"№","I","N"}
-				};
+				}; */
 		return info;
 	}
-	private int[] findWidth(boolean output){
+	private int[] findWidth(String type){
 		int [] w = null;
+		switch (type){
+		case "Input":w = new int[]{70,90,540,10,10,10}; break;
+		case "Output":w = new int[]{70,90,440,30,20,50,20}; break;
+		case "State":w = new int[]{80,100,550};  break;
+		case "Parameters":w = new int[]{80,100,550};  break;
+		}
+		/*
 		if(output) w = new int[]{70,90,440,30,20,50,20}; 
-		else w = new int[]{70,90,540,10,10,10}; ;
+		else w = new int[]{70,90,540,10,10,10}; ; */
 		return w;
+	}
+	
+	public int getSelectedRow() {
+		return table.getSelectedRow();
+	}
+	public String getValue(int row, int col){
+		return (String)dbm.getValueAt(row,col);		
 	}
 }

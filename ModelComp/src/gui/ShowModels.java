@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 
 import db.*;
@@ -52,11 +53,19 @@ public class ShowModels extends JFrame {
 		
 		mFile.add(input);
 		mFile.add(output);
+	
 		menuBar.add(mFile);
 		
-		
+		JMenu mParameter = new JMenu("Параметри    ");
+		JMenuItem state = new JMenuItem("Стан параметрів");
+		JMenuItem parameters = new JMenuItem("Встановлення параметрів");
+		if(Parameters.getRegime().equals("teacher")){
+			mParameter.add(state);
+			mParameter.add(parameters);
+			menuBar.add(mParameter);
+		}
 		JMenu plafmenu = createPlafMenu(); // Створюємо меню
-		menuBar.add(plafmenu);                  // Додаємо меню в полосу меню
+		menuBar.add(plafmenu);     // Додаємо меню в полосу меню
 
 		//================================================================
 		/*
@@ -81,6 +90,8 @@ public class ShowModels extends JFrame {
 		rec.addActionListener(new LsRecursive());
 		input.addActionListener(new LsInput());
 		output.addActionListener(new LsOutput());
+		state.addActionListener(new LsState());
+		parameters.addActionListener(new LsParameters());
 		quit.addActionListener(new LsQuit());
 				
 		label = new JLabel("Нормальні алгоритми Маркова");
@@ -111,7 +122,8 @@ public class ShowModels extends JFrame {
 	
 	private void setVisiblePane( String type) {
 		boolean close = type.equals("NoModel");
-		boolean files = type.equals("Input") || type.equals("Output");
+		boolean files = type.equals("Input") || type.equals("Output") 
+				         || type.equals("State") || type.equals("Parameters");
 		label.setVisible(!close);
 		showModel.setVisible(!close && !files);
 		showFiles.setVisible(!close && files);
@@ -174,15 +186,20 @@ public class ShowModels extends JFrame {
 	}
 	*/
 	public void showModel(String type, int id) {
-		boolean files = type.equals("Input") || type.equals("Output");
+		//boolean files = type.equals("Input") || type.equals("Output");
 		String text = Model.title(type, 1);
 		this.type = type;
 		//System.out.println("ShowModel start ..." + type + "  " + id + " " + this.type);
 		setVisiblePane(type);
 		switch (type){
 		case "Input": case "Output":
+		case "State": case "Parameters":	
 			ArrayList fs = null;
-			if (type.equals("Output")) fs = db.getAllModel();
+			switch (type){
+			case "Output": fs = db.getAllModel(); break;
+			case "State": fs = db.getStateParameter(); break;
+			case "Parameters": fs = db.getAllParameter(); break;	
+			}	
 			showFiles.showTableFiles(type, fs);
 			modelButtons.setModel(type,model);
 			model = null;
@@ -221,7 +238,9 @@ public class ShowModels extends JFrame {
 	}
 	
 	class LsPost implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {showModel("Post",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			//Parameters.setRegime("user");
+			showModel("Post",0);	}	
 	}
 	
 	class LsRecursive implements ActionListener  {
@@ -241,6 +260,20 @@ public class ShowModels extends JFrame {
 			//JOptionPane.showMessageDialog(ShowModels.this,"Output..");
 		}
 	}
+	
+	class LsState extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			showModel("State",0);
+			//JOptionPane.showMessageDialog(ShowModels.this,"State..");
+		}
+	}	
+
+	class LsParameters extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			showModel("Parameters",0);
+			//JOptionPane.showMessageDialog(ShowModels.this,"Parameters..");
+		}
+	}	
 	
 	class LsQuit implements ActionListener  {
 		// закінчуємо всю роботу ---- закриваємо базу даних
