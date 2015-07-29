@@ -273,7 +273,7 @@ public class ShowRule extends JPanel {
 			algo = (Algorithm)model;
 			if (id == 0) rule = new Rule(model.program.size()+1,"","",false,"====",idCom);
 			else rule = (Rule)model.program.get( model.findCommand(id));
-			state.setText("" + rule.getNum());
+			state.setText("" + (rule.getNum()+1));
 			labelLeft.setText("Ліва частина підстановки");
 			sLeft.setText(rule.getsLeft());
 			labelRigth.setText("Права частина підстановки");

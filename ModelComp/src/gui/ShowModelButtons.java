@@ -125,7 +125,8 @@ public class ShowModelButtons extends JPanel {
 		} else {
 		  	fileBox.remove(quit);
 		  	buttons.add(quit);
-		  	if (isParameter) buttons.remove(addBase);
+		  	//if (isParameter) buttons.remove(addBase);
+		  	//else buttons.add(addBase);
 		}
 		//====== видимість елементів 
 		if (isParameter){
@@ -133,6 +134,7 @@ public class ShowModelButtons extends JPanel {
 			work.setVisible(true);
 			quit.setVisible(true);
 			add.setVisible(type.equals("Parameters"));
+			addBase.setVisible(false);
 			delete.setVisible(type.equals("Parameters"));
 		} else{
 			fileBox.setVisible(true);

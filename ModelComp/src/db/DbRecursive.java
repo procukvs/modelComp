@@ -59,8 +59,9 @@ public class DbRecursive {
 		String name = db.findName("Recursive","Set");
 		int cnt = db.maxNumber("REcursive")+1;
 		int rows;
+		String section = Parameters.getSection();
 		try{
-			sql = "insert into fRecursive values(" + cnt + ",'" + name + "','new set')";
+			sql = "insert into fRecursive values(" + cnt +  ",'" + section +  "','" + name + "','new set')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
@@ -78,7 +79,7 @@ public class DbRecursive {
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into fRecursive select " + cnt + ",'" + name + "', descr from fRecursive where id = " + model.id;
+				sql = "insert into fRecursive select " + cnt + ", section, '" + name + "', descr from fRecursive where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				if (rows == 0) cnt =0;
 				sql = "insert into fFunction select " + cnt + ", id, name, txBody, txComm " +
@@ -125,11 +126,12 @@ public class DbRecursive {
 		int cnt = db.maxNumber("Recursive")+1;
 		int rows;
 		Function f;
+		String section = Parameters.getSection();
 		if (db.isModel("Recursive",name)) name = db.findName("Recursive", model.name);
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into fRecursive values(" + cnt + ",'" + name + "','" + model.descr + "')";  
+				sql = "insert into fRecursive values(" + cnt + ",'" + section +  "','"  + name + "','" + model.descr + "')";  
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {
 					f = (Function)model.program.get(i);

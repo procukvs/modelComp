@@ -114,12 +114,13 @@ public class DbAccess {
 	public int getModelCount(String type) {
 		int cnt = 0;
 		try{
-			sql = "select count(*) from " + tableModel(type);
+			sql = "select count(*) from " + tableModel(type) + 
+			      " where section = '" + Parameters.getSection() + "'";
 			s.execute(sql);
 			rs = s.getResultSet();
             if((rs!=null) && (rs.next()))cnt = rs.getInt(1);
        	}
-		catch (Exception e) {System.out.println(e.getMessage());}
+		catch (Exception e) {System.out.println("ERROR:getModelCount:  " + e.getMessage());}
 		return cnt;
 	}
 	
@@ -139,7 +140,8 @@ public class DbAccess {
 	public int getNumber(String type, int order){
 		int number = 0;
 		int i=1; 
-		sql = "select id from " + tableModel(type) + " order by name";
+		sql = "select id from " + tableModel(type) + 
+			  " where section = '" + Parameters.getSection() + "' order by name";
 		try{ 
 			s.execute(sql);
 	        ResultSet rs = s.getResultSet();
@@ -158,7 +160,8 @@ public class DbAccess {
 	public int getOrder(String type, String name){
 		int number = 0;
 		boolean go = true;
-		sql = "select name from " + tableModel(type) + " order by name";
+		sql = "select name from " + tableModel(type) + 
+			  " where section = '" + Parameters.getSection() + "' order by name";
 		try{ 
 			s.execute(sql);
 	        ResultSet rs = s.getResultSet();
@@ -176,7 +179,8 @@ public class DbAccess {
 	public ArrayList <String> getAllModel(String type){
 		ArrayList <String> all = new ArrayList <String> ();
 		//boolean go = true;
-		sql = "select name from " + tableModel(type) + " order by name";
+		sql = "select name from " + tableModel(type) + 
+			  " where section = '" + Parameters.getSection() + "' order by name";
 		try{ 
 			s.execute(sql);
 	        ResultSet rs = s.getResultSet();
@@ -184,8 +188,7 @@ public class DbAccess {
 	        	all.add(new String (rs.getString(1)));
 		    }
 		}catch (Exception e){
-			System.out.println("ERROR: getAllModel :" + sql);
-			System.out.println(">>> " + e.getMessage());
+			System.out.println("ERROR: getAllModel :" + sql + e.getMessage());
 		}
 		return all;
 	}
@@ -193,31 +196,46 @@ public class DbAccess {
 	// знаходить список всіх моделей для виводу 
 	public ArrayList getAllModel(){
 		ArrayList all = new ArrayList ();
+		ArrayList <String> sl = new ArrayList <String> ();  /// for all section !!
 		ArrayList row;
+		String selectSec = "select value from pParameters where name = 'Section' order by value";
 		String[] select = {
-				"select 'Algorithm', name, descr, isNumeric, rank, id from mAlgorithm order by name",
-				"select 'Computer', name, descr, 1, rank,  id from rComputer order by name",
-				"select 'Machine', name, descr, isNumeric, rank, id from tMachine order by name",
-				"select 'Post', name, descr, isNumeric, rank,  id from pPost order by name",
-				"select 'Recursive', name, descr, 0, 0,  id from fRecursive order by name"
+				"select 'Algorithm', name, descr, isNumeric, rank, id from mAlgorithm ", //order by name",
+				"select 'Computer', name, descr, 1, rank,  id from rComputer ", //  order by name",
+				"select 'Machine', name, descr, isNumeric, rank, id from tMachine ", // order by name",
+				"select 'Post', name, descr, isNumeric, rank,  id from pPost ", // order by name",
+				"select 'Recursive', name, descr, 0, 0,  id from fRecursive " // order by name"
 			};
+		String section = "base";
 		try{ 
-			for (int i = 0; i < 5; i++ ){
-				sql = select[i];
-				//System.out.println("getAllModel " + sql );
-				s.execute(sql);
-				ResultSet rs = s.getResultSet();
+			ResultSet rs;
+			if (Parameters.getRegime().equals("teacher")) {
+				s.execute(selectSec);
+				rs = s.getResultSet();
 				while((rs!=null) && (rs.next())) {
-					row = new ArrayList();
-					row.add(rs.getString(1));
-					row.add(rs.getString(2));
-					row.add(rs.getString(3));
-					row.add(rs.getBoolean(4));
-					row.add(rs.getInt(5));
-					row.add(false);
-					row.add(rs.getInt(6));
-					all.add(row);
+					sl.add(rs.getString(1));
 				}
+			} else sl.add("base");	
+			for (int j = 0; j < sl.size(); j++){
+				section = sl.get(j);
+				for (int i = 0; i < 5; i++ ){
+					sql = select[i] + "where section = '" + section + "' order by name";
+					//System.out.println("getAllModel " + sql );
+					s.execute(sql);
+					rs = s.getResultSet();
+					while((rs!=null) && (rs.next())) {
+						row = new ArrayList();
+						if (Parameters.getRegime().equals("teacher")) row.add(section);
+						row.add(rs.getString(1));
+						row.add(rs.getString(2));
+						row.add(rs.getString(3));
+						row.add(rs.getBoolean(4));
+						row.add(rs.getInt(5));
+						row.add(false);
+						row.add(rs.getInt(6));
+						all.add(row);
+					}
+				}	
 			}
 		}catch (Exception e){
 			System.out.println("ERROR: getAllModel :" + e.getMessage());
@@ -241,7 +259,8 @@ public class DbAccess {
 	
 	public boolean isModel(String type, String name){
     	try{ int cnt = 0;
-		     sql = "select count(*) from " + tableModel(type) + " where name = '" + name +"'";
+		     sql = "select count(*) from " + tableModel(type) + 
+		    	   " where section = '" + Parameters.getSection() + "' and name = '" + name +"'";
              s.execute(sql);
              rs = s.getResultSet();
              if((rs!=null) && (rs.next()))cnt = rs.getInt(1);
@@ -253,6 +272,7 @@ public class DbAccess {
 	}
 	
 	//знаходить імя моделі типа type по замовчуванню : перше вільне з "base00", "base01",...
+	//  .... в розділі section =  Parameters.getSection()
 	public String findName(String type, String base){
 		int i = 0;
 		NumberFormat suf = new DecimalFormat("00"); 
@@ -354,7 +374,7 @@ public class DbAccess {
 	public void deleteCommand(String type, int idModel, int id, Command cmd){
 		switch(type){
 		case "Computer" : dbComp.deleteInstruction(idModel, (Instruction)cmd); break;
-		case "Algorithm" : dbAlgo.deleteRule(idModel, id); break;
+		case "Algorithm" : dbAlgo.deleteRule(idModel, (Rule)cmd); break;
 		case "Machine": dbMach.deleteState(idModel, id); break;
 		case "Post" : dbPost.deleteDerive(idModel, (Derive)cmd); break;
 		default: System.out.println(">>> Not realise deleteCommand for: " + type + "!");
@@ -424,9 +444,9 @@ public class DbAccess {
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
 	
-	public ArrayList getDataSource(String type, int id){
+	public ArrayList getDataSource_NoUse(String type, int id){
 		switch(type){
-		case "Algorithm" : return dbAlgo.getDataSource(id);
+		case "Algorithm" : return dbAlgo.getDataSource_NoUse(id);
 		default: return null;
 		}
 	}

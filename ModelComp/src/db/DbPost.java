@@ -82,8 +82,9 @@ public class DbPost {
 		String name = db.findName("Post","Post");
 		int cnt = db.maxNumber("Post")+1;
 		int rows;
+		String section = Parameters.getSection();
 		try{
-			sql = "insert into pPost values(" + cnt + ",'" + name + "','|#','',1,2,'new')";
+			sql = "insert into pPost values(" + cnt + ",'" + section + "','" + name + "','|#','',1,2,'new')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
@@ -101,7 +102,7 @@ public class DbPost {
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into pPost select " + cnt + ",'" + name + "', sMain, sAdd, " + 
+				sql = "insert into pPost select " + cnt + ", section, '" + name + "', sMain, sAdd, " + 
 							"isNumeric, Rank, descr from pPost where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				if (rows == 0) cnt =0;
@@ -201,12 +202,13 @@ public class DbPost {
 		int cnt = db.maxNumber("Post")+1;
 		int rows;
 		Derive r;
+		String section = Parameters.getSection();
 		if (db.isModel("Post",name)) name = db.findName("Post", model.name);
 		try {
 			db.conn.setAutoCommit(false);
 			try{
 				int isNumeric = (model.isNumeric?1:0); 
-				sql = "insert into pPost values(" + cnt + ",'" + name + "','" + model.main + "','" +
+				sql = "insert into pPost values(" + cnt +  ",'" + section +  "','" + name + "','" + model.main + "','" +
 						model.add + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {

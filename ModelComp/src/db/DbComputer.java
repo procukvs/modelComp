@@ -60,8 +60,9 @@ public class DbComputer {
 		String name = db.findName("Computer","Computer");
 		int cnt = db.maxNumber("Computer")+1;
 		int rows;
+		String section = Parameters.getSection();
 		try{
-			sql = "insert into rComputer values(" + cnt + ",'" + name + "',1,'new')";
+			sql = "insert into rComputer values(" + cnt +  ",'" + section + "','"  + name + "',1,'new')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
@@ -95,7 +96,7 @@ public class DbComputer {
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into rComputer select " + cnt + ",'" + name + "'," + 
+				sql = "insert into rComputer select " + cnt +  ", section, '"  + name + "'," + 
 							" Rank, descr from rComputer where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				if (rows == 0) cnt =0;
@@ -143,11 +144,12 @@ public class DbComputer {
 		int cnt = db.maxNumber("Computer")+1;
 		int rows;
 		Instruction r;
+		String section = Parameters.getSection();
 		if (db.isModel("Computer",name)) name = db.findName("Computer", model.name);
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into rComputer values(" + cnt + ",'" + name + "'," + model.rank + ",'" + model.descr + "')";  
+				sql = "insert into rComputer values(" + cnt +  ",'" + section +  "','" + name + "'," + model.rank + ",'" + model.descr + "')";  
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {
 					r = (Instruction)model.program.get(i);
@@ -266,8 +268,9 @@ public class DbComputer {
 	
 	private int getIdComputer(String name) {
 		int res = 0;
+		String section = Parameters.getSection();
 		try{ 
-			sql = "select id from rComputer where name = '" + name + "'";
+			sql = "select id from rComputer where name = '" + name + "' and section = '" + section + "'";
 			db.s.execute(sql);
 			rs = db.s.getResultSet();
             if((rs!=null) && (rs.next())){

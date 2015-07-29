@@ -46,15 +46,15 @@ public class DbAlgorithm {
 		String name = db.findName("Algorithm","Algorithm");
 		int cnt = db.maxNumber("Algorithm")+1;
 		int rows;
+		String section = Parameters.getSection();
 		try{
-			sql = "insert into mAlgorithm values(" + cnt + ",'" + name + "','|#','',1,2,'new')";
+			sql = "insert into mAlgorithm values(" + cnt + ",'" + section + "','"  + name + "','|#','',1,2,'new')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
 		catch (Exception e) {
 				//System.out.println(e.getMessage());
-			System.out.println("ERROR: newAlgorithm :" + sql);
-			System.out.println(">>> " + e.getMessage());
+			System.out.println("ERROR: newAlgorithm :" + sql + e.getMessage());
 		}
 		return cnt;
 	}
@@ -71,7 +71,7 @@ public class DbAlgorithm {
 				sql = "insert into mRule select " + cnt + ", id, num, sLeft, sRigth, isEnd, txComm " +
 						" from mRule where idModel = " + model.id;
 				rows=db.s.executeUpdate(sql);
-				sql = "insert into mAlgorithm select " + cnt + ",'" + name + "', sMain, sAdd, " + 
+				sql = "insert into mAlgorithm select " + cnt + ", section, '" + name + "', sMain, sAdd, " + 
 						"isNumeric, Rank, descr from mAlgorithm where id = " + model.id;
 				rows=db.s.executeUpdate(sql);
 				if (rows == 0) cnt =0;
@@ -80,8 +80,7 @@ public class DbAlgorithm {
 			catch (Exception e) {
 				//System.out.println(e.getMessage());
 				db.conn.rollback();
-				System.out.println("ERROR: newAlgorithmAs :" + sql);
-				System.out.println(">>> " + e.getMessage());
+				System.out.println("ERROR: newAlgorithmAs :" + sql + e.getMessage());
 			}
 			db.conn.setAutoCommit(true);
 		}	
@@ -140,12 +139,13 @@ public class DbAlgorithm {
 		int cnt = db.maxNumber("Algorithm")+1;
 		int rows;
 		Rule r;
+		String section = Parameters.getSection();
 		if (db.isModel("Algorithm",name)) name = db.findName("Algorithm", model.name);
 		try {
 			db.conn.setAutoCommit(false);
 			try{
 				int isNumeric = (model.isNumeric?1:0); 
-				sql = "insert into mAlgorithm values(" + cnt + ",'" + name + "','" + model.main + "','" +
+				sql = "insert into mAlgorithm values(" + cnt + ",'" + section +  "','" + name + "','" + model.main + "','" +
 						model.add + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {
@@ -160,8 +160,7 @@ public class DbAlgorithm {
 			catch (Exception e) {
 				//System.out.println(e.getMessage());
 				db.conn.rollback();
-				System.out.println("ERROR: addAlgorithm :" + sql);
-				System.out.println(">>> " + e.getMessage());
+				System.out.println("ERROR: addAlgorithm :" + sql + e.getMessage());
 			}
 			db.conn.setAutoCommit(true);
 		}	
@@ -223,10 +222,11 @@ public class DbAlgorithm {
 				db.s.execute(sql);	 
 				sql = "insert into mRule values(" + algo + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
 				 		+ rule.getsRigth() + "'," + isEnd + ",'" + rule.gettxComm() + "')";
+				//System.out.println("newRule:" + sql + " : num = " + rule.getNum());
 				db.s.execute(sql);
 				db.conn.commit();
 			}	catch (Exception e) {
-				System.out.println("ERROR:newRule: " + e.getMessage() );
+				//System.out.println("ERROR:newRule: " + e.getMessage() );
 				db.conn.rollback();
 			}  
 			db.conn.setAutoCommit(true);
@@ -234,19 +234,28 @@ public class DbAlgorithm {
 		catch (Exception e) { System.out.println(e.getMessage());}	
 	}
 	
-	public void deleteRule(int algo, int row){
+	public void deleteRule(int algo, Rule rule){
 		try {
 			db.conn.setAutoCommit(false);
 			try{	
 				int cnt = cntRule(algo);
-				sql = "delete from mRule " + " where idModel = " + algo + " and id = " + row;
-				//System.out.println("1:" + sql);
+				
+				//int row = 0;
+				//sql = "select num from mRule where idModel = " + algo + " and id = " + id;
+				//db.s.execute(sql);
+				//rs = db.s.getResultSet();
+	            //if((rs!=null) && (rs.next())){
+	            //	row = rs.getInt(1);
+	            //}
+	           // System.out.println("deleteRule 0:" + sql + " num= " + row );			
+				sql = "delete from mRule " + " where idModel = " + algo + " and id = " + rule.getId();
+				//System.out.println("deleteRule 1:" + sql);
 				db.s.execute(sql);
-				if (row < cnt) {
+				if (rule.getNum() < cnt) {
 					// п≥дт€гнути правила що залишилис€ 
-					for(int r = row+1; r <= cnt; r++) {
-						sql = "update mRule set id = id-1" + "	where idModel = " + algo + " and id = " + r;
-						//System.out.println("1:" + sql);
+					for(int r = rule.getNum()+1; r <= cnt; r++) {
+						sql = "update mRule set num = num-1" + "	where idModel = " + algo + " and num = " + r;
+						//System.out.println("delete Rule 2:" + sql);
 						db.s.execute(sql);	 
 					}
 				}
@@ -349,7 +358,7 @@ public class DbAlgorithm {
     	return cnt;
 	}
 	
-	public ArrayList getDataSource(int idModel){
+	public ArrayList getDataSource_NoUse(int idModel){
 		try{ 
 			ArrayList data = new ArrayList();
 			char[] typeInfo = {'I','S','S','B','S','I'}; 

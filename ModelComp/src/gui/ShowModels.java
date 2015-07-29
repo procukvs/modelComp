@@ -47,7 +47,8 @@ public class ShowModels extends JFrame {
 		menuBar.add(mModel);
 		//menuBar.add(createModelMenu());
 		
-		JMenu mFile= new JMenu("Робота з файлом    ");
+		//JMenu mFile= new JMenu("Робота з файлом    ");
+		JMenu mFile= new JMenu("Системні дії   ");
 		JMenuItem input = new JMenuItem("Введення моделей з файлу");
 		JMenuItem output = new JMenuItem("Виведення моделей в файл");
 		
@@ -60,9 +61,13 @@ public class ShowModels extends JFrame {
 		JMenuItem state = new JMenuItem("Стан параметрів");
 		JMenuItem parameters = new JMenuItem("Встановлення параметрів");
 		if(Parameters.getRegime().equals("teacher")){
+			/*
 			mParameter.add(state);
 			mParameter.add(parameters);
 			menuBar.add(mParameter);
+			*/
+			mFile.add(state);
+			mFile.add(parameters);
 		}
 		JMenu plafmenu = createPlafMenu(); // Створюємо меню
 		menuBar.add(plafmenu);     // Додаємо меню в полосу меню

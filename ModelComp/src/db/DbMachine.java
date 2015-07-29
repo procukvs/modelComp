@@ -2,6 +2,7 @@ package db;
 
 import java.sql.*;
 import java.util.*;
+
 import main.*;
 
 public class DbMachine {
@@ -76,8 +77,9 @@ public class DbMachine {
 		String name = db.findName("Machine","Machine");
 		int cnt = db.maxNumber("Machine")+1;
 		int rows;
+		String section = Parameters.getSection();
 		try{
-			sql = "insert into tMachine values(" + cnt + ",'" + name + "','|#','','@a0', '@zz', 1,2,'new')";
+			sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','|#','','@a0', '@zz', 1,2,'new')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
@@ -98,7 +100,7 @@ public class DbMachine {
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "insert into tMachine select  " + cnt + "  As id,'" + name + "' as name, sMain, SAdd, " +
+				sql = "insert into tMachine select  " + cnt + "  As id, section , '" + name + "' as name, sMain, SAdd, " +
 							" sInitial, sFinal, isNumeric, Rank , descr from  tMachine where id = " + model.id;  
 				//System.out.println(">>> " + sql);
 				rows=db.s.executeUpdate(sql);
@@ -133,12 +135,13 @@ public class DbMachine {
 		State st;
 		String move = "";
 		String inCh = "";
+		String section = Parameters.getSection();
 		if (db.isModel("Machine",name)) name = db.findName("Machine", model.name);
 		try {
 			db.conn.setAutoCommit(false);
 			try{
 				int isNumeric = (model.isNumeric?1:0); 
-				sql = "insert into tMachine values(" + cnt + ",'" + name + "','" + model.main + "','" +
+				sql = "insert into tMachine values(" + cnt +  ",'" + section +  "','" + name + "','" + model.main + "','" +
 						model.add + "','" + model.init + "','" + model.fin + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
 				//System.out.println(">>> " + sql);
 				rows=db.s.executeUpdate(sql);
@@ -458,8 +461,9 @@ public class DbMachine {
 	//
 	private int getIdMachine(String name) {
 		int res = 0;
+		String section = Parameters.getSection();
 		try{ 
-			sql = "select id from tMachine where name = '" + name + "'";
+			sql = "select id from tMachine where name = '" + name + "' and section = '" + section + "'";
 			db.s.execute(sql);
 			rs = db.s.getResultSet();
             if((rs!=null) && (rs.next())){

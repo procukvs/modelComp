@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.TableColumn;
 
+import main.Parameters;
+
 import java.util.*;
 
 //import main.*;
@@ -91,15 +93,28 @@ public class ShowFiles extends JPanel {
 				{"№","I","N"}
 			}; break;
 		case "Output":
-			info = new String[][]{
-				{"Тип","S","N"},
-				{"Назва","S","N"},
-				{"Коментар","S","N"},
-				{"Функція?","B","N"},
-				{"Арність","I","N"},
-				{"Вивести?","B","E"},
-				{"№","I","N"}
-			}; break;
+			if (Parameters.getRegime().equals("teacher")) {
+				info = new String[][]{
+					{"Розділ","S","N"},
+					{"Тип","S","N"},
+					{"Назва","S","N"},
+					{"Коментар","S","N"},
+					{"Функція?","B","N"},
+					{"Арність","I","N"},
+					{"Вивести?","B","E"},
+					{"№","I","N"}
+				};
+			} else {
+				info = new String[][]{
+						{"Тип","S","N"},
+						{"Назва","S","N"},
+						{"Коментар","S","N"},
+						{"Функція?","B","N"},
+						{"Арність","I","N"},
+						{"Вивести?","B","E"},
+						{"№","I","N"}
+					};				
+			} break;
 		case "State":	
 			info = new String[][]{
 				{"Назва","S","N"},
@@ -137,7 +152,11 @@ public class ShowFiles extends JPanel {
 		int [] w = null;
 		switch (type){
 		case "Input":w = new int[]{70,90,540,10,10,10}; break;
-		case "Output":w = new int[]{70,90,440,30,20,50,20}; break;
+		case "Output":
+			if (Parameters.getRegime().equals("teacher")) 
+				w = new int[]{60,70,90,380,30,20,50,20}; 
+			else w = new int[]{70,90,440,30,20,50,20}; 
+			break;
 		case "State":w = new int[]{80,100,550};  break;
 		case "Parameters":w = new int[]{80,100,550};  break;
 		}

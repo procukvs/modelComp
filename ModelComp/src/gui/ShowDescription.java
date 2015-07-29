@@ -177,8 +177,9 @@ public class ShowDescription extends JPanel {
 	    sAdd.setVisible(isVisibleMany && !isComputer);
 	    txtNumeric.setVisible(isVisibleMany && !isComputer);
 	    isNumeric.setVisible(isVisibleMany && !isComputer);
-	    txtRank.setVisible(isVisibleMany);
-	    iRank.setVisible(isVisibleMany);
+	    //if (model == null) txtRank.setVisible(isVisibleMany);
+	    //else 	txtRank.setVisible(isVisibleMany && model.getIsNumeric());
+	   // iRank.setVisible(isVisibleMany);
 	    
 		txtInit.setVisible(isVisible);
 		sInit.setVisible(isVisible);
@@ -278,6 +279,7 @@ public class ShowDescription extends JPanel {
 					model.setAdd(sAdd.getText());
 					db.editModel(type,model);
 					showMain.showModel(type, model.id);
+					//System.out.println(".Set alfa." + com + "..");
 					String[] text1 = model.iswfModel();
 					/*
 					String[] text1 = {""};
