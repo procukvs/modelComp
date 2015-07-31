@@ -140,19 +140,23 @@ public class DbAccess {
 	public int getNumber(String type, int order){
 		int number = 0;
 		int i=1; 
+		int order1 = order;
+		if (order1<= 0) order1++;  
 		sql = "select id from " + tableModel(type) + 
 			  " where section = '" + Parameters.getSection() + "' order by name";
+		//System.out.println("Initial==: getNumber :" + sql + " order = " + order);
 		try{ 
-			s.execute(sql);
+			s.execute(sql);	
 	        ResultSet rs = s.getResultSet();
-	        while((rs!=null) && (rs.next()) && (i < order)) {
-	        	number = rs.getInt(1);	
-	        	i++; 
-	        }
-	        if (rs != null) number = rs.getInt(1);	       
-		}catch (Exception e){
+	        while((rs!=null) && (rs.next()) && (i <= order1))  {                       
+	           	number = rs.getInt(1);	
+	        	i++;
+	        	//System.out.println("Initial==C: getNumber :" + sql + " i = " + i  + " number = " + number);
+	       }
+	   	}catch (Exception e){
 			System.out.println("ERROR: getNumber :" + sql + " "  + e.getMessage());
 		}
+		//System.out.println("final =: getNumber : number = " + number);
 		return number;
 	}
 	

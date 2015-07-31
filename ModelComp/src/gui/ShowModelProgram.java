@@ -42,7 +42,7 @@ public class ShowModelProgram extends JPanel {
 		this.type = type;
 		this.model = model;
 		if (model == null )idModel = 0; else idModel = model.id;
-		table.showModel(type, model);
+		table.setModel(type, model);
 		buttons.setModel(type, model);
 		
 	}

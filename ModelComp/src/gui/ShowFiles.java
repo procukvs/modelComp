@@ -65,11 +65,13 @@ public class ShowFiles extends JPanel {
 	public ArrayList getOutputModel(){
 		ArrayList ml = new ArrayList();
 		ArrayList row;
+		int add1 = 0;
+		if (Parameters.getRegime().equals("teacher")) add1++;
 		for(int i = 0; i < dbm.getRowCount(); i++){
-			if((boolean)dbm.getValueAt(i, 5)){
+			if((boolean)dbm.getValueAt(i, 5+add1)){
 				row = new ArrayList();
-				row.add(dbm.getValueAt(i, 0));
-				row.add(dbm.getValueAt(i, 6));
+				row.add(dbm.getValueAt(i, 0+add1));
+				row.add(dbm.getValueAt(i, 6+add1));
 				ml.add(row);
 			}
 		}

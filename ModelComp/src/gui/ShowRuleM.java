@@ -1,5 +1,15 @@
 package gui;
 
+import gui.ShowRule.LsBody;
+import gui.ShowRule.LsCheckAxiom;
+import gui.ShowRule.LsCod;
+import gui.ShowRule.LsMove;
+import gui.ShowRule.LsNext;
+import gui.ShowRule.LsReg1;
+import gui.ShowRule.LsReg2;
+import gui.ShowRule.LsState;
+import gui.ShowRule.LssLeft;
+import gui.ShowRule.LssRigth;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -10,7 +20,7 @@ import javax.swing.border.*;
 
 import main.*;
 
-public class ShowRule extends JPanel {
+public class ShowRuleM extends JPanel {
 	private Model model;
 	private Algorithm algo = null;
 	private Machine mach = null;
@@ -61,7 +71,7 @@ public class ShowRule extends JPanel {
 	//-------------------for Machine--------------
 	Box moveBox[];
 		
-	ShowRule(ShowCommand owner) {
+	ShowRuleM(ShowCommand owner) {
 		showCommand = owner;
 		
 		//сформувати необхідні gui-елементи 
@@ -533,29 +543,29 @@ public class ShowRule extends JPanel {
 			switch (type){
 			case "Machine":
 				text = mach.testState(state.getText());
-				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
+				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRuleM.this, text);	
 				else  sMove[0].requestFocus();
 				break;
 			case "Recursive":
 				text = recur.testName(state.getText());
-				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
+				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRuleM.this, text);	
 				else  sBody.requestFocus();
 				break;	
 			case "Post":
 				mes = post.iswfNum(state.getText());
 				if (mes.size() == 0) {
 					if (checkAxiom.isSelected()) sRigth.requestFocus(); else sLeft.requestFocus();
-				} else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				} else JOptionPane.showMessageDialog(ShowRuleM.this,  StringWork.transferToArray(mes));
 				break;
 			case "Computer":
 				mes = comp.iswfNum(state.getText());
 				if (mes.size() == 0) bCod.requestFocus();
-				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				else JOptionPane.showMessageDialog(ShowRuleM.this,  StringWork.transferToArray(mes));
 				break;
 			case "Algorithm":
 				mes = algo.iswfNum(state.getText());
 				if (mes.size() == 0)  sLeft.requestFocus();
-				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				else JOptionPane.showMessageDialog(ShowRuleM.this,  StringWork.transferToArray(mes));
 				break;		
 			/*	String numS = state.getText();
 				int numI = -1;
@@ -596,13 +606,13 @@ public class ShowRule extends JPanel {
 					
 					String text = "Ліва частина підстановки містить символи " + 
 								noAlfa + " що не входять до спільного алфавіту " + comAlfa + " !";
-					JOptionPane.showMessageDialog(ShowRule.this,text);	
+					JOptionPane.showMessageDialog(ShowRuleM.this,text);	
 				} else { sRigth.requestFocus();}
 				break;
 			case "Post":
 				ArrayList <String> mes = post.iswfLeft(sLeft.getText());
 				if (mes.size() == 0) sRigth.requestFocus();
-				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				else JOptionPane.showMessageDialog(ShowRuleM.this,  StringWork.transferToArray(mes));
 				break;
 			}
 			
@@ -616,7 +626,7 @@ public class ShowRule extends JPanel {
 				if (!noAlfa.isEmpty()){
 					String text = "Ліва частина підстановки містить символи " + 
 							noAlfa + " що не входять до спільного алфавіту " + comAlfa + " !";
-					JOptionPane.showMessageDialog(ShowRule.this,text);	
+					JOptionPane.showMessageDialog(ShowRuleM.this,text);	
 				} else { sComm.requestFocus();}
 				break;
 			case "Post":
@@ -624,7 +634,7 @@ public class ShowRule extends JPanel {
 				if(checkAxiom.isSelected())	 mes = post.iswfAxiom(sRigth.getText());
 				else mes = post.iswfRigth(sLeft.getText(),sRigth.getText());
 				if (mes.size() == 0) sComm.requestFocus();
-				else JOptionPane.showMessageDialog(ShowRule.this,  StringWork.transferToArray(mes));
+				else JOptionPane.showMessageDialog(ShowRuleM.this,  StringWork.transferToArray(mes));
 				break;
 			}
 		}	
@@ -639,7 +649,7 @@ public class ShowRule extends JPanel {
 				if ((index < comAlfa.length()-1) && (index < 29)) sMove[index + 1].requestFocus();
 				else sComm.requestFocus();
 			}
-			else JOptionPane.showMessageDialog(ShowRule.this, text);	
+			else JOptionPane.showMessageDialog(ShowRuleM.this, text);	
 			//JOptionPane.showMessageDialog(ShowRule.this,"index = " + index + " move = " + move);
 		}	
 	}
@@ -672,7 +682,7 @@ public class ShowRule extends JPanel {
 			String text = comp.testPart(cod, 1, tReg1.getText());
 			if (text.isEmpty()){  
 				if (cod.equals("Z") ||cod.equals("S")) sComm.requestFocus(); else tReg2.requestFocus();
-			} else 	JOptionPane.showMessageDialog(ShowRule.this,text);
+			} else 	JOptionPane.showMessageDialog(ShowRuleM.this,text);
 		}
 	}
 	class LsReg2 implements ActionListener  {
@@ -681,14 +691,14 @@ public class ShowRule extends JPanel {
 			String text = comp.testPart(cod, 2, tReg2.getText());
 			if (text.isEmpty()){  
 				if (!cod.equals("J")) sComm.requestFocus();	else tNext.requestFocus();
-			} else JOptionPane.showMessageDialog(ShowRule.this,text);
+			} else JOptionPane.showMessageDialog(ShowRuleM.this,text);
 		}
 	}
 	class LsNext implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			String text = comp.testPart((String)bCod.getSelectedItem(), 3, tNext.getText());
 			if (text.isEmpty())	sComm.requestFocus();
-			else JOptionPane.showMessageDialog(ShowRule.this,text);
+			else JOptionPane.showMessageDialog(ShowRuleM.this,text);
 			
 		}
 	}

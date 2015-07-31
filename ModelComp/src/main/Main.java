@@ -8,8 +8,8 @@ import db.*;
 import gui.*;
 
 public class Main {
-	DbAccess db;
-	ShowModels gui;
+	private DbAccess db;
+	private ShowModels showModels;
 		
 	Main(){
 		//=====================
@@ -18,15 +18,15 @@ public class Main {
 		db = DbAccess.getDbAccess();
 		//====================
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
-		gui = new ShowModels(db);
+		showModels = new ShowModels(db);
 		//gui.setListener(gui);
 		System.out.println("Forming GUI-- version " + Parameters.getRegime() + "..");
 	    if (db.connectionDb("Model.db")) { 
 	  	   if (Parameters.getRegime().equals("teacher")) db.setParameters();
 	       	// після встановлення звязку з БД створюємо обробник запитів opr
-	        gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	        gui.addWindowListener(new EndWork());
-	        gui.setVisible(true);
+	  	   	showModels.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	  	   	showModels.addWindowListener(new EndWork());
+	  	   	showModels.setVisible(true);
 	    } 
 	    else System.out.println("No connection to DB Model.db -- version Teacher..");
 	

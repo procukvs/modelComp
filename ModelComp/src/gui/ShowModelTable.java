@@ -72,7 +72,7 @@ public class ShowModelTable extends JPanel {
 		
 	}
 
-	public void showModel(String type, Model model){
+	public void setModel(String type, Model model){
 		this.type = type; this.model = model;
 		border.setTitle(Model.title(type, 4));
 							//setTableStructure(); 

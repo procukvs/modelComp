@@ -10,17 +10,20 @@ import java.awt.event.*;
 import main.*;
 
 public class ShowCommand extends JDialog  {
-	JLabel lWhat;
-	ShowRule showRule;
-	JButton test;
-	JButton structure;
-	JButton yes;
-	JButton cancel;
-	Command command = null;
+	private JLabel lWhat;
+	//================================  showRule --- showRuleM 
+	private ShowRule showRule;
+	//private ShowRuleM showRuleM;
+	//================================  showRule --- showRuleM 
+	private JButton test;
+	private JButton structure;
+	private JButton yes;
+	private JButton cancel;
+	private Command command = null;
 	private String type = "Algorithm";
 	private Model model = null;
 	private Box mainBox ;
-	ShowTree showTree;
+	private ShowTree showTree;
 	
 	ShowCommand(Frame owner){
 		super(owner, "Command");
@@ -31,7 +34,10 @@ public class ShowCommand extends JDialog  {
 		lWhat = new JLabel("Edit");
 		lWhat.setHorizontalAlignment(lWhat.CENTER);
 		lWhat.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,16));
+		//================================  showRule --- showRuleM 
 		showRule = new ShowRule(this);
+		//showRuleM = new ShowRuleM(this);
+		//================================  showRule --- showRuleM 
 		yes = new JButton("Зберегти");
 		test = new JButton("Тестувати");
 		structure = new JButton("Структура");
@@ -41,6 +47,7 @@ public class ShowCommand extends JDialog  {
 		setLayout(new BorderLayout());
 		//-----------------------------
 		mainBox = Box.createVerticalBox();
+		
 		mainBox.add(showRule);
 		//---------------------------		
 		Box buttonBox = Box.createHorizontalBox();
@@ -137,7 +144,10 @@ public class ShowCommand extends JDialog  {
 		test.setVisible(type.equals("Recursive"));
 		structure.setVisible(type.equals("Recursive"));
 		showRule.setRule(type, model, id, what);
+		pack();
 	}
 	public Command getCommand() { return command;}
+	
+	public void setTreeVisible(boolean visible){ if (showTree != null) showTree.setVisible(visible);}
 		
 }

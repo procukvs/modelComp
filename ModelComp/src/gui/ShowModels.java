@@ -3,7 +3,6 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-
 import javax.swing.*;
 
 import db.*;
@@ -15,14 +14,13 @@ public class ShowModels extends JFrame {
 	private String type = "Algorithm";
 	private Model model = null;
 	private JLabel label;
-	private ShowModelOne showModel;
+	private ShowModelOne showModelOne;
 	private ShowFiles showFiles;
-	private ShowModelButtons modelButtons;
+	private ShowModelButtons showModelButtons;
 	//private Box mainBox ;
 	//private UIManager.LookAndFeelInfo[] plafs;
 	//private JMenu plafmenu;
-	
-	private ShowTesting sTest;
+	//private ShowTesting sTest;
 	
 	public ShowModels(DbAccess db){
 		super("Models of computation");
@@ -71,20 +69,6 @@ public class ShowModels extends JFrame {
 		}
 		JMenu plafmenu = createPlafMenu(); // Створюємо меню
 		menuBar.add(plafmenu);     // Додаємо меню в полосу меню
-
-		//================================================================
-		/*
-		plafmenu = new JMenu("Look and Feel");
-		plafs = UIManager.getInstalledLookAndFeels();
-		for(int i = 0; i < plafs.length; i++) {
-			String plafName = plafs[i].getName();
-			String plafClassName = plafs[i].getClassName();
-			plafmenu.add(new JMenuItem(plafName));
-		}
-		menuBar.add(plafmenu);
-		//=============================================================
-		  
-		 */
 		menuBar.add(quit);
 		setJMenuBar(menuBar);
 		
@@ -104,22 +88,22 @@ public class ShowModels extends JFrame {
 		label.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,20));
 		//-------------------------------
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		showModel = new ShowModelOne(db, this);
+		showModelOne = new ShowModelOne(db, this);
 		//-------------------------------
 		showFiles = new ShowFiles (db);
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		modelButtons = new ShowModelButtons(db,this, showFiles);
+		showModelButtons = new ShowModelButtons(db,this, showFiles);
 		//===============================
 		// розташуємо їх
 		//-----------------------------
 		Box mainBox = Box.createVerticalBox();
-		mainBox.add(showModel);
+		mainBox.add(showModelOne);
 		mainBox.add(showFiles);
 		//========================
 		
 		getContentPane().add(label, BorderLayout.NORTH);
 		getContentPane().add(mainBox, BorderLayout.CENTER);
-		getContentPane().add(modelButtons, BorderLayout.SOUTH);
+		getContentPane().add(showModelButtons, BorderLayout.SOUTH);
 		setVisiblePane("NoModel");
 		setSize(800,500);
 		//pack();
@@ -130,9 +114,9 @@ public class ShowModels extends JFrame {
 		boolean files = type.equals("Input") || type.equals("Output") 
 				         || type.equals("State") || type.equals("Parameters");
 		label.setVisible(!close);
-		showModel.setVisible(!close && !files);
+		showModelOne.setVisible(!close && !files);
 		showFiles.setVisible(!close && files);
-		modelButtons.setVisible(!close);
+		showModelButtons.setVisible(!close);
 	}
 	
 	private JMenu createPlafMenu() {
@@ -153,8 +137,8 @@ public class ShowModels extends JFrame {
 						UIManager.setLookAndFeel(plafClassName);
 						SwingUtilities.updateComponentTreeUI(ShowModels.this);
 						//ShowModels.this.pack();
-						modelButtons.setLookAndFeel(plafClassName);
-						showModel.setLookAndFeel(plafClassName);
+						showModelButtons.setLookAndFeel(plafClassName);
+						showModelOne.setLookAndFeel(plafClassName);
 					}
 					catch (Exception ex) { System.err.println(ex);}
 				}
@@ -163,33 +147,7 @@ public class ShowModels extends JFrame {
 		}
 		return plafmenu;
 	}
-	
-	
-	/*
-	public void setListener(final JFrame show){
-		Component[] itemA =  plafmenu.getComponents();
-		System.out.println("setListener " + itemA.length + " " +plafs.length );
 		
-		for(int i = 0; i < plafs.length; i++) {
-			String plafName = plafs[i].getName();
-			final String plafClassName = plafs[i].getClassName();
-			
-			//for(int i=0;i < plafmenu)
-			//JMenuItem item = plafmenu.add(new JRadioButtonMenuItem(plafName));
-			
-			((JMenuItem) itemA[i]).addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e){
-					try {
-						UIManager.setLookAndFeel(plafClassName);
-						SwingUtilities.updateComponentTreeUI(show);
-						pack();
-					}
-					catch (Exception ex) { System.err.println(ex);}
-				}
-			});
-		}
-	}
-	*/
 	public void showModel(String type, int id) {
 		//boolean files = type.equals("Input") || type.equals("Output");
 		String text = Model.title(type, 1);
@@ -206,7 +164,7 @@ public class ShowModels extends JFrame {
 			case "Parameters": fs = db.getAllParameter(); break;	
 			}	
 			showFiles.showTableFiles(type, fs);
-			modelButtons.setModel(type,model);
+			showModelButtons.setModel(type,model);
 			model = null;
 			break;
 		case "NoModel": break;
@@ -218,18 +176,14 @@ public class ShowModels extends JFrame {
 			if (id == 0) model = null; else model = db.getModel(type, id);
 			//System.out.println("showModelstart ..." + type + "  " + id );
 			//if (model != null )	System.out.println(model.show());
-			showModel.setModel(type,model);
-			modelButtons.setModel(type,model);
+			showModelOne.setModel(type,model);
+			showModelButtons.setModel(type,model);
 		}
 		label.setText(text);
 	/*		
 	*/		
 	}
-	
 		
-		
-	
-	
 	class LsComputer implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {showModel("Computer",0);	}	
 	}
@@ -243,9 +197,7 @@ public class ShowModels extends JFrame {
 	}
 	
 	class LsPost implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {
-			//Parameters.setRegime("user");
-			showModel("Post",0);	}	
+		public void actionPerformed(ActionEvent e) {showModel("Post",0);	}	
 	}
 	
 	class LsRecursive implements ActionListener  {
@@ -317,8 +269,4 @@ public class ShowModels extends JFrame {
 			  //	JOptionPane.showMessageDialog(ShowModels.this,"Machine..");
 		}
 	} */
-	
-	
-
-
 }

@@ -232,8 +232,8 @@ public class ShowDescription extends JPanel {
 					if(text.isEmpty()) {
 						model.name = name;
 						db.editModel(type,model);
-						System.out.println("name=" + name + " model.name=" + model.name);
-						//showMain.showModel(type, model.id);
+						//System.out.println("name=" + name + " model.name=" + model.name);
+						showMain.showModel(type, model.id);
 						if (type.equals("Machine")) sInit.requestFocus();
 						else sMain.requestFocus();
 					} else {

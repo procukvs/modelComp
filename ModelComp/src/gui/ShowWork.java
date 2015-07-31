@@ -20,7 +20,8 @@ public class ShowWork extends JDialog {
 	private ShowForm showForm;
 	private ShowFunction showFunction;
 	private ShowEval showEval;
-	ShowSteps showSteps;
+	ShowSteps showSteps; 
+	// повинно бути доступним для управління його видимістю (або необхідно створити відповідний метод)
 	private ShowTree showTree;
 	//private ShowTest showTest;
 		

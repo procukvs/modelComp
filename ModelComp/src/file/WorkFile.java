@@ -103,6 +103,7 @@ public class WorkFile {
 		    getChar(); get();
 		    while((errorText.isEmpty()) && (lex != 10)){
 		   	  if (lex == 4) {txComm = valueLex; get();} 
+		   	  //System.out.println("0: type = "	+ type + " errorText = " + errorText + "!" + " lex= " + lex);
 			  if (lex == 1) {
 			   	type = valueLex; lex = 20;
 			   	switch (type){
@@ -114,12 +115,15 @@ public class WorkFile {
 			   	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
 			   	}
 			  } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
+			  
+			  //System.out.println("1: type = "	+ type + " errorText = " + errorText + "!");
 			  if (errorText.isEmpty()) {
 				 if(model != null){
 					 String nameIn = model.name;
 					 String type1 = ((type.equals("System"))?"Post":type);  
 					 int idModel = db.addModel(type1, model);
-					 //System.out.println("File " + name + " model " + nameIn + " type " + type1 + " id " + idModel); 
+					 
+					 // System.out.println("File " + name + " model " + nameIn + " type " + type1 + " id " + idModel); 
 					 if (idModel > 0) {
 						row = new ArrayList();
 						row.add(type1);
@@ -130,10 +134,13 @@ public class WorkFile {
 						row.add(idModel);
 						listModel.add(row);
 						//errorText = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
+						type = "Model";
 					}
 					else errorText = Model.title(type1, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 				 } else errorText = "Дивна ситуація (тип " + type + "): Не введена модель і немає повідомлення про помилку !!";
 			  }
+			  
+			  //System.out.println("2: type = "	+ type + " lex = " + lex);
 		    }
 			if (errorText.isEmpty()) 
 				if (lex != 10) errorText = "Не знайдено кінця файлу ";

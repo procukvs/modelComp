@@ -15,21 +15,22 @@ public class ShowCommandButtons extends JPanel {
 	private String type = "Algorithm";
 	private ShowModelTable table;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	private ShowModels showMain;
+	private ShowModels showModels;
 	//private ShowModelAll showMain;
 	private Model model = null;
-	private ShowCommand workCommand;
+	private ShowCommand showCommand;
 	private Command command;
 	private ShowWork showWork; 
-	JButton test;
-	JButton add;
-	JButton addAs ;
-	JButton up ;
-	JButton down ;
-	JButton rename;
-	JButton insert ;
-	JButton see;
-	JButton eval;
+	
+	private JButton test;
+	private JButton add;
+	private JButton addAs ;
+	private JButton up ;
+	private JButton down ;
+	private JButton rename;
+	private JButton insert ;
+	private JButton see;
+	private JButton eval;
 	
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -49,13 +50,13 @@ public class ShowCommandButtons extends JPanel {
 		eval = new JButton("Виконати");
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		workCommand = new ShowCommand(owner);
-		showWork = new ShowWork(showMain);
+		showCommand = new ShowCommand(owner);
+		showWork = new ShowWork(showModels);
 		
 		//workCommand = new ShowCommand(frame);
 		this.db = db;
 		this.table = table;
-		showMain = owner;
+		showModels = owner;
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -118,7 +119,7 @@ public class ShowCommandButtons extends JPanel {
 		try {
 			UIManager.setLookAndFeel(className);
 			if(showWork != null) SwingUtilities.updateComponentTreeUI(showWork);
-			if(workCommand != null) SwingUtilities.updateComponentTreeUI(workCommand);
+			if(showCommand != null) SwingUtilities.updateComponentTreeUI(showCommand);
 			//ShowModels.this.pack();
 		}
 		catch (Exception ex) { System.err.println(ex);}
@@ -146,13 +147,13 @@ public class ShowCommandButtons extends JPanel {
 				//if (row == 0) rule = new Rule("","",false,"====");
 				//else rule = (Rule)model.program.get(row-1);
 				//System.out.println("New.."+row + ".."+rule.show());
-				workCommand.setCommand("Add", type, model, id);
-				workCommand.show();
-				command= workCommand.getCommand();
+				showCommand.setCommand("Add", type, model, id);
+				showCommand.show();
+				command= showCommand.getCommand();
 				if (command != null) { 
 					//idNew = workCommand.showRule.getIdCom();
 					db.newCommand(type, model, command);
-					showMain.showModel(type, model.id);
+					showModels.showModel(type, model.id);
 					//System.out.println("New.."+row);
 					table.showRow(false,model.findCommand(command.getId())+1);
 				}
@@ -171,14 +172,14 @@ public class ShowCommandButtons extends JPanel {
 					//	workRule.setInit("edit", algo,row, rule);
 					//	workRule.show();
 					//	rule= workRule.getRule();
-					workCommand.setCommand("Edit", type, model, row);
-					workCommand.show();
-					command= workCommand.getCommand();
+					showCommand.setCommand("Edit", type, model, row);
+					showCommand.show();
+					command= showCommand.getCommand();
 				
 					if (command != null) { 
 						//System.out.println("New.."+command.output());
 						db.editCommand(type, model, row, command);
-						showMain.showModel(type, model.id);
+						showModels.showModel(type, model.id);
 						//model = db.getModel(type, model.id);
 						//table.showModel(type, model);
 					}
@@ -211,7 +212,7 @@ public class ShowCommandButtons extends JPanel {
 						JOptionPane.showConfirmDialog(ShowCommandButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
 				if (response == JOptionPane.YES_OPTION) { 
 					db.deleteCommand(type, model.id, row,c);
-					showMain.showModel(type, model.id);
+					showModels.showModel(type, model.id);
 					//table.showPrevRow(false);
 					table.showRow(false,row1);
 				} 	
@@ -226,7 +227,7 @@ public class ShowCommandButtons extends JPanel {
 				int row = table.numberSelectedRow();
 				if (row > 1) {
 					db.moveUp(type, model, row);
-					showMain.showModel(type, model.id);
+					showModels.showModel(type, model.id);
 					table.showPrevRow(false);
 				}
 			} 
@@ -240,7 +241,7 @@ public class ShowCommandButtons extends JPanel {
 				int row = table.numberSelectedRow();
 				if ((row > 0) && (row < model.program.size())){
 					db.moveDown(type, model, row);
-					showMain.showModel(type, model.id);
+					showModels.showModel(type, model.id);
 					table.showNextRow(false);
 				}
 			} 
@@ -274,7 +275,7 @@ public class ShowCommandButtons extends JPanel {
 							//showMain.showModel(type, model.id);
 							//table.showPrevRow(false);
 							model.dbRenameState(name, name1);
-							showMain.showModel(type, model.id);
+							showModels.showModel(type, model.id);
 							table.showRow(false,model.findCommand(name1)+1);
 							//JOptionPane.showMessageDialog(ShowCommandButtons.this, "Rename.." + name + " -> " + name1);
 						}
@@ -340,7 +341,7 @@ public class ShowCommandButtons extends JPanel {
 					text = model.dbInsertModel(row, (String)res);
 				else text = model.dbInsertModel((String)res);	
 				//System.out.println("ShowCommandButton..LsInsert1 ..." + text + "...  "); 
-				if (text.isEmpty()) showMain.showModel(type, model.id);
+				if (text.isEmpty()) showModels.showModel(type, model.id);
 				else JOptionPane.showMessageDialog(ShowCommandButtons.this,text);
 			}
 		}	

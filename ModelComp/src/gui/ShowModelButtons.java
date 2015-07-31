@@ -12,14 +12,14 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class ShowModelButtons extends JPanel {
-	JFileChooser fc = new JFileChooser();
+	private JFileChooser fc = new JFileChooser();
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	private ShowModels showMain;
+	private ShowModels showModels;
 	private ShowFiles showFiles;
 	private String type = "Algorithm";
 	private Model model = null;
-	ShowWork showWork; 
+	private ShowWork showWork; 
 	private JTextField nmFile;
 	
 	private JButton add;
@@ -60,7 +60,7 @@ public class ShowModelButtons extends JPanel {
 		//showWork = new ShowWork(frame);
 		
 		this.db = db;
-		this.showMain = showMain;
+		this.showModels = showMain;
 		this.showFiles = showFiles;
 		
 		//=================================
@@ -195,7 +195,7 @@ public class ShowModelButtons extends JPanel {
 			}	
 			else { 
 				int idModel = Model.dbNew(type);  // db.newModel(type); 
-				showMain.showModel(type, idModel);
+				showModels.showModel(type, idModel);
 				//JOptionPane.showMessageDialog(ShowModelButtons.this,"Add..");
 			}	
 		}	
@@ -205,7 +205,7 @@ public class ShowModelButtons extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null) {
 				int idModel = model.dbNewAs(); //db.newModelAs(type, model); 
-				showMain.showModel(type, idModel);
+				showModels.showModel(type, idModel);
 			}
 		   	//JOptionPane.showMessageDialog(ShowModelButtons.this,"AddAs..");
 		}	
@@ -298,7 +298,7 @@ public class ShowModelButtons extends JPanel {
 						String nameIn = model.name;
 						int idModel = db.addModel(type, model);
 						if (idModel > 0) {
-							showMain.showModel(type, idModel);
+							showModels.showModel(type, idModel);
 							text = Model.title(type, 8) + " " + model.name + " з файлу " + name + "  введено!";
 						}
 						else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
@@ -313,7 +313,7 @@ public class ShowModelButtons extends JPanel {
 	class Quit implements ActionListener  {
 		// закінчуємо всю роботу ---- закриваємо базу даних
 		public void actionPerformed(ActionEvent e) {
-			showMain.showModel("NoModel", 0);
+			showModels.showModel("NoModel", 0);
 		}	
 	}
 	class ModelReport implements ActionListener  {
@@ -379,7 +379,7 @@ public class ShowModelButtons extends JPanel {
 						//newId = db.getNumber(type, newId-1);
 					int newId = model.getDbOrder();
 					if (model.dbDelete()) newId = model.getDbNumber(newId-1);
-					showMain.showModel(type, newId);
+					showModels.showModel(type, newId);
 				}
 			}
 			//JOptionPane.showMessageDialog(ShowModelButtons.this,"ModelDelete...");

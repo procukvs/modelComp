@@ -97,6 +97,15 @@ public class Algorithm extends Model {
 		return mes;
 	}
 	
+	public String iswfNumString(String num) {
+		String mes = "";
+		int numI = -1;
+		if (StringWork.isPosNumber(num)) numI = new Integer(num);
+		if((numI < 0) || (numI > program.size()+1)) 
+			mes = "Порядковий номер підстановки повинен бути не меньше 1 і не більше " + (program.size() + 1) + ".";
+		return mes;
+	}
+	
 	public int findFirst(String str) {
 		// знаходить першу підстановку, ліва частина якої водить в рядок str
 		int ns = 0;
