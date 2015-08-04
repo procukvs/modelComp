@@ -22,7 +22,7 @@ public class Machine extends Model {
 	}
 	
 	//-----------------------------------------------
-	public String getMain() {return main;}
+	public String getMain() {return main ;}
 	public String getAdd() {return add;}
 	public String getNo() {return no;}
 	public boolean getIsNumeric() {return isNumeric;}
@@ -85,7 +85,8 @@ public class Machine extends Model {
 				move = state.getGoing().get(j);  // c -> move
 				if(!move.isEmpty()){
 					if (StringWork.isMove(move)) {    //iswfMove(move)
-						noChar = StringWork.isAlfa(goodCh,c + move.substring(3,3));
+						noChar = StringWork.isAlfa(goodCh,c + move.substring(3,4));
+						//System.out.println("iswfModel goodCh = " +goodCh + " move = " + move + " c =" + move.substring(3,4) + ".." + noChar); 
 						if (!noChar.isEmpty()) {
 							states = states + "," + state.getState();
 							if (allNoAlfa.isEmpty()) allNoAlfa = noChar;
@@ -100,7 +101,7 @@ public class Machine extends Model {
 		int lb = badMoves.size();
 		int r = lb;
 		if ((r>0)  || (!states.isEmpty())) {
-			if (r>0) { /*if(r > 3) r = 3;*/ r++; }
+			if (r>0) { /*if(r > 3) r = 3;*/ r++;  }
 			if (!states.isEmpty()) r = r+3;
 			res = new String[r]; i = 0;
 			if (lb > 0){
@@ -111,10 +112,11 @@ public class Machine extends Model {
 				}
 				//if (lb > 3) res[i] = "..";
 			}
+			//System.out.println("iswfModel lb=" +lb + " states.isEmpty()=" + states.isEmpty() + " r=" + r + " res.length =" + res.length  + " i =" + i);
 			if(!states.isEmpty()) {
-				res[++i] = "В станах " + states.substring(1);
-				res[++i] = " використовуються символи " + allNoAlfa;
-				res[++i] = " що не входять в об\"єднаний алфавіт _" + main+add + " !";
+				res[i] = "В станах " + states.substring(1); i++;
+				res[i] = " використовуються символи " + allNoAlfa; i++;
+				res[i] = " що не входять в об\"єднаний алфавіт _" + main+add + " !";
 			}
 		}
 		return res;
@@ -330,6 +332,8 @@ public class Machine extends Model {
 		return text ;
 	}
 	
+	public int takeCountStep(ArrayList sl, int nodef) { return sl.size();}
+	
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -478,25 +482,27 @@ public class Machine extends Model {
 	}
 	// будує k нових імен станів ще НЕ використаних a0..a9,aa..az,b0..b9,ba..bz,...,z0..z9,za..zz
 	public String[] newArState(int k){
-		String first = "abcdefghijklmnopqrstuvwxyz";
+		String first = "0abcdefghijklmnopqrstuvwxyz";
 		String second = "0123456789abcdefghijklmnopqrstuvwxyz";
 		String[] res = new String[k];
 		String name;
-		String maxSt = "@a0";
+		String maxSt = "@0z";
 		if ((program != null) && (program.size() > 0)) {
 			for(int i = 0;	(i < program.size()); i++ ) {
 				name = ((State)program.get(i)).getState();
 				if(name.compareTo(maxSt) > 0) maxSt = name;
 			}
 		}
+		//System.out.println("newArState: k =" + k + " maxSt =" + maxSt);
 		int i = first.indexOf(maxSt.substring(1,2));
 		int j = second.indexOf(maxSt.substring(2)) + 1;
 		if (j == 36) {i++; j = 0;} 
 		for (int l = 0; l < k; l++ ){
-			if (i < 26) res[l] = "@" + first.substring(i,i+1) + second.substring(j,j+1) ; else res[l] = "@00";
+			if (i < 27) res[l] = "@" + first.substring(i,i+1) + second.substring(j,j+1) ; else res[l] = "@00";
 			j++;
 			if (j == 36) {i++; j = 0;} 
 		}
+		//for(i = 0; i < k; i++) System.out.println("newArState: k =" + k + " res[] =" + res[i]);
 		return res;
 	}
 	

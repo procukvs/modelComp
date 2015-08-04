@@ -86,6 +86,8 @@ public class Model {
 	
 	public String takeResult(ArrayList sl, int nodef) { return "";}
 	
+	public int takeCountStep(ArrayList sl, int nodef) { return 0;}
+	
 	public ArrayList getStepSource(ArrayList sl, boolean internal, int var) {return null;}
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {return null;}
 	

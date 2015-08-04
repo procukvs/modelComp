@@ -128,6 +128,7 @@ public class Algorithm extends Model {
 		int np;
 		Rule rule;
 		int pos;
+		sl.add(new Substitution(0,0,next));
 		while (go && (step <= nodef)) {
 			np = findFirst(next);
 			if (np > 0) {
@@ -146,19 +147,23 @@ public class Algorithm extends Model {
 		String text = "";
 		text = ((Substitution)(sl.get(sl.size()- 1))).str;
 		if (isNumeric) text = StringWork.transNumeric(text);
-		if (sl.size() == nodef + 1) text = "Невизначено";
+		if (sl.size() == nodef + 2) text = "Невизначено";
 		return text;
 	}
+	
+	public int takeCountStep(ArrayList sl, int nodef) { return sl.size()-1;}
 	
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
 		Substitution sb;
-		if (sl != null) {
-			for(int i = 0; i < sl.size(); i++ ){
+		//if (sl != null) {
+		//  sl завжди має 1 елемент - початкоиу слово Subtitution(0,0,init)!!!!
+		//     ... для показу його відкидаємо !!!!!
+			for(int i = 1; i < sl.size(); i++ ){
 				sb = (Substitution)sl.get(i);
 				row = new ArrayList();
-				row.add(i+1);
+				row.add(i);
 				row.add(sb.rule);
 				if (internal) row.add(extractPrev( sb));
 				else row.add(StringWork.transNumeric(extractPrev( sb)));
@@ -166,7 +171,7 @@ public class Algorithm extends Model {
 				else row.add(StringWork.transNumeric(extract( sb)));
 				data.add(row);
 			}
-		}
+		//}
 	    return data;
 	}
 	
@@ -175,10 +180,12 @@ public class Algorithm extends Model {
 		// виділяє в результаті підстановки sub, що підставлено *..*! 
 		String res = sub.str;
 		int pos = sub.pos;
-		Rule r = (Rule)program.get(sub.rule-1);
-		int l = r.getsRigth().length();
-		if (pos > 0) res = res.substring(0,pos-1) + "*" + res.substring(pos-1,pos-1+l) + "*" + res.substring(pos-1+l) ;
-		else res = "*" + res.substring(0,l) + "*" + res.substring(l);
+		if (sub.rule>0){ 
+			Rule r = (Rule)program.get(sub.rule-1);
+			int l = r.getsRigth().length();
+			if (pos > 0) res = res.substring(0,pos-1) + "*" + res.substring(pos-1,pos-1+l) + "*" + res.substring(pos-1+l) ;
+			else res = "*" + res.substring(0,l) + "*" + res.substring(l);
+		} 
 		return res;
 	}
 	
@@ -186,11 +193,13 @@ public class Algorithm extends Model {
 		// виділяє в початковому рядку підстановки sub, що замінено *..*! 
 		String res = sub.str;
 		int pos = sub.pos;
-		Rule r = (Rule)program.get(sub.rule-1);
-		int l = r.getsRigth().length();
-		String in = r.getsLeft();
-		if (pos > 0) res = res.substring(0,pos-1) + "*" + r.getsLeft() + "*" + res.substring(pos-1+l) ;
-		else res = "*" + r.getsLeft() + "*" + res.substring(l);
+		if (sub.rule > 0){
+			Rule r = (Rule)program.get(sub.rule-1);
+			int l = r.getsRigth().length();
+			String in = r.getsLeft();
+			if (pos > 0) res = res.substring(0,pos-1) + "*" + r.getsLeft() + "*" + res.substring(pos-1+l) ;
+			else res = "*" + r.getsLeft() + "*" + res.substring(l);
+		} else res = "**" + res;
 		return res;
 	}
 	

@@ -203,7 +203,7 @@ public class ShowDescription extends JPanel {
 	private void showEmpty() {
 		sName.setText("");
 		txtNumb.setText("-----");
-		sInit.setText("@z0");
+		sInit.setText("@a0");
 		sFin.setText("@zz");
 		sMain.setText("");
 		sAdd.setText("");

@@ -408,6 +408,7 @@ public class DbMachine {
 		int idIns = getIdMachine(ins);
 		int maxCom = mach.findMaxNumber();
 		String res = "";
+		boolean first = true;
 		if (idIns > 0) {
 			ArrayList <String> insSt = getAllState(idIns);
 			ArrayList <Integer> insId = getAllId(idIns);
@@ -427,7 +428,10 @@ public class DbMachine {
 				    	idCom = rs.getInt(1); state = rs.getString(2); comm = rs.getString(3);
 				    	idComN = findInArrayI(insId,idCom) + maxCom + 1;
 				    	stateN = newSt[findInArrayS(insSt,state)];
-				    	comm = ins + " " + comm;
+				    	if(first){
+				    		comm = ins + " " + comm; first = false;
+				    	}
+				    	else comm = ins.charAt(0) + " " + comm;
 				    	sql = "insert into tProgram values(" + mach.id + "," + idComN + ",'" + stateN + "','" + comm + "')"; 
 				    	st.execute(sql);
 				    }	
@@ -442,6 +446,7 @@ public class DbMachine {
 				    					+ rs.getString(3) + "','" + stateN + "','" + rs.getString(5) + "')"; 
 				    	st.execute(sql);			    	
 				    } 
+				   // idIns = idIns/0;
 					db.conn.commit();
 				} catch (Exception e) {     //SQLException e
 					System.out.println("ERROR: insertMachine: mach = " + mach.id + " " + ins);

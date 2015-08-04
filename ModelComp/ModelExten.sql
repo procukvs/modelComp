@@ -23,7 +23,8 @@ BEGIN TRANSACTION;
   sRigth varchar(50),
   isEnd smallint not null,
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, num)
  );   
 DELETE FROM mAlgorithm;
 INSERT INTO mAlgorithm VALUES(1,'base','EqFunct','#|','',1,1,' f(x) = x');
@@ -75,6 +76,8 @@ INSERT INTO pState VALUES('RecurSubst','operation','Підстановка вк�
 
 DELETE FROM pParameters;
 INSERT INTO pParameters VALUES('Section','base','Базовий набір моделей');
+INSERT INTO pParameters VALUES('Section','lesson','Набір моделей для практичних занять');
+INSERT INTO pParameters VALUES('Section','testing','Тестовий набір моделей');
 INSERT INTO pParameters VALUES('PostVar','unique','Всі змінні в лівій частині правила виводу - різні');
 INSERT INTO pParameters VALUES('PostVar','duplicate','Допускаються однакові змінні в лівій частині правила виводу');
 INSERT INTO pParameters VALUES('RecurSubst','operation','Підстановка вказується оператором @S');
@@ -95,7 +98,8 @@ INSERT INTO pParameters VALUES('RecurSubst','brackets','Підстановка �
   name varchar(30) not null,
   txBody varchar(250),
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, name)
  );   
 DELETE FROM fRecursive;
 INSERT INTO fRecursive VALUES(1,'base','a','Простий набір');
@@ -152,7 +156,8 @@ drop table if exists tMachine;
   id integer not null,
   sState char(3),
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, sState)
  );   
  drop table if exists tMove;
  create table tMove
@@ -244,7 +249,8 @@ INSERT INTO tMove VALUES(2,9,'c','c','@1','<');
   reg2 smallint,
   next integer,
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, num)
  );   
 DELETE FROM rComputer;
 INSERT INTO rComputer VALUES(1,'base','const2',1,'f(x) = 2');
@@ -276,7 +282,7 @@ INSERT INTO rInstruction VALUES(3,11,11,'S',5,0,0,' r1 =0');
 INSERT INTO rInstruction VALUES(3,12,12,'J',1,1,5,' r1 =0');
 
 drop table if exists pSystem;
- drop table if exists pPost;
+drop table if exists pPost;
  create table pPost
  (id int primary key not null,
   section varchar(30) not null, 
@@ -298,7 +304,8 @@ drop table if exists pSystem;
   sRigth varchar(50),
   isAxiom smallint not null,
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, num)
  );   
 DELETE FROM pPost;
 INSERT INTO pPost VALUES(1,'base','Const2','#|','',1,1,' f(x) = 2');

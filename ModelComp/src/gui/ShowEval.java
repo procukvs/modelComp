@@ -174,18 +174,26 @@ public class ShowEval extends JPanel {
 	private String testInitial() {
 		String sInit = tInit.getText();
 		String noAlfa = StringWork.isAlfa(main, sInit);
+		if (type.equals("Machine")) noAlfa = StringWork.isAlfa(main + "_", sInit);
 		if(!noAlfa.isEmpty())
 			noAlfa = "Вхідне слово " + sInit + " містить символи " + noAlfa + " що не належать основному алфавіту !"; 
 		return noAlfa;
 	}
 	
 	public Object getArguments() {
-		if(type.equals("Recursive") || type.equals("Computer")|| model.getIsNumeric()){
+		if(type.equals("Recursive") || type.equals("Computer")){
 			int[] arg = new int[rank];
 			for(int i=0; i < rank; i++)  arg[i] = new Integer(tParam[i].getText());
 			return arg;
 		} 
-		else return tInit.getText();
+		else if (model.getIsNumeric()) {
+			String input = "";
+			for (int i = 0; i < rank; i++) {
+				if (i> 0) input = input + "#";
+				input = input + StringWork.toInternal(new Integer(tParam[i].getText()));		
+			}
+			return input;
+		} else return tInit.getText();
 	}
 	
 	public int getNodef() { 
@@ -224,6 +232,7 @@ public class ShowEval extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			String sInit = tInit.getText();
 			String noAlfa = StringWork.isAlfa(main, sInit);
+			if (type.equals("Machine")) noAlfa = StringWork.isAlfa(main + "_", sInit);
 			//System.out.println("init=" + sInit+ " main="+main + " noAlfa="+noAlfa);
 			tResult.setText("");
 			tStep.setText("");

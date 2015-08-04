@@ -1,6 +1,7 @@
 package main;
 
 import java.util.*;
+
 import db.*;
 import file.*;
 
@@ -139,6 +140,8 @@ public class Computer extends Model {
 		if (sl.size() == nodef + 2) text = "Невизначено"; else text = "" + r;
 		return text;
 	}
+
+	public int takeCountStep(ArrayList sl, int nodef) { return sl.size()-2;}
 	
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {
 		ArrayList data = new ArrayList();

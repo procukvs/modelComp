@@ -77,19 +77,19 @@ public class ShowCommand extends JDialog  {
 	class LsYes implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			command = showRule.getCommand();
-			if (type.equals("Post")){
-				command = showRule.getCommand();
-				ArrayList <String> mes = ((Derive)command).iswfCommand((Post)model);
-				if (mes.size() == 0) hide();
-				else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
-				
-			} else {
+			//if (type.equals("Post")){
+			//	command = showRule.getCommand();
+			//	ArrayList <String> mes = ((Derive)command).iswfCommand((Post)model);
+			//	if (mes.size() == 0) hide();
+			//	else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
+			//} else {
 				ArrayList <String> mes = showRule.testAllCommand();
 				if (mes.size() == 0) {
 					command = showRule.getCommand();
 					hide();
 				} else JOptionPane.showMessageDialog(ShowCommand.this,StringWork.transferToArray(mes)); 
-			}	
+			//}	
+			//showRule.removeMain();
 		}	
 	}
 	class LsCancel implements ActionListener  {
@@ -97,6 +97,7 @@ public class ShowCommand extends JDialog  {
 			//	JOptionPane.showMessageDialog(ShowCommand.this,"Cancel !");
 			command = null;
 			hide();
+			//showRule.removeMain();
 		}	
 	}
 	
@@ -105,7 +106,8 @@ public class ShowCommand extends JDialog  {
 			Recursive r = (Recursive)model;
 			Function f = (Function)showRule.getCommand();
 			//System.out.println(f.getName() + " ...." + f.gettxBody());
-			showRule.lTesting.setText(r.fullAnalys(f.getName(), f.gettxBody()));
+			//showRule.lTesting.setText(r.fullAnalys(f.getName(), f.gettxBody()));
+			showRule.setLTesting(r.fullAnalys(f.getName(), f.gettxBody()));
 		}
 	}
 	
@@ -143,6 +145,7 @@ public class ShowCommand extends JDialog  {
 		if (showTree != null) mainBox.remove(showTree);
 		test.setVisible(type.equals("Recursive"));
 		structure.setVisible(type.equals("Recursive"));
+		//System.out.println("setCommand: " + type + " " + what + " " + id); 
 		showRule.setRule(type, model, id, what);
 		pack();
 	}
