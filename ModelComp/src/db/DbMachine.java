@@ -408,55 +408,59 @@ public class DbMachine {
 		int idIns = getIdMachine(ins);
 		int maxCom = mach.findMaxNumber();
 		String res = "";
+		int i;
 		boolean first = true;
 		if (idIns > 0) {
 			ArrayList <String> insSt = getAllState(idIns);
 			ArrayList <Integer> insId = getAllId(idIns);
 			String[] newSt = mach.newArState(insSt.size());
 			ResultSet rs;
-			try {
-				st= db.conn.createStatement();
-				db.conn.setAutoCommit(false);
-				try{
-					int idCom, idComN;
-					String state, stateN;
-					String comm = ""; 
-					sql = "select id, sState, txComm from tProgram where idModel = " + idIns + " order by id" ;
-					db.s.execute(sql);
-				    rs = db.s.getResultSet();
-				    while((rs!=null) && (rs.next())) {
-				    	idCom = rs.getInt(1); state = rs.getString(2); comm = rs.getString(3);
-				    	idComN = findInArrayI(insId,idCom) + maxCom + 1;
-				    	stateN = newSt[findInArrayS(insSt,state)];
-				    	if(first){
-				    		comm = ins + " " + comm; first = false;
-				    	}
-				    	else comm = ins.charAt(0) + " " + comm;
-				    	sql = "insert into tProgram values(" + mach.id + "," + idComN + ",'" + stateN + "','" + comm + "')"; 
-				    	st.execute(sql);
-				    }	
-				    sql = "select id, sIn, sOut, sNext, sGo from tMove where idModel = " + idIns ;
-					db.s.execute(sql);
-				    rs = db.s.getResultSet();
-				    while((rs!=null) && (rs.next())) {
-				    	idCom = rs.getInt(1); state = rs.getString(4);
-				    	idComN = findInArrayI(insId,idCom) + maxCom + 1;
-				    	stateN = newSt[findInArrayS(insSt,state)];
-				    	sql = "insert into tMove values(" + mach.id + "," + idComN + ",'" + rs.getString(2) + "','"
+			if(testingNewState(newSt)){
+				try {
+					st= db.conn.createStatement();
+					db.conn.setAutoCommit(false);
+					try{
+						int idCom, idComN;
+						String state, stateN;
+						String comm = "";
+						sql = "select id, sState, txComm from tProgram where idModel = " + idIns + " order by id" ;
+						db.s.execute(sql);
+						rs = db.s.getResultSet();
+						while((rs!=null) && (rs.next())) {
+							idCom = rs.getInt(1); state = rs.getString(2); comm = rs.getString(3);
+							idComN = findInArrayI(insId,idCom) + maxCom + 1;
+							stateN = newSt[findInArrayS(insSt,state)];
+							if(first){
+								comm = ins + " " + comm; first = false;
+							}
+							else comm = ins.charAt(0) + " " + comm;
+							sql = "insert into tProgram values(" + mach.id + "," + idComN + ",'" + stateN + "','" + comm + "')"; 
+							st.execute(sql);
+						}	
+						sql = "select id, sIn, sOut, sNext, sGo from tMove where idModel = " + idIns ;
+						db.s.execute(sql);
+						rs = db.s.getResultSet();
+						while((rs!=null) && (rs.next())) {
+							idCom = rs.getInt(1); state = rs.getString(4);
+							idComN = findInArrayI(insId,idCom) + maxCom + 1;
+							stateN = newSt[findInArrayS(insSt,state)];
+							sql = "insert into tMove values(" + mach.id + "," + idComN + ",'" + rs.getString(2) + "','"
 				    					+ rs.getString(3) + "','" + stateN + "','" + rs.getString(5) + "')"; 
-				    	st.execute(sql);			    	
-				    } 
+							st.execute(sql);			    	
+						} 
 				   // idIns = idIns/0;
-					db.conn.commit();
-				} catch (Exception e) {     //SQLException e
-					System.out.println("ERROR: insertMachine: mach = " + mach.id + " " + ins);
-					System.out.println(">>> ERROR: editState: " + e.getMessage());
-					res = "ERROR: insertMachine: mach = " + mach.id + " " + ins + " " + e.getMessage();
-					db.conn.rollback();
-				} 
-				db.conn.setAutoCommit(true);
-			}	
-			catch (Exception e) { System.out.println(e.getMessage());}				
+						db.conn.commit();
+					} catch (Exception e) {     //SQLException e
+						System.out.println("ERROR: insertMachine: mach = " + mach.id + " " + ins);
+						res = "ERROR: insertMachine: mach = " + mach.id + " " + ins + " " + e.getMessage();
+						db.conn.rollback();
+					}
+					db.conn.setAutoCommit(true);
+				}	
+				catch (Exception e) { System.out.println(e.getMessage());}
+			}
+			else res = "insertMachine: В машині " + mach.name + 
+					    " дуже великі стани. НЕМОЖЛИВО побудувати стани для вставляємої машини !";
 		}
 		else res = "insertMachine: Не знайдено машину з іменем " + ins + "!" ;
 		return res;
@@ -481,23 +485,6 @@ public class DbMachine {
 		return res;	
 	}
 	
-	
-	// вибирає всі номера станів машини id
-	private ArrayList <Integer> getAllId(int id){
-		ArrayList <Integer> idAr = new ArrayList();
-		sql = "select id from tProgram where idModel = " + id + " order by id";
-		try{ 
-			db.s.execute(sql);
-		    ResultSet rs = db.s.getResultSet();
-		    while((rs!=null) && (rs.next())) {
-					idAr.add(rs.getInt(1));
-		    } 
-		}catch (Exception e){
-			System.out.println("ERROR: DbMachine: getAllId :" + sql);
-			System.out.println(">>> " + e.getMessage());
-		}
-		return idAr;
-	}
 	
 	// вибирає всі стани, що використовуються в машині id
 	private ArrayList <String> getAllState(int id){
@@ -536,6 +523,30 @@ public class DbMachine {
 		return stAr;
 	}
 	
+	private boolean testingNewState(String[] newSt){
+		boolean res = true;
+		for(int i = 0; i < newSt.length; i++)
+			if (newSt[i].equals("@00")) res = false;
+		return res;
+	}
+	
+	// вибирає всі номера станів машини id
+	private ArrayList <Integer> getAllId(int id){
+		ArrayList <Integer> idAr = new ArrayList();
+		sql = "select id from tProgram where idModel = " + id + " order by id";
+		try{ 
+			db.s.execute(sql);
+		    ResultSet rs = db.s.getResultSet();
+		    while((rs!=null) && (rs.next())) {
+					idAr.add(rs.getInt(1));
+		    } 
+		}catch (Exception e){
+			System.out.println("ERROR: DbMachine: getAllId :" + sql);
+			System.out.println(">>> " + e.getMessage());
+		}
+		return idAr;
+	}
+
 	private int findInArrayS(ArrayList<String> al, String st) {
 		int i = 0;
 		int j = -1;
@@ -553,6 +564,7 @@ public class DbMachine {
 		}
 		return j;
 	}
+	
 	/*
 	private ArrayList <State> getAllStates(int mach) {
 		ArrayList <State> states = new ArrayList();

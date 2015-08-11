@@ -1,13 +1,12 @@
 package main;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+//import java.sql.DriverManager;
+//import java.sql.SQLException;
+import java.text.*;
 import java.util.*;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import file.OutputText;
+import file.*;
 import gui.*;
 import db.*;
 
@@ -26,6 +25,7 @@ public class Post extends Model {
 	
 	public Post(int id, String name) {
 		super(id,name);
+		isMulty = Parameters.getPostVar().equals("duplicate");
 	}
 
 	//-----------------------------------------------
@@ -39,6 +39,7 @@ public class Post extends Model {
 	public void setAdd(String add) {this.add = add; }
 	public void setIsNumeric(boolean isNumeric) {this.isNumeric = isNumeric; }
 	public void setRank(int rank){this.rank = rank;}
+	//public void setIsMulty(boolean isMulty) {this.isMulty = isMulty;} 
 	//----------------------------------------------
 	
 	//-----work DB ------- 

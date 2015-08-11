@@ -144,15 +144,21 @@ public class DbPost {
 		return res;
 	}	
 	
-	public void newDerive(int post, Derive rule) {
+	public void newDerive(Post post, Derive rule) {
+		int id = post.id;
+		int maxNum = post.findMaxNumber();
 		try {
 			db.conn.setAutoCommit(false);
 			try{
 				int isAxiom = (rule.getisAxiom()?1:0); 
-				sql = "update pDerive set num = num+1" + "	where idModel = " + post + " and num >= " + rule.getNum();
-				db.s.execute(sql);	 
-				sql = "insert into pDerive values(" + post + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
+				//sql = "update pDerive set num = num+1" + "	where idModel = " + post + " and num >= " + rule.getNum();
+				for (int i = maxNum; i >= rule.getNum(); i--){
+					sql = "update pDerive set num = num+1" + "	where idModel = " + id + " and num = " + i;
+					db.s.execute(sql);
+				}	
+				sql = "insert into pDerive values(" + id + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
 				 		+ rule.getsRigth() + "'," + isAxiom + ",'" + rule.gettxComm() + "')";
+				//System.out.println("newDerive2: " + sql );
 				db.s.execute(sql);
 				db.conn.commit();
 			}	catch (Exception e) {

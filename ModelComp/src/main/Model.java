@@ -3,7 +3,7 @@ import java.util.*;
 
 import db.*;
 import file.*;
-import gui.ShowForm;
+import gui.*;
 
 public class Model {
 	public int id;

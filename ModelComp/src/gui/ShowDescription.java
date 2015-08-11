@@ -186,6 +186,7 @@ public class ShowDescription extends JPanel {
 		txtFin.setVisible(isVisible);
 		sFin.setVisible(isVisible);
 	}
+	
 	private void showModel() {
 		sName.setText(model.name);
 		txtNumb.setText("Номер " + model.id);
@@ -221,7 +222,7 @@ public class ShowDescription extends JPanel {
 			String name = sName.getText();
 			String text="";
 			boolean go = true;
-			//System.out.println(".." + com + "..");
+			//System.out.println("ShowDescription:LssName.." + name + "..old= " + model.name);
 			if (model == null) showEmpty();
 			else {
 				if(!name.equals(model.name)) {
@@ -231,8 +232,9 @@ public class ShowDescription extends JPanel {
 						text = Model.title(type, 2) + " з іменем " + name + " вже існує !";
 					if(text.isEmpty()) {
 						model.name = name;
+						//System.out.println("ShowDescription:LssName..name=" + name + " model.name=" + model.name);
 						db.editModel(type,model);
-						//System.out.println("name=" + name + " model.name=" + model.name);
+						
 						showMain.showModel(type, model.id);
 						if (type.equals("Machine")) sInit.requestFocus();
 						else sMain.requestFocus();

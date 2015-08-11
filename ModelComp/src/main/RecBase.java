@@ -1,8 +1,8 @@
 package main;
 
-import java.util.HashMap;
+import java.util.*;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.*;
 
 public class RecBase extends RecBody {
 	String name;
@@ -16,6 +16,7 @@ public class RecBase extends RecBody {
 		case 'a': wh = 1;
 		}
 	}
+	public boolean usingName(String name) {return false;}
 	public String setRank(String init, HashMap <String, RecBody> map) {
 		if (b == 0) rank = 1; else rank = b;
  		return "";

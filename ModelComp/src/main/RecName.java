@@ -20,6 +20,8 @@ public class RecName extends RecBody {
 	
 	public String toTest(){return "<Name:" + rank + ":" + name + ">";} 
 	
+	public boolean usingName(String name1) { return name1.equals(name);}
+	
 	public String setRank(String init, HashMap <String, RecBody> map) {
 		String st = "";
 		if (rank == 0) {

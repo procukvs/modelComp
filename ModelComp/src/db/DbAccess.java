@@ -311,6 +311,7 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.editAlgorithm((Algorithm)model); break;
 		case "Machine" : dbMach.editMachine((Machine)model); break;
 		case "Post" : dbPost.editPost((Post)model); break;
+		case "Recursive": dbRec.editRecursive((Recursive)model); break;
 		}	
 	}
 	public int newModel(String type) {
@@ -366,10 +367,10 @@ public class DbAccess {
 	
 	public void newCommand(String type, Model model, Command cmd){
 		switch(type){
-		case "Computer" : dbComp.newInstruction(model.id, (Instruction)cmd); break;
-		case "Algorithm" : dbAlgo.newRule(model.id, (Rule)cmd); break;
+		case "Computer" : dbComp.newInstruction((Computer)model, (Instruction)cmd); break;
+		case "Algorithm" : dbAlgo.newRule((Algorithm)model, (Rule)cmd); break;
 		case "Machine": dbMach.newState((Machine)model, (State)cmd); break;
-		case "Post" : dbPost.newDerive(model.id, (Derive)cmd); break;
+		case "Post" : dbPost.newDerive((Post)model, (Derive)cmd); break;
 		case "Recursive" : dbRec.newFunction(model.id, (main.Function)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
@@ -381,6 +382,7 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.deleteRule(idModel, (Rule)cmd); break;
 		case "Machine": dbMach.deleteState(idModel, id); break;
 		case "Post" : dbPost.deleteDerive(idModel, (Derive)cmd); break;
+		case "Recursive": dbRec.deleteFunction(idModel, id); break;	
 		default: System.out.println(">>> Not realise deleteCommand for: " + type + "!");
 		}
 	}

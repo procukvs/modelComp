@@ -1,8 +1,8 @@
 package main;
 
-import java.util.HashMap;
+import java.util.*;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.*;
 
 public class RecSolve extends RecBody {
 	RecBody g;
@@ -19,6 +19,8 @@ public class RecSolve extends RecBody {
 	public String toTest(){
 		return "<Solve:" + rank + ":" +  g.toTest() + "," + max + ">";
 	} 
+	
+	public boolean usingName(String name) { return g.usingName(name);}
 	
 	public String setRank(String init, HashMap <String, RecBody> map) {
 		String st = g.setRank(init, map);

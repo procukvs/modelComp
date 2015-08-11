@@ -263,6 +263,7 @@ public class ShowRule extends JPanel {
 			mainBox.add(rigthBox);
 			mainBox.add(checkEnd);
 			
+			
 			if (id == 0) ruleA = new Rule(model.program.size(),"","",false,"====",idCom);
 			else ruleA = (Rule)model.program.get( model.findCommand(id));
 			if (isEdit) state.setText("" + ruleA.getNum());
@@ -282,23 +283,25 @@ public class ShowRule extends JPanel {
 		case "Post":
 			Derive rule;
 			post = (Post)model;
-	
-			mainBox.add(checkAxiom);
-			mainBox.add(leftBox);
-			mainBox.add(rigthBox);
-			if (id == 0) rule = new Derive(model.program.size()+1,false,"","","====",idCom);
+			//System.out.println("setRule: model.program.size() = " + model.program.size()); 	
+			if (id == 0) rule = new Derive(model.program.size(),false,"","","====",idCom);
 			else rule =  (Derive)model.program.get( model.findCommand(id)); 
 			if (isEdit) state.setText("" + rule.getNum());
 			else state.setText("" + (rule.getNum()+1));
-		
+						
 			checkAxiom.setSelected(rule.getisAxiom());
 			labelLeft.setText("Ліва частина правила");
 			sLeft.setText(rule.getsLeft());
-			labelLeft.setVisible(!rule.getisAxiom());
-			sLeft.setVisible(!rule.getisAxiom());
+			//labelLeft.setVisible(!rule.getisAxiom());
+			//sLeft.setVisible(!rule.getisAxiom());
 			if(rule.getisAxiom()) labelRigth.setText("Аксіома");
 			else labelRigth.setText("Права частина правила");
 			sRigth.setText(rule.getsRigth());
+			
+			mainBox.add(checkAxiom);
+			if (!rule.getisAxiom()) mainBox.add(leftBox);
+			mainBox.add(rigthBox);
+			
 			sComm.setText(rule.gettxComm());
 			comAlfa = StringWork.isAlfa("",post.main);
 			comAlfa = comAlfa + StringWork.isAlfa(comAlfa,post.add);
@@ -335,7 +338,7 @@ public class ShowRule extends JPanel {
 			mainBox.add(reg2Box);
 			mainBox.add(nextBox);
 		
-			if (id == 0) inst = new Instruction(model.program.size()+1,"Z",1,0,0,"====",idCom);
+			if (id == 0) inst = new Instruction(model.program.size(),"Z",1,0,0,"====",idCom);
 			else inst =  (Instruction)model.program.get( model.findCommand(id));
 			if (isEdit) state.setText("" + inst.getNum());
 			else state.setText("" + (inst.getNum()+1));

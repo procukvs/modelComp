@@ -2,7 +2,7 @@ package main;
 
 import java.util.*;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.*;
 
 public class RecSuper extends RecBody {
 	RecBody f;
@@ -35,6 +35,14 @@ public class RecSuper extends RecBody {
 		}
 		return "<Super:" + rank + ":" + f.toTest() + ",[" + st + "]>";
 	} 
+	
+	public boolean usingName(String name) {
+		boolean res = f.usingName(name);
+		if (af != null){
+			for(int i = 0; i < af.size(); i++)	res = res || af.get(i).usingName(name);
+		}
+		return res;
+	}
 	
 	
 	public String setRank(String init, HashMap <String, RecBody> map) {

@@ -19,6 +19,10 @@ public class RecPrime extends RecBody {
 		return "<Prime:" + rank + ":" + g.toTest() + "," + h.toTest() + ">";
 	} 
 	
+	public boolean usingName(String name) {
+		return g.usingName(name) || h.usingName(name);
+	}
+	
 	public String setRank(String init, HashMap <String, RecBody> map) {
 		String st = h.setRank(init, map);
 		if(!st.isEmpty())rank = 0; else rank = h.rank-1;

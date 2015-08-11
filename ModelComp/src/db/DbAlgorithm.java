@@ -213,20 +213,25 @@ public class DbAlgorithm {
 	}
 	*/
 	
-	public void newRule(int algo, Rule rule) {
+	public void newRule(Algorithm algo, Rule rule) {
+		int id = algo.id;
+		int maxNum = algo.findMaxNumber();
 		try {
 			db.conn.setAutoCommit(false);
 			try{
 				int isEnd = (rule.getisEnd()?1:0); 
-				sql = "update mRule set num = num+1" + "	where idModel = " + algo + " and num >= " + rule.getNum();
-				db.s.execute(sql);	 
-				sql = "insert into mRule values(" + algo + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
+				//sql = "update mRule set num = num+1" + "	where idModel = " + algo + " and num >= " + rule.getNum();
+				for (int i = maxNum; i >= rule.getNum(); i--){
+					sql = "update mRule set num = num+1" + "	where idModel = " + id + " and num = " + i;
+					db.s.execute(sql);
+				}	
+				sql = "insert into mRule values(" + id + "," + rule.getId() + "," + rule.getNum() +	",'" + rule.getsLeft() + "','"
 				 		+ rule.getsRigth() + "'," + isEnd + ",'" + rule.gettxComm() + "')";
 				//System.out.println("newRule:" + sql + " : num = " + rule.getNum());
 				db.s.execute(sql);
 				db.conn.commit();
 			}	catch (Exception e) {
-				//System.out.println("ERROR:newRule: " + e.getMessage() );
+				System.out.println("ERROR:newRule: " + e.getMessage() );
 				db.conn.rollback();
 			}  
 			db.conn.setAutoCommit(true);

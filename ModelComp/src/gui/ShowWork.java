@@ -45,7 +45,7 @@ public class ShowWork extends JDialog {
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	ShowWork(ShowModels owner){
-		super(owner, "mWork");
+		super(owner, "Work");
 		setModal(true);
 		
 		//сформувати необхідні gui-елементи

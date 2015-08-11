@@ -147,6 +147,7 @@ public class ShowCommandButtons extends JPanel {
 				//if (row == 0) rule = new Rule("","",false,"====");
 				//else rule = (Rule)model.program.get(row-1);
 				//System.out.println("New.."+row + ".."+rule.show());
+				//System.out.println("ShowCommandButtons:LsAdd id = "+id);
 				showCommand.setCommand("Add", type, model, id);
 				showCommand.show();
 				command= showCommand.getCommand();
@@ -206,6 +207,14 @@ public class ShowCommandButtons extends JPanel {
 				int row1 = model.findCommand(row);
 				Command c = (Command) model.program.get(row1);                 //get(row1-1);
 				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar())} ;
+				if (type.equals("Recursive")){
+					Function f = (Function)c;
+					String using = ((Recursive)model).usingName(f.getName());
+					if (!using.isEmpty()){
+						text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar()),
+								"Функція використовується в означенні: ", "<" + using + ">."} ;
+					}
+				}
 				UIManager.put("OptionPane.yesButtonText", "Так");
 				UIManager.put("OptionPane.noButtonText", "Ні");	
 				int response = 

@@ -38,12 +38,12 @@ public class DbRecursive {
 		ArrayList program = new ArrayList();
 		sql = "select name, txBody,  txComm, id, idModel " +
 		      "  from fFunction where idModel = " + rec + " order by name";
-		boolean isConst;		
+		//boolean isConst;		
 		try{ 
 			db.s.execute(sql);
 	        ResultSet rs = db.s.getResultSet();
 	        while((rs!=null) && (rs.next())) {
-	        	isConst = rs.getBoolean(3);
+	        	//isConst = rs.getBoolean(3);
 	           	Function f = new Function(rs.getInt(4), rs.getString(1), rs.getString(2), rs.getString(3));
 	           //	System.out.println(f.toString());
 				program.add(f);
@@ -53,6 +53,21 @@ public class DbRecursive {
 		}
 		return program;
 	}	
+	
+	// модифікує відредагований набір
+	public void editRecursive(Recursive model) {
+		int rows;
+		try{
+			sql = "update fRecursive set name = '" + model.name + "', descr  = '" + model.descr + "' where id = " + model.id;
+			rows=db.s.executeUpdate(sql);
+			if (rows == 0)
+				System.out.println("editRecursive: Не змінило відредагований " + model.name + "!");
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: editRecursive :" + e.getMessage());
+		}
+	}		
+		
 	
 	// створює новий порожній набір функцій
 	public int newRecursive() {
@@ -174,4 +189,21 @@ public class DbRecursive {
 			System.out.println("ERROR: newFunction: " + e.getMessage() );
 		 }  			
 	}
+	
+	public void deleteFunction(int idModel, int id){
+		try {
+			db.conn.setAutoCommit(false);
+			try{	
+				//int cnt = cntRule(algo);
+				sql = "delete from fFunction where idModel = " + idModel + " and id = " + id;
+				db.s.execute(sql);	
+				db.conn.commit();
+			}	catch (Exception e) {
+				System.out.println("ERROR: deleteFunction: " + e.getMessage());
+				db.conn.rollback();
+			}  
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+	}	
 }

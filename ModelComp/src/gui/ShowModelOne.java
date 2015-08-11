@@ -91,6 +91,7 @@ public class ShowModelOne extends JPanel {
 		this.model = model;
 		this.type = type;
 		if (model == null) selected = 0; else selected = db.getOrder(type, model.name);
+		//if(type.equals("Post") && (model != null)) ((Post)model).setIsMulty((new Boolean(Parameters.getPostVar()));
 	   	description.setModel(type, model);
     	program.setModel(type, model);
     	r = db.getModelCount(type);

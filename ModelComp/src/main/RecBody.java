@@ -33,5 +33,8 @@ public class RecBody {
 	public String test(int[] arg, Recursive set, DefaultMutableTreeNode  root){
 		return "..";
 	}
+	// повертає true якщо в тілі функції викориcтовується функція name!!!
+	public boolean usingName(String name) { return false;}
+	
 }
 

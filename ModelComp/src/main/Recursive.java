@@ -1,13 +1,12 @@
 package main;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.*;
 import java.util.*;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.*;
 
-import db.DbAccess;
-import file.OutputText;
+import db.*;
+import file.*;
 
 public class Recursive extends Model {
 	public HashMap <String, RecBody> map;
@@ -214,6 +213,23 @@ public class Recursive extends Model {
 		return st;
 	}
 	
+	
+	// повертає список ВСІХ функцій, котрі використовують функцію name
+	public String usingName(String name) {
+		boolean first = true;
+		String res = "";
+		for(String nf:map.keySet()){
+			if (!nf.equals(name)){
+				RecBody rb = map.get(nf);
+				if ((rb != null) && (rb.usingName(name))){
+						if (!first) res = res + ", ";
+						first = false;
+						res = res + nf;
+				}
+			}	
+		}
+		return res;
+	}
 	//знаходить імя функції по замовчуванню : перше вільне з "base00", "base01",...
 	public String findName(String base){
 		int i = 0;

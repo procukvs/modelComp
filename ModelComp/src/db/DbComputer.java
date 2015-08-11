@@ -9,6 +9,7 @@ public class DbComputer {
 	private DbAccess db;
 	private String sql;
 	private  ResultSet rs;
+	private Statement st; 
 	private Computer model; 
 	
 	DbComputer(DbAccess db){
@@ -171,16 +172,21 @@ public class DbComputer {
 		return cnt;
 	}		
 	
-	public void newInstruction(int comp, Instruction inst) {
+	public void newInstruction(Computer comp, Instruction inst) {
+		int id = comp.id;
+		int maxNum = comp.findMaxNumber();
 		try {
 			db.conn.setAutoCommit(false);
 			try{
-				sql = "update rInstruction set num = num+1" + "	where idModel = " + comp + " and num >= " + inst.getNum();
-				db.s.execute(sql);	 
-				sql = "insert into rInstruction values(" + comp + "," + inst.getId() + "," + inst.getNum() +	",'" + inst.getCod() + "',"
+				//sql = "update rInstruction set num = num+1" + "	where idModel = " + id + " and num >= " + inst.getNum();
+				for (int i = maxNum; i >= inst.getNum(); i--){
+					sql = "update rInstruction set num = num+1" + "	where idModel = " + id + " and num = " + i;
+					db.s.execute(sql);
+				}	
+				sql = "insert into rInstruction values(" + id + "," + inst.getId() + "," + inst.getNum() +	",'" + inst.getCod() + "',"
 				 		+ inst.getReg1() + "," + inst.getReg2() + "," + inst.getNext() + ",'" + inst.gettxComm() + "')";
 				db.s.execute(sql);
-				sql = "update rInstruction set next = next+1 " + "	where idModel = " + comp + " and cod = 'J' and next >= " + inst.getNum();
+				sql = "update rInstruction set next = next+1 " + "	where idModel = " + id + " and cod = 'J' and next >= " + inst.getNum();
 				db.s.execute(sql);	
 				db.conn.commit();
 			}	catch (Exception e) {
@@ -232,8 +238,12 @@ public class DbComputer {
 		String res = "";
 		int idIns = getIdComputer(ins);
 		int k = getSizeProgram(idIns);
+		int idCom, num,reg1,reg2,next;
+		String cod, comm; 
+		boolean first = true;
 		if ((idIns > 0) && (k>0)){
 			try {
+				st= db.conn.createStatement();
 				db.conn.setAutoCommit(false);
 				try{	
 					
@@ -241,12 +251,26 @@ public class DbComputer {
 					db.s.execute(sql);	
 					sql = "update rInstruction set next = next+ " + k + "	where idModel = " + idModel + " and cod = 'J' and next > " + where;
 					db.s.execute(sql);	
-					//sql = "delete from rInstruction "  + " where idModel = " + comp + " and id = " + inst.getId();
-					//System.out.println("deteDerive id = " + rule.getId() + " num = " + rule.getNum());
+			
+					sql = "select id, num, cod, reg1, reg2, next, txComm from rInstruction where idModel = " + idIns + " order by num" ;
+					db.s.execute(sql);
+					rs = db.s.getResultSet();
+					while((rs!=null) && (rs.next())) {
+						idCom = rs.getInt(1) + maxId; 
+						num = rs.getInt(2) + where; 
+						cod = rs.getString(3); reg1 = rs.getInt(4); reg2 = rs.getInt(5); next = rs.getInt(6);
+						comm = rs.getString(7);
+						if(first){
+							comm = ins + " " + comm; first = false;
+						}
+						else comm = ins.charAt(0) + " " + comm;
+						sql = "insert into rInstruction values(" + idModel + "," + idCom + "," + num + ",'" + cod + "'," +
+						                                         reg1 + "," + reg2 + "," + next + ",'" + comm + "')"; 
+						st.execute(sql);
+					}	
+					//sql = "insert into rInstruction select " + idModel + ",id+" + maxId + ",num+" + where + ", cod, reg1, reg2, next, txComm "+ 
+					//					" from  rInstruction where idModel = " + idIns;
 					//db.s.execute(sql);
-					sql = "insert into rInstruction select " + idModel + ",id+" + maxId + ",num+" + where + ", cod, reg1, reg2, next, txComm "+ 
-							" from  rInstruction where idModel = " + idIns;
-					db.s.execute(sql);	
 					sql = "update rInstruction set next = next+ " + where + 
 							" where idModel = " + idModel + " and cod = 'J' and num > " + where + " and num < " + (where + k+1);
 					db.s.execute(sql);	

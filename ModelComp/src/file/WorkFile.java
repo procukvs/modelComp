@@ -673,7 +673,7 @@ public class WorkFile {
 				line = in.input(); nextChar = 1; next = ' ';
 				if (line != null) {
 					nLine++;
-					//System.out.println("*" + nLine + "*" + line + "*");
+					//System.out.println("getChar:*" + nLine + "*" + line + "*");
 					line = line + '\n'; next = line.charAt(0); 
 				}
 				//if ((line != null) && (!line.isEmpty())) next = line.charAt(0); 
