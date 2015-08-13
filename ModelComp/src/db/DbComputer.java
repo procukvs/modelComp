@@ -213,12 +213,21 @@ public class DbComputer {
 	public void deleteInstruction(int comp, Instruction inst){
 		try {
 			db.conn.setAutoCommit(false);
-			try{	
+			try{
+				int cnt = getSizeProgram(comp);
 				sql = "delete from rInstruction "  + " where idModel = " + comp + " and id = " + inst.getId();
 				//System.out.println("deteDerive id = " + rule.getId() + " num = " + rule.getNum());
 				db.s.execute(sql);
-				sql = "update rInstruction set num = num-1 " + "	where idModel = " + comp + " and num >= " + inst.getNum();
-				db.s.execute(sql);	
+				//sql = "update rInstruction set num = num-1 " + "	where idModel = " + comp + " and num >= " + inst.getNum();
+				//db.s.execute(sql);	
+				
+				// п≥дт€гнути правила що залишилис€ 
+				for(int r = inst.getNum()+1; r <= cnt; r++) {
+					sql = "update rInstruction set num = num-1" + "	where idModel = " + comp + " and num = " + r;
+					//System.out.println("delete Instruction 2:" + sql);
+					db.s.execute(sql);	 
+				}
+				
 				sql = "update rInstruction set next = next-1 " + "	where idModel = " + comp + " and cod = 'J' and next > " + inst.getNum();
 				db.s.execute(sql);	
 				db.conn.commit();
@@ -321,6 +330,8 @@ public class DbComputer {
 			System.out.println(">>> " + e.getMessage());
 		}
 		return res;	
-	}	
+	}
+	
+	
 	
 }

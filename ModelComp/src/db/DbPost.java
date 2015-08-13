@@ -187,11 +187,21 @@ public class DbPost {
 		try {
 			db.conn.setAutoCommit(false);
 			try{	
+				int cnt = cntDerive(post);
 				sql = "delete from pDerive "  + " where idModel = " + post + " and id = " + rule.getId();
 				//System.out.println("deteDerive id = " + rule.getId() + " num = " + rule.getNum());
 				db.s.execute(sql);
-				sql = "update pDerive set num = num-1 " + "	where idModel = " + post + " and num >= " + rule.getNum();
-				db.s.execute(sql);	 
+				//sql = "update pDerive set num = num-1 " + "	where idModel = " + post + " and num >= " + rule.getNum();
+				//db.s.execute(sql);
+				// п≥дт€гнути правила що залишилис€ 
+				for(int r = rule.getNum()+1; r <= cnt; r++) {
+					sql = "update pDerive set num = num-1" + "	where idModel = " + post + " and num = " + r;
+					//System.out.println("delete Derive 2:" + sql);
+					db.s.execute(sql);	 
+				}
+				
+				
+				
 				db.conn.commit();
 			}	catch (Exception e) {
 				System.out.println("ERROR: deleteDerive: " + e.getMessage());
@@ -236,5 +246,18 @@ public class DbPost {
 		catch (Exception e) { System.out.println(e.getMessage());}	
 		//System.out.println("dbPost.addPost: nameIn " + namein  + " name "  + name +  " id " + cnt); 
 		return cnt;
-	}		
+	}	
+	
+	private int cntDerive(int post) {
+		int cnt = 0;
+    	try{ 	
+    		sql = "select count(*) from pDerive where idModel = " + post;
+    		db.s.execute(sql);
+    		rs = db.s.getResultSet();
+    		if((rs!=null) && (rs.next()))cnt = rs.getInt(1);
+    	}catch (Exception e){
+    		System.out.println("ERROR: cntDerive: " + e.getMessage());
+       	}
+    	return cnt;
+	}
 }
