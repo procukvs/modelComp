@@ -20,7 +20,7 @@ public class Main {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!
 		showModels = new ShowModels(db);
 		//gui.setListener(gui);
-		System.out.println("Forming GUI-- version 2.1: " + Parameters.getRegime() + "..");
+		System.out.println("Forming GUI-- version 2.2: " + Parameters.getRegime() + "..");
 	    if (db.connectionDb("Model.db")) { 
 	  	   if (Parameters.getRegime().equals("teacher")) db.setParameters();
 	       	// після встановлення звязку з БД створюємо обробник запитів opr

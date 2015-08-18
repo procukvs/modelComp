@@ -244,6 +244,7 @@ public class DbMachine {
 			db.conn.setAutoCommit(false);
 			try{	
 				sql = "insert into tProgram values(" + mach.id + "," + st.getId() + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+				//System.out.println("newState 1: " + sql);
 				db.s.execute(sql);
 				for(int i = 0; i < st.getGoing().size(); i++) {
 					move = st.getGoing().get(i);
@@ -251,6 +252,7 @@ public class DbMachine {
 						if(i < allCh.length()) inCh = allCh.substring(i,i+1); else inCh = " ";
 					    sql = "insert into tMove values(" + mach.id + "," + st.getId() + ",'" + inCh + "','" + move.substring(3,4)
 					    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
+					    //System.out.println("newState 2: " + sql);
 					    db.s.execute(sql);	 
 					}
 				}
@@ -415,6 +417,8 @@ public class DbMachine {
 			ArrayList <Integer> insId = getAllId(idIns);
 			String[] newSt = mach.newArState(insSt.size());
 			ResultSet rs;
+			String where = formWhereInsert(mach.main + mach.add);
+			//for(i=0; i< insSt.size(); i++)  System.out.println("insertMashine === i= " + i + " s= " + insSt.get(i));
 			if(testingNewState(newSt)){
 				try {
 					st= db.conn.createStatement();
@@ -437,7 +441,8 @@ public class DbMachine {
 							sql = "insert into tProgram values(" + mach.id + "," + idComN + ",'" + stateN + "','" + comm + "')"; 
 							st.execute(sql);
 						}	
-						sql = "select id, sIn, sOut, sNext, sGo from tMove where idModel = " + idIns ;
+						sql = "select id, sIn, sOut, sNext, sGo from tMove where idModel = " + idIns  + where;
+						//System.out.println("insertMachine --tt : " + sql);
 						db.s.execute(sql);
 						rs = db.s.getResultSet();
 						while((rs!=null) && (rs.next())) {
@@ -508,7 +513,7 @@ public class DbMachine {
 		    	st = rs.getString(1);
 		    	if (!st.equals(inSt) && !st.equals(finSt)) 	stAr.add(st);
 		    }
-		    stAr.add(finSt);
+		  
 			sql = "select distinct sNext from tMove where idModel = " + id + " order by sNext" ;
 			db.s.execute(sql);
 		    rs = db.s.getResultSet();
@@ -516,6 +521,7 @@ public class DbMachine {
 		    	st = rs.getString(1);
 		       	if (findInArrayS(stAr,st) == -1) stAr.add(st);
 		    } 
+		    stAr.add(finSt);
 		}catch (Exception e){
 			System.out.println("ERROR: DbMachine : getAllState :" + sql);
 			System.out.println(">>> " + e.getMessage());
@@ -565,6 +571,21 @@ public class DbMachine {
 		return j;
 	}
 	
+	// формує умову для відбору переходів машини, що вставляється 
+	private String formWhereInsert(String com){
+		String wh = "";
+		String in = "(sIn = '_')";
+		String out = "(sOut = '_')";
+		for (int i=0; i < com.length(); i++){
+			char c = com.charAt(i);
+			in = in + " or (sIn = '" + c + "')";
+			out = out + " or (sOut = '" + c + "')";
+		}
+		wh = " and (" + in + ") and (" + out + ")"; 
+		return wh;
+	}
+		
+		
 	/*
 	private ArrayList <State> getAllStates(int mach) {
 		ArrayList <State> states = new ArrayList();

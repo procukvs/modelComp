@@ -15,7 +15,7 @@ public class State extends Command {
 	public String getState() { return state;}
 	public int getId() { return id;}
 	public ArrayList <String> getGoing() { return going;};
-	public String gettxComm() {return txComm;};
+	public String gettxComm() {return StringWork.trasferTxComm(txComm);}
 	
 	public String show(String alfa) {
 		String goSt = "";

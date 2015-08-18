@@ -190,5 +190,14 @@ public class StringWork {
 		}
 		return st;
 	}
+	
+	public static String trasferTxComm(String com){
+		String res = "";
+		for(int i=0; i < com.length(); i++ ){
+			if (com.charAt(i) == '\'') res = res + "\"";
+			else res = res + com.charAt(i);
+		}
+		return res;
+	}
 }
 
