@@ -23,6 +23,7 @@ public class ShowModelOne extends JPanel {
 		
 	private JLabel selection;
 	private JLabel section;
+	private JLabel version;
 	private ShowDescription description;
 	private ShowModelProgram program;
 	
@@ -48,7 +49,8 @@ public class ShowModelOne extends JPanel {
 		next.setMaximumSize(new Dimension(20,20));
 		JButton last = new JButton(">|");
 		last.setMaximumSize(new Dimension(20,20));
-		section = new JLabel("");  
+		version = new JLabel("2.3");  
+		section = new JLabel(""); 
 		
 		this.db = db; 
 		showMain = owner;
@@ -71,7 +73,8 @@ public class ShowModelOne extends JPanel {
 		  select.add(section);
 		  select.add(Box.createHorizontalStrut(15));
 		  section.setText(Parameters.getSection());
-		}  
+		} 
+		 select.add(version);
 		//-------------------------------------
 		Box mainBox = Box.createVerticalBox();
 		mainBox.add(program);

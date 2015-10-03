@@ -15,6 +15,7 @@ public class Computer extends Model {
 	//-------------------------
 	public int getRank() {return rank;}
 	public String getType() {return "Computer";}
+	public void setRank(int rank){this.rank = rank;}
 	//----------------------------------------------
 	
 	//-----work DB ------- 
@@ -188,7 +189,7 @@ public class Computer extends Model {
 		Instruction inst;
 		//if(out.open(name)) {
 		//	System.out.println("File " + name + " is open..");
-			if (!descr.isEmpty()) out.output("'" + descr);
+			if (!descr.isEmpty()) out.output("'" + descr); else out.output("'");
 			out.output("Computer " + this.name + " : " + this.rank + ";");
 			for (int i = 0; i < program.size(); i++){
 				inst = (Instruction)program.get(i);

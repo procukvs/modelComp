@@ -32,6 +32,7 @@ public class ShowModelButtons extends JPanel {
 	private Box fileBox;
 	private Box buttons;
 	private JLabel lSection;
+	//private JLabel lVersion;
 	//private JComboBox section;
 	//private String[] sectSet = {"base"};
   	
@@ -52,6 +53,7 @@ public class ShowModelButtons extends JPanel {
 		input = new JButton("¬вести алгоритм з файлу");
 		quit = new JButton("¬ийти");
 		lSection = new JLabel("base");
+		//lVersion = new JLabel("0.1");
 		//section = new JComboBox();
 		//section.setPrototypeDisplayValue("Family Ivanov");
 
@@ -67,6 +69,7 @@ public class ShowModelButtons extends JPanel {
 		// формуЇмо розм≥щенн€
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		fileBox = Box.createHorizontalBox();
+		//fileBox.add(lVersion);
 		fileBox.add(lSection);
 		fileBox.add(Box.createHorizontalStrut(15));
 		fileBox.add(file);

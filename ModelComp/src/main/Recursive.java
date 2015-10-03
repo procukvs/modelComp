@@ -174,7 +174,7 @@ public class Recursive extends Model {
 		Function f;
 		//if(out.open(name)) {
 		//	System.out.println("File " + name + " is open..");
-			if (!descr.isEmpty()) out.output("'" + descr);
+			if (!descr.isEmpty()) out.output("'" + descr); else out.output("'");
 			out.output("Recursive " + this.name);
 			for (int i = 0; i < program.size(); i++){
 				f = (Function)program.get(i);

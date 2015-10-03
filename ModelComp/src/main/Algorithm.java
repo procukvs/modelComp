@@ -211,7 +211,7 @@ public class Algorithm extends Model {
 		Rule r;
 		//if(out.open(name)) {
 		//	System.out.println("File " + name + " is open..");
-			if (!descr.isEmpty()) out.output("'" + descr);
+			if (!descr.isEmpty()) out.output("'" + descr); else out.output("'");
 			out.output("Algorithm " + this.name);
 			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
 			if (isNumeric) wr = wr + " Numerical " + rank + ";";

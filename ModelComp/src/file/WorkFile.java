@@ -103,7 +103,7 @@ public class WorkFile {
 		    getChar(); get();
 		    while((errorText.isEmpty()) && (lex != 10)){
 		   	  if (lex == 4) {txComm = valueLex; get();} 
-		   	  //System.out.println("0: type = "	+ type + " errorText = " + errorText + "!" + " lex= " + lex);
+		   	 //  System.out.println("0: type = "	+ type + " errorText = " + errorText + "!" + " lex= " + lex);
 			  if (lex == 1) {
 			   	type = valueLex; lex = 20;
 			   	switch (type){
@@ -348,6 +348,7 @@ public class WorkFile {
 			idSt++;
 			st = state(model,idSt);
 			if (st != null){
+				//System.out.println(",,,,,<<<<");
 				//System.out.println(st.show("_" + model.main + model.add + model.no));
 				model.program.add(st);
 			}
@@ -644,7 +645,7 @@ public class WorkFile {
 					}
 					exam(3, "ціле - номер наступної команди");
 					if (errorText.isEmpty()) {
-						reg2 = new Integer(valuePrev); exam (18,"символ )");
+						next = new Integer(valuePrev); exam (18,"символ )");
 					}
 				}
 				break;

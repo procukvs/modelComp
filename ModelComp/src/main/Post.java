@@ -285,7 +285,7 @@ public class Post extends Model {
 		Derive r;
 		//if(out.open(name)) {
 		//	System.out.println("File " + name + " is open..");
-			if (!descr.isEmpty()) out.output("'" + descr);
+			if (!descr.isEmpty()) out.output("'" + descr); else out.output("'");
 			out.output("System " + this.name);
 			wr = " Alphabet \"" + main + "\", \"" + add + "\";";
 			if (isNumeric) wr = wr + " Numerical " + rank + ";";
