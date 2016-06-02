@@ -288,7 +288,14 @@ public class ShowSteps extends JPanel {
 					{"Виведено","S","N"},
 					{"Попередньо виведене","S","N"}
 				}; break;
-				
+		case "Calculus" : 
+			info = new String[][]{
+					{"Крок","I","N"},
+					{"Тип","S","N"},
+					{"Операнди редукції","S","N"},
+					{"Результат","S","N"}
+				}; break;		
+			
 		case "Computer":
 			
 			int cnt = ((Computer)model).evalMaxReg() +3;
@@ -332,6 +339,7 @@ public class ShowSteps extends JPanel {
 		int [] w = null;
 		switch(type){
 		case "Algorithm" : w = new int[]{100,75,300,300}; break;
+		case "Calculus" : w = new int[]{25,50,325,375}; break;
 		case "Machine":  w = new int[]{75,350,350}; break;
 		case "Post":  w = new int[]{25,275,475}; break;
 		case "Computer":

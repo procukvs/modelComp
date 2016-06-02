@@ -18,6 +18,7 @@ public class ShowRule extends JPanel {
 	private Post post = null;
 	private Recursive recur = null;
 	private Computer comp = null;
+	private Calculus calc = null;
 
 	private int idCom = 0; 
 	private String comAlfa;
@@ -59,7 +60,13 @@ public class ShowRule extends JPanel {
 	private JTextField sBody;
 	private JTextField sComm;
 	private JTextField lTesting;
+	// ------ for Calculus ------
+	// .. містить номер виразу в списку виразів
+	// .. якщо новий то або останній в списку, або наступний за тим, на якому стояли !!
+	// .. dont editible!!
+	private int numLambda;
 	private Box bodyBox;
+
 			
 	ShowRule(ShowCommand owner) {
 		showCommand = owner;
@@ -228,6 +235,7 @@ public class ShowRule extends JPanel {
 	
 	public void setRule(String type, Model model, int id, String what) {
 		boolean isEdit = what.equals("Edit");
+		boolean isFunctional = type.equals("Recursive") || type.equals("Calculus");
 		this.model = model;
 		this.type = type;
 		this.what = what;
@@ -250,9 +258,9 @@ public class ShowRule extends JPanel {
 		mainBox.remove(reg1Box);
 		mainBox.remove(reg2Box);
 		mainBox.remove(nextBox);
-		mainBox.setVisible(!type.equals("Recursive"));
-		bodyBox.setVisible(type.equals("Recursive"));
-		lTesting.setVisible(type.equals("Recursive"));
+		mainBox.setVisible(!isFunctional);    //(!type.equals("Recursive"));
+		bodyBox.setVisible(isFunctional);     //(type.equals("Recursive"));
+		lTesting.setVisible(isFunctional);    //(type.equals("Recursive"));
 		//-------------------
 		
 		switch(type){
@@ -368,6 +376,27 @@ public class ShowRule extends JPanel {
 			lTesting.setText(f.geterrorText());
 			if (isEdit)	sBody.requestFocus(); else state.requestFocus();
 			break;
+		case "Calculus":
+			LambdaDecl ld;
+			//System.out.println("ShowRule:setRule " + what + " " + type + " " + id);
+			calc = (Calculus)model;
+			//System.out.println("ShowRule:setRule1 " + what + " " + type + " " + id);
+			state.setMaximumSize(new Dimension(100,20));
+			if (id==0) ld = calc.newLambdaDecl(null);
+			else ld = (LambdaDecl)model.program.get(calc.findCommand(id));
+			//System.out.println("ShowRule:setRule2 " + what + " " + type + " " + id);
+			if (isEdit) state.setText(ld.getName());
+			else state.setText(id==0?ld.getName():calc.findName(ld.getName()));
+			numLambda = ld.getNum();
+			if (!isEdit && (id != 0)) numLambda ++;
+			
+			
+			sBody.setText(ld.gettxBody());
+			sComm.setText(ld.gettxComm());
+			lTesting.setText(ld.geterrorText());
+			if (isEdit)	sBody.requestFocus(); else state.requestFocus();
+			break;		
+		
 		}
 	}
 	
@@ -424,7 +453,12 @@ public class ShowRule extends JPanel {
 			Derive com = new Derive(new Integer(state.getText()), 
 									checkAxiom.isSelected(),sLeft.getText(),sRigth.getText(),sComm.getText(),idCom);
 			mes = com.iswfCommand(post);
-			break;	
+			break;
+		case "Calculus":
+			String nameLam =state.getText();
+			if (!StringWork.isIdentifer(nameLam))
+				mes.add("Імя виразу " + nameLam + " не Ідентифікатор !");
+			break;
 		}
 		return mes;
 	}
@@ -463,6 +497,9 @@ public class ShowRule extends JPanel {
 		case "Recursive":
 			com = new Function (idCom, st, sBody.getText(),sComm.getText());
 			break;
+		case "Calculus":
+			com = new LambdaDecl (idCom, numLambda, st, sBody.getText(),sComm.getText());
+			break;
 		case "Computer":
 			int reg2 = 0;
 			int next = 0;
@@ -491,6 +528,15 @@ public class ShowRule extends JPanel {
 				break;
 			case "Recursive":
 				text = recur.testName(state.getText());
+				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
+				else  sBody.requestFocus();
+				break;
+			case "Calculus":
+				text= "";
+				if (what.equals("Add")){
+					text = calc.testName(state.getText());
+				//	System.out.println("ShowRule text " + text);
+				}
 				if (!text.isEmpty()) JOptionPane.showMessageDialog(ShowRule.this, text);	
 				else  sBody.requestFocus();
 				break;	

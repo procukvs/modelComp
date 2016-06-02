@@ -147,6 +147,7 @@ public class ShowModelTable extends JPanel {
 				break;
 			case "Post": col = 5; break;	
 			case "Recursive": col = 6; break;	
+			case "Calculus": col = 5; break;	
 			}
 			rule = (Integer)dbm.getValueAt(r,col);
 		}
@@ -214,6 +215,7 @@ public class ShowModelTable extends JPanel {
 		case "Algorithm" : w = new int[]{10,100,100,10,390,10,10}; break;
 		case "Post" : w = new int[]{10,10,100,100,390,10,10}; break;
 		case "Recursive" : w = new int[]{60, 10,10,10,170,350,10,10}; break;
+		case "Calculus" : w = new int[]{10,60, 10,190,340,10,10}; break;
 		case "Machine": 
 			if (model != null) {
 				Machine m = (Machine)model;
@@ -272,7 +274,17 @@ public class ShowModelTable extends JPanel {
 									{"Коментар","S","N"},
 									{"№","I","N"},
 									{"№Н","I","N"}
-								}; break;						
+								}; break;
+		case "Calculus" : 
+			info = new String[][]{
+				                    {"№В","I","N"},
+									{"Назва","S","N"},
+									{"Вірний","B","N"},
+									{"Тіло виразу","S","N"},
+									{"Коментар","S","N"},
+									{"№","I","N"},
+									{"№Н","I","N"}
+								}; break;														
 		case "Machine": 
 			int l;
 			String allS;

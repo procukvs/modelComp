@@ -112,7 +112,7 @@ public class ShowCommandButtons extends JPanel {
 		rename.setVisible(isVisible);
 		insert.setVisible(isVisible || comp);
 		see.setVisible(false);
-		eval.setVisible(rec);
+		eval.setVisible(rec  || type.equals("Calculus"));
 	}	
 	
 	public void setLookAndFeel(String className){
@@ -375,18 +375,20 @@ public class ShowCommandButtons extends JPanel {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
 				int row = table.selectedRule();
-				//System.out.println("ShowCommandButton ..Edit"+row);
-				if (row > 0){
-					Function f;
-					//recur = (Recursive)model;
-					f = (Function)model.program.get(model.findCommand(row));
-					//System.out.println("ShowCommandButton..LsEval " + f.getName() + "  iswf=" + f.getiswf()); 
-					if (f.getiswf()){
-						showWork.setModel(type, model);
-						showWork.setFunction(f);
-						showWork.show();
-					}	
-					  //JOptionPane.showMessageDialog(ShowCommandButtons.this,"обрахувати функцію " + f.getName() + ".");
+				//System.out.println("LsEval1" + row + type);
+				if (type.equals("Calculus")){
+					showWork.setModel(type, model);
+					showWork.show();
+				}  else	if (row > 0){
+					if (type.equals("Recursive")){
+						Function f;
+						f = (Function)model.program.get(model.findCommand(row));
+						if (f.getiswf()){
+							showWork.setModel(type, model);
+							showWork.setFunction(f);
+							showWork.show();
+						}	
+					} 
 				}
 			}
 		}	

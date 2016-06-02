@@ -147,7 +147,7 @@ public class ShowModelButtons extends JPanel {
 			add.setVisible(!isFile);
 			addBase.setVisible(!isFile);
 			delete.setVisible(!isFile);
-			work.setVisible(!isFile && !type.equals("Recursive"));
+			work.setVisible(!isFile && !type.equals("Recursive") && !type.equals("Calculus"));
 			//quit.setVisible(!isFile);
 		}	
 		

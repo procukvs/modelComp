@@ -163,7 +163,7 @@ public class ShowDescription extends JPanel {
 	public void setModel(String type,Model model) {
 		boolean isVisible = type.equals("Machine");
 		boolean isComputer = type.equals("Computer");
-		boolean isVisibleMany = !type.equals("Recursive");
+		boolean isVisibleMany = !type.equals("Recursive") && !type.equals("Calculus");
 		this.type = type;
 	    this.model = model;
 	  	txtAlgo.setText(Model.title(type, 2)); 

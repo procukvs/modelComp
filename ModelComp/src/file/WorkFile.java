@@ -112,9 +112,10 @@ public class WorkFile {
 			   	case "Machine" : model = machine(txComm); break;
 			   	case "System": model = post(txComm); break;
 			   	case "Recursive": model = recursive(txComm); break;
-			   	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
+			   	case "Calculus": model = calculus(txComm); break;
+			   	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";	
 			   	}
-			  } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
+			  } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";
 			  
 			  //System.out.println("1: type = "	+ type + " errorText = " + errorText + "!");
 			  if (errorText.isEmpty()) {
@@ -171,9 +172,10 @@ public class WorkFile {
 		    	case "Machine" : model = machine(txComm); break;
 		    	case "System": model = post(txComm); break;
 		    	case "Recursive": model = recursive(txComm); break;
-		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";	
+		    	case "Calculus": model = calculus(txComm); break;
+		    	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";	
 		    	}
-		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer !";
+		    } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";
 		    
 			if (errorText.isEmpty()) 
 				if (lex != 10) errorText = "Не знайдено кінця файлу ";
@@ -552,6 +554,70 @@ public class WorkFile {
 		else return null;
 	}		
 
+	private Calculus calculus(String txComm){
+		Calculus model = null;
+		LambdaDecl f;
+		int id = 0;
+		ArrayList functions = new ArrayList();
+		exam(20,"службове слово Calculus");
+		if (errorText.isEmpty())  exam(1, "ідентифікатор - імя набору виразів");
+		if (errorText.isEmpty()) {
+			model = new Calculus(0,valuePrev);
+			model.descr = txComm;
+			model.program = functions;
+		}
+		while ((errorText.isEmpty()) && (lex != 23)){
+			//   if (lex == 4) {txComm = valueLex; get();} 
+			id++;
+			f = lambdaDecl(id);
+			if (f != null) model.program.add(f);
+		}
+		if (errorText.isEmpty()) {
+			if (lex == 23){
+				get();
+				exam(1, "ідентифікатор - імя набору виразів");
+				if (errorText.isEmpty()) {
+					if (!(model.name.equals(valuePrev)))
+						errorText = "Заключне імя " + valuePrev  + " не співпадає з іменем набору виразів " + model.name + "!";
+				}
+			} else errorText = "Очікується службове слово end !";
+		}	
+		//if (errorText.isEmpty()) 
+		//	if (lex != 10) errorText = "Не знайдено кінця файлу ";
+		if (!errorText.isEmpty()) model = null; 
+		return model;
+	}
+
+	private LambdaDecl lambdaDecl(int id) {
+		String name = "", txBody = "";
+		String txComm = "";
+		int rank = 1;
+		if (lex == 4) {txComm = valueLex; get();}
+		name = valueLex;
+		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
+		exam(1, "ідентифікатор - імя виразу");
+		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
+		exam(16, "символ =");
+		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
+		/*
+		if (errorText.isEmpty()) {
+			if(lex == 3) rank = new Integer(valueLex);
+			exam(3, "натуральне число - арність функції");
+			if (errorText.isEmpty()) exam(16, "символ =");
+		}
+		*/
+		if (errorText.isEmpty()){
+		   while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){ // ; ' end eof
+			 txBody = txBody + valueLex; get(); 
+		   }  
+		   exam (13,"символ ;");
+		}
+		if (errorText.isEmpty())
+			return new LambdaDecl(id, id, name, txBody, txComm);
+		else return null;
+	}			
+	
+	
 	private Computer computer (String txComm) {
 		Computer model = null;
 		Instruction r;
@@ -711,6 +777,8 @@ public class WorkFile {
 					case "Numerical": lex = 22; break;
 					case "end": lex = 23; break;
 					case "Computer": if(type.equals("Computer"))lex = 20; break;
+					case "Recursive": if(type.equals("Recursive"))lex = 20; break;
+					case "Calculus": if(type.equals("Calculus"))lex = 20; break;
 					case "Machine": if(type.equals("Machine"))lex = 20; break;
 					case "Initial": if(type.equals("Machine"))lex = 24; break;
 					case "Final": if(type.equals("Machine"))lex = 25; break;
@@ -734,7 +802,7 @@ public class WorkFile {
 					case '-': getChar(); 
 						if (next == '>') {lex = 14; getChar();}	break;
 					case ':': if(type.equals("Machine") || type.equals("Recursive") || type.equals("Computer")) lex = 15; getChar(); break;
-					case '=': if(type.equals("Recursive")) lex = 16; getChar(); break;
+					case '=': if(type.equals("Recursive") ||type.equals("Calculus")) lex = 16; getChar(); break;
 					case '(': if(type.equals("Computer")) lex = 17; getChar(); break;
 					case ')': if(type.equals("Computer")) lex = 18; getChar(); break;
 					//case '\n':	

@@ -103,11 +103,17 @@ public class ShowCommand extends JDialog  {
 	
 	class LsTest implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			Recursive r = (Recursive)model;
-			Function f = (Function)showRule.getCommand();
-			//System.out.println(f.getName() + " ...." + f.gettxBody());
-			//showRule.lTesting.setText(r.fullAnalys(f.getName(), f.gettxBody()));
-			showRule.setLTesting(r.fullAnalys(f.getName(), f.gettxBody()));
+			if(type.equals("Recursive")){
+				Recursive r = (Recursive)model;
+				Function f = (Function)showRule.getCommand();
+				showRule.setLTesting(r.fullAnalys(f.getName(), f.gettxBody()));
+			}
+			else{
+				//System.out.println("Analys " + type);
+				Calculus calc = (Calculus)model;
+				LambdaDecl ld = (LambdaDecl)showRule.getCommand();
+				showRule.setLTesting(calc.fullAnalys(ld.getNum(),ld.gettxBody()));
+			}
 		}
 	}
 	
@@ -143,7 +149,7 @@ public class ShowCommand extends JDialog  {
 		this.type = type; this.model = model;
 		if (what == "Add") lWhat.setText(Model.title(type, 9)); else lWhat.setText("Редагувати");
 		if (showTree != null) mainBox.remove(showTree);
-		test.setVisible(type.equals("Recursive"));
+		test.setVisible(type.equals("Recursive")||type.equals("Calculus"));
 		structure.setVisible(type.equals("Recursive"));
 		//System.out.println("setCommand: " + type + " " + what + " " + id); 
 		showRule.setRule(type, model, id, what);

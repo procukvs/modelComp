@@ -149,7 +149,18 @@ public class StringWork {
 		if (res.isEmpty()) res = "0";
 		return res;
 	}
-			
+
+	public static int transToInt(String init) {
+		int intC = 0;
+		char s;
+		for(int i = 0; i < init.length(); i++) {
+			s = init.charAt(i);
+			intC = intC * 10 + (s -'0');
+		}	
+		return intC;
+	}
+	
+	
 	public static String[] transferToArray(ArrayList <String> al){
 		String[] res = null;
 		if ((al !=null) && (al.size() > 0)){

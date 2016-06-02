@@ -36,12 +36,14 @@ public class ShowModels extends JFrame {
 		JMenuItem algorithm = new JMenuItem(Model.title("Algorithm", 1));	//(new AlgorithmAction()); // 
 	 	JMenuItem post = new JMenuItem(Model.title("Post", 1));
 		JMenuItem rec = new JMenuItem(Model.title("Recursive", 1));
+		JMenuItem lambda = new JMenuItem(Model.title("Calculus", 1));
 		
 		mModel.add(computer);
 		mModel.add(machine);
 		mModel.add(algorithm);
 		mModel.add(post);
 		mModel.add(rec);
+		mModel.add(lambda);
 		menuBar.add(mModel);
 		//menuBar.add(createModelMenu());
 		
@@ -77,6 +79,7 @@ public class ShowModels extends JFrame {
 		machine.addActionListener(new LsMachine());
 		post.addActionListener(new LsPost());
 		rec.addActionListener(new LsRecursive());
+		lambda.addActionListener(new LsCalculus());
 		input.addActionListener(new LsInput());
 		output.addActionListener(new LsOutput());
 		state.addActionListener(new LsState());
@@ -202,6 +205,10 @@ public class ShowModels extends JFrame {
 	
 	class LsRecursive implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {showModel("Recursive",0);	}	
+	}
+	
+	class LsCalculus implements ActionListener {
+		public void actionPerformed(ActionEvent e) {showModel("Calculus",0);	}
 	}
 	
 	class LsInput extends AbstractAction {

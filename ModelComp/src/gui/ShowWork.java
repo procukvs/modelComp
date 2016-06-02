@@ -20,6 +20,7 @@ public class ShowWork extends JDialog {
 	private ShowForm showForm;
 	private ShowFunction showFunction;
 	private ShowEval showEval;
+	private ShowEvalLambda showEvalLambda;   //!!!!!!!!!!!!!!!!!!!!!!
 	ShowSteps showSteps; 
 	// повинно бути доступним для управління його видимістю (або необхідно створити відповідний метод)
 	private ShowTree showTree;
@@ -37,6 +38,7 @@ public class ShowWork extends JDialog {
 	private String type = "Algorithm";
 	private Model model = null;
 	private Function f = null;
+	private LambdaDecl ld = null;
 	private boolean isNumeric = true;
 	private int rank = 2;
 	private String main = "";
@@ -56,7 +58,8 @@ public class ShowWork extends JDialog {
 		showForm = new ShowForm(this);
 		showFunction = new ShowFunction(this);
 		showEval = new ShowEval(this);
-																			//showTest = new ShowTest(owner);
+		showEvalLambda = new ShowEvalLambda(this);           //!!!!!!!!!!!!!!!!!!!!!!
+                   				//showTest = new ShowTest(owner);
 		showSteps = new ShowSteps();
 		//========================
 		//showTree = new ShowTree();
@@ -77,6 +80,7 @@ public class ShowWork extends JDialog {
 		evalBox.add(showForm);
 		evalBox.add(showFunction);
 		evalBox.add(showEval);
+		evalBox.add(showEvalLambda);                             //!!!!!!!!!!!!!!!!!!!!!!
 		evalBox.add(showSteps);
 		//========================
 		//evalBox.add(showTree);
@@ -125,22 +129,31 @@ public class ShowWork extends JDialog {
 	    
 	    if (showTree != null)evalBox.remove(showTree);
 	   
-	    if(!type.equals("Recursive")){
+	    if(!type.equals("Recursive") && !type.equals("Calculus")){
 	    	lWhat.setText("Робота з " + Model.title(type, 12));		
 	    	isNumeric = model.getIsNumeric();
 	    	rank = model.getRank();
 	    	main = model.getMain();
 	    } 
-	    else lWhat.setText("Робота з " + Model.title(type, 12) + ".  Обчислити функцію.");
+	    else {
+	    	String txt = "Робота з " + Model.title(type, 12) + ".";
+	    	if (type.equals("Recursive")) txt = txt + "  Обчислити функцію.";
+	    	lWhat.setText(txt);
+	    }
 	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
 	    showDescription.setModel(type, model);
 	    
-	    showForm.setModel(type, model);
-	    showEval.setModel(type, model);
+	    if (type.equals("Calculus")){
+	    	showEvalLambda.setModel(type, model);
+	     } else{
+	    	showForm.setModel(type, model);
+	    	showEval.setModel(type, model);
+	    }	
    
 	    showForm.setVisible(type.equals("Post"));
 	    showFunction.setVisible(type.equals("Recursive"));
-	    showEval.setVisible(!type.equals("Post"));
+	    showEval.setVisible(!type.equals("Post") && !type.equals("Calculus"));
+	    showEvalLambda.setVisible(type.equals("Calculus"));        // !!!!!!!!!!!!!!!!!!!!!
 	    showSteps.setVisible(false);
 	    if (type.equals("Post")){
 	    	eval.setText("Формувати дані");
@@ -177,6 +190,15 @@ public class ShowWork extends JDialog {
 		*/
 		//============================
 	}
+	
+	// викликається зразу після setModel !!!!! 
+	public void setLambdaDecl(LambdaDecl f) {
+		this.ld = f;
+		//rank = f.getRank();
+		lWhat.setText("Робота з " + Model.title(type, 12) + ".  Функція " + f.getName() +".");
+		showFunction.setLambdaDecl(f);
+		//showEval.setFunction(f);
+	}	
 
 	public void resertFromShowStep(){
 		showEval.setVisible(false);
@@ -216,6 +238,33 @@ public class ShowWork extends JDialog {
 					show.setEnabled(true);
 				} 
 				else showEval.setResult(text, -1);
+				break;
+			case "Calculus":
+				//ArrayList sl;
+				LamStep res;
+				int step;
+				showEval.setVisible(false);
+				show.setEnabled(false);
+				pack();
+				text = showEvalLambda.getLambda();
+				nodef = showEvalLambda .getNodef();
+				//System.out.println("Eval Lambda " + text + " on " + nodef + " teps!!" );
+				if (!text.isEmpty()){
+					sl = ((Calculus)model).eval(text, nodef, showEvalLambda.getTest());
+					step = sl.size()- 1;
+					res = (LamStep)sl.get(step);
+					if (res.getWhat().equals("Err")){
+						showEvalLambda.setResult(res.getName(), ""+(nodef+1));
+					} else{
+						Lambda rLd = ((Calculus)model).compressFull(res.getTerm()[0]);
+						showEvalLambda.setResult(rLd.toStringShort(0), res.getName());
+						//showEval.setVisible(showEvalLambda.getTest());
+						show.setEnabled(showEvalLambda.getTest());
+					}
+				} else {
+					showEvalLambda.setResult("Введіть ламбда-вираз для обрахування !", "");
+					//System.out.println("Введіть ламбда-вираз для обрахування !" );
+				}
 				break;
 			default:
 				text = showEval.testArguments();

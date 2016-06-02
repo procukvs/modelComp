@@ -47,6 +47,8 @@ public class DbAccess {
 	private static DbPost dbPost;
 	private static DbRecursive dbRec;
 	private static DbComputer dbComp;
+	private static DbCalculus dbCalc;
+
 	private DbAccess(){ 
 		try
 	    {
@@ -58,6 +60,7 @@ public class DbAccess {
 		  dbPost = new DbPost(this);
 		  dbRec = new DbRecursive(this);
 		  dbComp = new DbComputer(this);
+		  dbCalc = new DbCalculus(this);
 	    }
 		catch(Exception ex)
         {
@@ -74,6 +77,7 @@ public class DbAccess {
 	public static DbPost getDbPost() { return dbPost;}
 	public static DbRecursive getDbRecursive() { return dbRec;}
 	public static DbComputer getDbComputer() { return dbComp;}
+	public static DbCalculus getDbCalculus() { return dbCalc;}
 	//======================================================
 	
 	
@@ -208,7 +212,8 @@ public class DbAccess {
 				"select 'Computer', name, descr, 1, rank,  id from rComputer ", //  order by name",
 				"select 'Machine', name, descr, isNumeric, rank, id from tMachine ", // order by name",
 				"select 'Post', name, descr, isNumeric, rank,  id from pPost ", // order by name",
-				"select 'Recursive', name, descr, 0, 0,  id from fRecursive " // order by name"
+				"select 'Recursive', name, descr, 0, 0,  id from fRecursive ", // order by name"
+				"select 'Calculus', name, descr, 0, 0,  id from eCalculus " // order by name"
 			};
 		String section = "base";
 		try{ 
@@ -222,7 +227,7 @@ public class DbAccess {
 			} else sl.add("base");	
 			for (int j = 0; j < sl.size(); j++){
 				section = sl.get(j);
-				for (int i = 0; i < 5; i++ ){
+				for (int i = 0; i < select.length; i++ ){
 					sql = select[i] + "where section = '" + section + "' order by name";
 					//System.out.println("getAllModel " + sql );
 					s.execute(sql);
@@ -298,7 +303,8 @@ public class DbAccess {
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
 		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
 		case "Post" : idModel = dbPost.addPost((Post)model); break; 
-		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break; 
+		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break;
+		case "Calculus" : idModel = dbCalc.addCalculus((Calculus)model); break; 
 		}	
 		//System.out.println("db.addModel: type " + type + " id " + idModel); 
 		return idModel;
@@ -312,6 +318,7 @@ public class DbAccess {
 		case "Machine" : dbMach.editMachine((Machine)model); break;
 		case "Post" : dbPost.editPost((Post)model); break;
 		case "Recursive": dbRec.editRecursive((Recursive)model); break;
+		case "Calculus": dbCalc.editCalculus((Calculus)model); break;
 		}	
 	}
 	public int newModel(String type) {
@@ -322,6 +329,7 @@ public class DbAccess {
 		case "Machine" : idModel = dbMach.newMachine(); break;
 		case "Post" : idModel = dbPost.newPost(); break;
 		case "Recursive" : idModel = dbRec.newRecursive(); break;
+		case "Calculus" : idModel = dbCalc.newCalculus(); break;
 		}	
 		return idModel;
 	}
@@ -350,6 +358,7 @@ public class DbAccess {
 		case "Post": return dbPost.getPost(id); 
 		case "Recursive": return dbRec.getRecursive(id); 
 		case "Computer": return dbComp.getComputer(id); 
+		case "Calculus": return dbCalc.getCalculus(id); 
 		default: return null;
 		}
 	}
@@ -361,6 +370,7 @@ public class DbAccess {
 		case "Machine": dbMach.editState((Machine)model, id, (State)cmd); break;
 		case "Post" : dbPost.editDerive(model.id, (Derive)cmd); break;
 		case "Recursive" : dbRec.editFunction(model.id, (main.Function)cmd); break;
+		case "Calculus" : dbCalc.editDeclLambda(model.id, (main.LambdaDecl)cmd); break;
 		default: System.out.println(">>> Not realise editCommand for: " + type + "!");
 		}
 	}
@@ -372,6 +382,7 @@ public class DbAccess {
 		case "Machine": dbMach.newState((Machine)model, (State)cmd); break;
 		case "Post" : dbPost.newDerive((Post)model, (Derive)cmd); break;
 		case "Recursive" : dbRec.newFunction(model.id, (main.Function)cmd); break;
+		case "Calculus" : dbCalc.newDeclLambda(model.id, (main.LambdaDecl)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}
@@ -383,6 +394,7 @@ public class DbAccess {
 		case "Machine": dbMach.deleteState(idModel, id); break;
 		case "Post" : dbPost.deleteDerive(idModel, (Derive)cmd); break;
 		case "Recursive": dbRec.deleteFunction(idModel, id); break;	
+		case "Calculus": dbCalc.deleteDeclLambda(idModel, (LambdaDecl)cmd); break;	
 		default: System.out.println(">>> Not realise deleteCommand for: " + type + "!");
 		}
 	}
@@ -463,6 +475,7 @@ public class DbAccess {
 		case "Post" : return "pPost";
 		case "Recursive" : return "fRecursive";
 		case "Computer" : return "rComputer";
+		case "Calculus" : return "eCalculus";
 		default: return "mAlgorithm";
 		}
 	}
@@ -473,6 +486,7 @@ public class DbAccess {
 		case "Machine": return "tProgram";
 		case "Post" : return "pDerive";
 		case "Recursive" : return "fFunction";
+		case "Calculus" : return "eLambda";
 		default: return "mRule";
 		}
 	}
@@ -617,7 +631,7 @@ public class DbAccess {
 	// підраховує кількість моделей в розділі section
 	public int getSectionCount(String section) {
 		int cnt = 0;
-		String [] table = {"mAlgorithm", "rComputer", "tMachine", "pPost", "fRecursive"};
+		String [] table = {"mAlgorithm", "rComputer", "tMachine", "pPost", "fRecursive", "eCalculus"};
 		try{
 			for (int i = 0; i < table.length; i++){
 				sql = "select count(*) from " + table[i] + " where section = '" + section + "'";

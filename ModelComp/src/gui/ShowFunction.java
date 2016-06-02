@@ -92,5 +92,14 @@ public class ShowFunction extends JPanel {
 		tBody.setText(f.gettxBody()); 
 		tCom.setText(f.gettxComm()); 
 	}
+	public void setLambdaDecl(LambdaDecl f){
+		lName.setText("Вираз (" + f.getId() + ") ");
+		tName.setText(f.getName());
+	//	tRank.setText("" + f.getRank()); 
+	//	cConst.setSelected(f.getisConst());
+		tBody.setText(f.gettxBody()); 
+		tCom.setText(f.gettxComm()); 
+	}
+
 
 }
