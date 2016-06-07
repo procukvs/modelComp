@@ -60,6 +60,8 @@ public class Machine extends Model {
 		return !go;
 	} */
 	
+	
+	
 	public String[] iswfModel(){
 		String allNoAlfa = "";  // символи в переходах не із обєднаного алфавіту
 		String states = "";		// стани, що використовують символи не із обєднаного алфавіту
@@ -120,22 +122,37 @@ public class Machine extends Model {
 			}
 		}
 		return res;
-	}	
-		/*
-		if (!states.isEmpty()) 
-			if (badMoves.isEmpty())
-				return new String[] {"В станах " + states.substring(1),
-								" використовуються символи " + allNoAlfa,
-								" що не входять в об\"єднаний алфавіт _" + main+add + " !"};
-			else
-				return new String[] {"Некоректні переходи " + badMoves.substring(1) + ".", 
-								"В станах " + states.substring(1),
-								" використовуються символи " + allNoAlfa,
-								" що не входять в об\"єднаний алфавіт _" + main+add + " !"};
-		else if (badMoves.isEmpty()) return new String[] {"==="};
-			else
-				return new String[] {"Некоректні переходи " + badMoves.substring(1) + "."};
-		*/	
+	}
+	
+	// перевіряє, що в командах моделі використовуються лише символи обєднаного алфавіту 
+	public String iswfModelAlfa(String alfa){
+		String allNoAlfa = "";  // символи в переходах не із обєднаного алфавіту
+		State state;
+		String move;
+		String res = "", noChar = "";
+		String allCh = "_" + alfa + no;
+		String goodCh = "_" + alfa;
+		for(int i = 0; i < program.size(); i++) {
+			state = (State)program.get(i);
+			for(int j = 0; j < state.getGoing().size(); j++){
+				String c = allCh.substring(j,j+1) ; 
+				//System.out.println("iswfModel j= " +j + " c =" + c + ".." + state.getGoing().size()); 
+				move = state.getGoing().get(j);  // c -> move
+				if(!move.isEmpty()){
+					if (StringWork.isMove(move)) {    //iswfMove(move)
+						noChar = StringWork.isAlfa(goodCh,c + move.substring(3,4));
+						//System.out.println("iswfModel goodCh = " +goodCh + " move = " + move + " c =" + move.substring(3,4) + ".." + noChar); 
+						if (!noChar.isEmpty()) {
+							if (allNoAlfa.isEmpty()) allNoAlfa = noChar;
+							else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noChar);
+						}	
+					} 
+				}	
+			}
+		}
+		if (!allNoAlfa.isEmpty()) res = "Cимволи " + allNoAlfa + " не входять в об\"єднаний алфавіт _" + alfa ;
+		return res;	
+	}
 
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();

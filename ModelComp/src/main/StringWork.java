@@ -149,7 +149,7 @@ public class StringWork {
 		if (res.isEmpty()) res = "0";
 		return res;
 	}
-
+	
 	public static int transToInt(String init) {
 		int intC = 0;
 		char s;
@@ -159,7 +159,6 @@ public class StringWork {
 		}	
 		return intC;
 	}
-	
 	
 	public static String[] transferToArray(ArrayList <String> al){
 		String[] res = null;

@@ -334,6 +334,24 @@ public class Post extends Model {
 		return StringWork.transferToArray(mes);
 	}
 	
+	// перевіряє, що в командах моделі використовуються лише символи обєднаного алфавіту 
+	public String iswfModelAlfa(String alfa){
+		String res="", noLeft, noRigth, allNoAlfa = "";
+		Derive rule;
+		for(int i = 0; i < program.size(); i++) {
+			rule = (Derive)program.get(i);
+			noLeft = StringWork.isAlfa(alfa, StringWork.extract(rule.getsLeft(),"Alfa"));
+        	noRigth = StringWork.isAlfa(alfa, StringWork.extract(rule.getsRigth(),"Alfa"));
+        	if(!noLeft.isEmpty()) noRigth = StringWork.unionAlfa(noLeft, noRigth);
+        	if (!noRigth.isEmpty()) {
+           		if (allNoAlfa.isEmpty()) allNoAlfa = noRigth;
+        		else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noRigth);
+        	}
+		}
+		if (!allNoAlfa.isEmpty()) res = "Cимволи " + allNoAlfa + " не входять в об\"єднаний алфавіт " + alfa; 
+		return res;	
+	}
+	
 	public ArrayList <String> iswfNum(String num) {
 		ArrayList <String> mes = new ArrayList <String>();
 		int numI = -1;

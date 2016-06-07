@@ -1,6 +1,9 @@
 package main;
 
+import java.util.HashMap;
+
 public class Lambda {
+	int rank = -1;
 	public String toString() {return "";}
 	public String toTest() {return "";}
 	
@@ -20,5 +23,9 @@ public class Lambda {
 	public Lambda getBody(){return null;}
 	public int getInd(){return (-1);}
 	public int getLng(){return (-1);}
-
+	/*
+	public String setRank(String name, HashMap <String, Lambda> map) {return "";}
+	public boolean isConst(HashMap <String, Lambda> map) {return false;}
+	public String iswf(HashMap <String, Lambda> map) {return "";}
+	*/
 }

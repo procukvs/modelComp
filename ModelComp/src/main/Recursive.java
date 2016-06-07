@@ -37,6 +37,7 @@ public class Recursive extends Model {
 		this.limit = limit;	step = 0;
 		reasonUndef = ""; noUndef = true;
 		result = 0;
+		
 		bf = map.get(f.getName());
 		result = bf.eval(arg, this);
 		if (!noUndef){

@@ -1,39 +1,27 @@
 package main;
 
 import java.awt.event.*;
-
 import javax.swing.*;
 
 import db.*;
 import gui.*;
 
+
+
 public class Main {
 	private DbAccess db;
-	private ShowModels showModels;
+	private FrMain fMain;
 		
 	Main(){
-		//=====================
-		//db  = new  DbAccess ();
-		//======================
 		db = DbAccess.getDbAccess();
 		//====================
-		//!!!!!!!!!!!!!!!!!!!!!!!!!
-		showModels = new ShowModels(db);
-		//gui.setListener(gui);
 		System.out.println("Forming GUI-- version 2.3: " + Parameters.getRegime() + "..");
 	    if (db.connectionDb("Model.db")) { 
-	  	   if (Parameters.getRegime().equals("teacher")) db.setParameters();
-	       	// після встановлення звязку з БД створюємо обробник запитів opr
-	  	   	showModels.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	  	   	showModels.addWindowListener(new EndWork());
-	  	   	showModels.setVisible(true);
+	    	if (Parameters.getRegime().equals("teacher")) db.setParameters();
+			fMain = new FrMain(db);    	 
+	  	   	fMain.setVisible(true);
 	    } 
 	    else System.out.println("No connection to DB Model.db -- version Teacher..");
-	
-	   // Testing.testSubstitution();
-	   // Testing.test();
-	  // Testing.findSubstit(); 
-	  //  Testing.testBody();
 	}
 	
 	public static void main(String[] args) {
@@ -52,12 +40,28 @@ public class Main {
 			}
 		});
 	}
-	class EndWork extends WindowAdapter {
-		// закінчуємо всю роботу ---- закриваємо базу даних
-		public void  windowClosed(WindowEvent e)  {
-	    	db.disConnect();  
-            System.exit(0);
-		}
-	}
+
 	
+/*	
+	private WShowModels showModels;
+	Main(){
+		showModels = new WShowModels();
+	  	showModels.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		System.out.println("Forming GUI-- testing WindowBuilder ..");
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UIManager.setLookAndFeel("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
+					System.out.println("...Test1...");			
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				new Main();
+			}
+		});
+	}
+*/
 }

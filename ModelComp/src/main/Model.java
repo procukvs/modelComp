@@ -102,6 +102,9 @@ public class Model {
 		return null;
 	}
 	
+	// перевіряє, що в командах моделі використовуються лише символи обєднаного алфавіту 
+	public String iswfModelAlfa(String alfa){return "";	}
+	
 	public ArrayList eval(String str, int nodef){
 		return null;
 	}
@@ -110,7 +113,7 @@ public class Model {
 		return null;
 	}
 	
-	public ArrayList eval(ShowForm showForm, int step){
+	public ArrayList eval(String str, int nodef, boolean isStep){
 		return null;
 	}
 	
@@ -166,6 +169,7 @@ public class Model {
 	public int findCommand(String key) {return 0;}
 	
 	private String getTypeModel(){
+		
 		return this.getClass().getName().substring(5);
 	}
 	

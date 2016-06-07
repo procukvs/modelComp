@@ -48,7 +48,6 @@ public class DbAccess {
 	private static DbRecursive dbRec;
 	private static DbComputer dbComp;
 	private static DbCalculus dbCalc;
-
 	private DbAccess(){ 
 		try
 	    {
@@ -303,7 +302,7 @@ public class DbAccess {
 		case "Algorithm" : idModel = dbAlgo.addAlgorithm((Algorithm)model); break; 
 		case "Machine" : idModel = dbMach.addMachine((Machine)model); break; 
 		case "Post" : idModel = dbPost.addPost((Post)model); break; 
-		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break;
+		case "Recursive" : idModel = dbRec.addRecursive((Recursive)model); break; 
 		case "Calculus" : idModel = dbCalc.addCalculus((Calculus)model); break; 
 		}	
 		//System.out.println("db.addModel: type " + type + " id " + idModel); 
@@ -357,7 +356,7 @@ public class DbAccess {
 		case "Machine": return dbMach.getMachine(id); 
 		case "Post": return dbPost.getPost(id); 
 		case "Recursive": return dbRec.getRecursive(id); 
-		case "Computer": return dbComp.getComputer(id); 
+		case "Computer": return dbComp.getComputer(id);
 		case "Calculus": return dbCalc.getCalculus(id); 
 		default: return null;
 		}

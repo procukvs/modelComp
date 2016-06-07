@@ -5,10 +5,10 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
-public class ShowTree extends JPanel {
+public class PnTree extends JPanel {
 	
 	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Testing");
-	ShowTree(DefaultMutableTreeNode root) {
+	public PnTree(DefaultMutableTreeNode root) {
 		
 		JTree tree = new JTree(root,true);
 		JScrollPane p = new JScrollPane(tree);

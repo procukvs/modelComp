@@ -88,6 +88,24 @@ public class Algorithm extends Model {
 		else return null;
 	}
 	
+	// перевіряє, що в командах моделі використовуються лише символи обєднаного алфавіту 
+	public String iswfModelAlfa(String alfa){
+		String noLeft, noRigth, allNoAlfa = "", res="";
+		Rule rule;
+		for(int i = 0; i < program.size(); i++) {
+			rule = (Rule)program.get(i);
+			noLeft = StringWork.isAlfa(alfa,rule.getsLeft());
+        	noRigth = StringWork.isAlfa(alfa,rule.getsRigth());
+        	if(!noLeft.isEmpty()) noRigth = StringWork.unionAlfa(noLeft, noRigth);
+        	if (!noRigth.isEmpty()) {
+        		if (allNoAlfa.isEmpty()) allNoAlfa = noRigth;
+        		else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noRigth);
+        	}
+		}
+		if (!allNoAlfa.isEmpty()) res = "Cимволи " + allNoAlfa + " не входять в об\"єднаний алфавіт " + alfa + " !";
+		return res;
+	}	
+	
 	public ArrayList <String> iswfNum(String num) {
 		ArrayList <String> mes = new ArrayList <String>();
 		int numI = -1;
@@ -157,7 +175,8 @@ public class Algorithm extends Model {
 		ArrayList data = new ArrayList();
 		ArrayList row;
 		Substitution sb;
-		//if (sl != null) {
+		
+		if (sl != null) {
 		//  sl завжди має 1 елемент - початкоиу слово Subtitution(0,0,init)!!!!
 		//     ... для показу його відкидаємо !!!!!
 			for(int i = 1; i < sl.size(); i++ ){
@@ -171,7 +190,7 @@ public class Algorithm extends Model {
 				else row.add(StringWork.transNumeric(extract( sb)));
 				data.add(row);
 			}
-		//}
+		} else System.out.println("Algorithm: getStepSource sl=null!!!!" );
 	    return data;
 	}
 	

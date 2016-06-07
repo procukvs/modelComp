@@ -35,11 +35,11 @@ public class WorkFile {
 		String s = "";
 		String rs;
 		if(in.open(name)) {
-			System.out.println("File " + name + " is open.."); 
+			System.out.println("WorkFile:TestingInput: File " + name + " is open.."); 
 			while ((rs = in.input()) != null)
-				System.out.println(".." + rs);
+				System.out.println("WorkFile:TestingInput:.." + rs);
 			in.close();
-			System.out.println("File " + name + " is close.."); 
+			System.out.println("WorkFile:TestingInput:File " + name + " is close.."); 
 		} else s = "Not open input file " + name + "!"; 
 		return s;
 	}
@@ -48,13 +48,13 @@ public class WorkFile {
 		String s = "";
 		//String rs;
 		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+			System.out.println("WorkFile:TestingOutput:File " + name + " is open..");
 			for (int i = 0; i < wr.length; i++){
 			    out.output(wr[i]);
-				System.out.println(".." + wr[i]);
+				System.out.println("WorkFile:TestingOutput:.." + wr[i]);
 			}
 			out.close();
-			System.out.println("File " + name + " is close.."); 
+			System.out.println("WorkFile:TestingOutput:File " + name + " is close.."); 
 		} else s = "Not open output file " + name + "!"; 
 		return s;
 	}
@@ -67,7 +67,7 @@ public class WorkFile {
 		String wr;
 		Rule r;
 		if(out.open(name)) {
-			System.out.println("File " + name + " is open..");
+			System.out.println("WorkFile:outputAlgorithm:File " + name + " is open..");
 			if (!model.descr.isEmpty()) out.output("'" + model.descr);
 			out.output("Algorithm " + model.name);
 			wr = " Alphabet \"" + model.main + "\", \"" + model.add + "\";";
@@ -83,7 +83,7 @@ public class WorkFile {
 			}
 			out.output("end " + model.name);
 			out.close();
-			System.out.println("File " + name + " is close.."); 
+			System.out.println("WorkFile:outputAlgorithm:File " + name + " is close.."); 
 		} else res = "Not open output file " + name + "!"; 
 		return res;
 	}
@@ -112,7 +112,7 @@ public class WorkFile {
 			   	case "Machine" : model = machine(txComm); break;
 			   	case "System": model = post(txComm); break;
 			   	case "Recursive": model = recursive(txComm); break;
-			   	case "Calculus": model = calculus(txComm); break;
+				case "Calculus": model = calculus(txComm); break;
 			   	default: errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";	
 			   	}
 			  } else errorText = "Очікується тип моделі Algorithm/Machine/System/Recursive/Computer/Calculus !";
@@ -158,7 +158,7 @@ public class WorkFile {
 		String txComm = "";
 		errorText = "";
 		if(in.open(name)) {
-			System.out.println("File " + name + " is open.."); 
+			//System.out.println("File " + name + " is open.."); 
 			type = "Model";
 		    line = ""; nLine = 0; nextChar = 1;
 		    getChar(); get();
@@ -182,7 +182,7 @@ public class WorkFile {
 			if (!errorText.isEmpty()) model = null; 
 			
 		  	in.close();
-			System.out.println("File " + name + " is close.."); 
+			//System.out.println("File " + name + " is close.."); 
 			if (!errorText.isEmpty()) errorText = "." + nLine + ": " + errorText;
 		} else errorText = "Not open input file " + name + "!"; 
 		return model;		
@@ -617,7 +617,6 @@ public class WorkFile {
 		else return null;
 	}			
 	
-	
 	private Computer computer (String txComm) {
 		Computer model = null;
 		Instruction r;
@@ -777,9 +776,8 @@ public class WorkFile {
 					case "Numerical": lex = 22; break;
 					case "end": lex = 23; break;
 					case "Computer": if(type.equals("Computer"))lex = 20; break;
-					case "Recursive": if(type.equals("Recursive"))lex = 20; break;
-					case "Calculus": if(type.equals("Calculus"))lex = 20; break;
 					case "Machine": if(type.equals("Machine"))lex = 20; break;
+					case "Calculus": if(type.equals("Calculus"))lex = 20; break;
 					case "Initial": if(type.equals("Machine"))lex = 24; break;
 					case "Final": if(type.equals("Machine"))lex = 25; break;
 					case "System": if(type.equals("Post"))lex = 20; break;
