@@ -607,9 +607,18 @@ public class WorkFile {
 		}
 		*/
 		if (errorText.isEmpty()){
-		   while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){ // ; ' end eof
-			 txBody = txBody + valueLex; get(); 
-		   }  
+			// вводимо тіло виразу !!!! всі символи до '\n' або ';'
+			//  ... в іншому випадку пропускаємо ВСІ проміжки 
+			while ((next != '\n') && (next != ';')){
+				valueLex = valueLex + next; getChar();
+			}
+			txBody = valueLex; 
+			get(); 
+			/*
+		     while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){ // ; ' end eof
+			   txBody = txBody + valueLex; get(); 
+		     } 
+		    */  
 		   exam (13,"символ ;");
 		}
 		if (errorText.isEmpty())
