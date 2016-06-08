@@ -15,7 +15,7 @@ public class Main {
 	Main(){
 		db = DbAccess.getDbAccess();
 		//====================
-		System.out.println("Forming GUI-- version 2.3: " + Parameters.getRegime() + "..");
+		System.out.println("Forming GUI-- version 3.1.1: " + Parameters.getRegime() + "..");
 	    if (db.connectionDb("Model.db")) { 
 	    	if (Parameters.getRegime().equals("teacher")) db.setParameters();
 			fMain = new FrMain(db);    	 
