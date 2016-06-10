@@ -201,7 +201,7 @@ public class PnParButtons extends JPanel {
 		//		int idModel = model.dbNewAs(); 
 		//		showModels.showModel(type, idModel);
 		//	}
-			System.out.println("PParButtons:AddAs =  "+type );
+			//System.out.println("PParButtons:AddAs =  "+type );
 			if (type.equals("Parameters")){
 				int row = showFiles.getSelectedRow();
 				String namePar = "namePar";
@@ -213,7 +213,7 @@ public class PnParButtons extends JPanel {
 					descPar = showFiles.getValue(row, 2);
 				}
 				if (addParameter(namePar, valuePar, descPar)){
-					System.out.println("....Add New value param..");
+					//System.out.println("....Add New value param..");
 					ArrayList pl = null;
 					pl = db.getAllParameter();
 					showFiles.showInputModel(pl);

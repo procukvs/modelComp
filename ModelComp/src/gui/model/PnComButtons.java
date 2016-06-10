@@ -16,6 +16,7 @@ public class PnComButtons extends JPanel {
 	private DbAccess db;
 	private String type = "Algorithm";
 	private PnComTable pComTable;
+	private PnDescription pDescription;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
 	private Model model = null;
@@ -121,9 +122,10 @@ public class PnComButtons extends JPanel {
 		//eval.addActionListener(new LsEval());	
 	}
 	
-	public void setEnv(FrMain owner, PnComTable table){     // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+	public void setEnv(FrMain owner, PnDescription pDescription, PnComTable table){     // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		fMain = owner;  
 		this.pComTable = table;// !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+		this.pDescription = pDescription;
 	}         	
 	/*
 	public void setTable(PComTable table){
@@ -191,25 +193,29 @@ public class PnComButtons extends JPanel {
 	class LsTesting implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				String[] text= model.iswfModel();
-				if (text != null) JOptionPane.showMessageDialog(PnComButtons.this,text);
+				if (pDescription.testAndSave()){
+					String[] text= model.iswfModel();
+					if (text != null) JOptionPane.showMessageDialog(PnComButtons.this,text);
+				}	
 			}
 		}	
 	}
 	class LsAdd implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null) {
-				Rule rule;
-				int id = pComTable.selectedRule();
-				int idNew;
-				dEdCommand.setCommand("Add", type, model, id);
-				//System.out.println("ShowCommandButton:LsAdd "  + type + " " + id);
-				dEdCommand.show();
-				command= dEdCommand.getCommand();
-				if (command != null) { 
-					db.newCommand(type, model, command);
-					fMain.setModel(type, model.id);
-					pComTable.showRow(false,model.findCommand(command.getId())+1);
+				if (pDescription.testAndSave()){
+					Rule rule;
+					int id = pComTable.selectedRule();
+					int idNew;
+					dEdCommand.setCommand("Add", type, model, id);
+					//System.out.println("ShowCommandButton:LsAdd "  + type + " " + id);
+					dEdCommand.show();
+					command= dEdCommand.getCommand();
+					if (command != null) { 
+						db.newCommand(type, model, command);
+						fMain.setModel(type, model.id);
+						pComTable.showRow(false,model.findCommand(command.getId())+1);
+					}
 				}
 			}
 		}  
@@ -218,60 +224,65 @@ public class PnComButtons extends JPanel {
 	class LsEdit implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null) {
-				int row = pComTable.selectedRule();
-				if (row > 0){
-					dEdCommand.setCommand("Edit", type, model, row);
-					dEdCommand.show();
-					command= dEdCommand.getCommand();
+				if (pDescription.testAndSave()){
+					int row = pComTable.selectedRule();
+					if (row > 0){
+						dEdCommand.setCommand("Edit", type, model, row);
+						dEdCommand.show();
+						command= dEdCommand.getCommand();
 				
-					if (command != null) { 
-						db.editCommand(type, model, row, command);
-						fMain.setModel(type, model.id);
+						if (command != null) { 
+							db.editCommand(type, model, row, command);
+							fMain.setModel(type, model.id);
+						}
 					}
 				}
 			}
-		
 		}	
 	}
 
 	class LsDelete implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-		if (model != null) {
-			int row = pComTable.selectedRule();
-			if (row > 0){
-				int row1 = model.findCommand(row);
-				Command c = (Command) model.program.get(row1);                 //get(row1-1);
-				String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar())} ;
-				if (type.equals("Recursive")){
-					Function f = (Function)c;
-					String using = ((Recursive)model).usingName(f.getName());
-					if (!using.isEmpty()){
-						text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar()),
-								"Функція використовується в означенні: ", "<" + using + ">."} ;
+			if (model != null) {
+				if (pDescription.testAndSave()){
+					int row = pComTable.selectedRule();
+					if (row > 0){
+						int row1 = model.findCommand(row);
+						Command c = (Command) model.program.get(row1);                 //get(row1-1);
+						String [] text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar())} ;
+						if (type.equals("Recursive")){
+							Function f = (Function)c;
+							String using = ((Recursive)model).usingName(f.getName());
+							if (!using.isEmpty()){
+								text = new String[] {"Вилучити " + Model.title(type, 11) + " з номером " + row + ". ",  c.show(model.getAllChar()),
+										"Функція використовується в означенні: ", "<" + using + ">."} ;
+							}
+						}
+						UIManager.put("OptionPane.yesButtonText", "Так");
+						UIManager.put("OptionPane.noButtonText", "Ні");	
+						int response = 
+								JOptionPane.showConfirmDialog(PnComButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
+						if (response == JOptionPane.YES_OPTION) { 
+							db.deleteCommand(type, model.id, row,c);
+							fMain.setModel(type, model.id);
+							pComTable.showRow(false,row1);
+						} 	
 					}
 				}
-				UIManager.put("OptionPane.yesButtonText", "Так");
-				UIManager.put("OptionPane.noButtonText", "Ні");	
-				int response = 
-						JOptionPane.showConfirmDialog(PnComButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
-				if (response == JOptionPane.YES_OPTION) { 
-					db.deleteCommand(type, model.id, row,c);
-					fMain.setModel(type, model.id);
-					pComTable.showRow(false,row1);
-				} 	
 			}
-		}
 		}	
 	} 
 	class LsUp implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				int row = pComTable.numberSelectedRow();
-				if (row > 1) {
-					//System.out.println("LsUp "+ row);
-					db.moveUp(type, model, row);
-					fMain.setModel(type, model.id);
-					pComTable.showPrevRow(false);
+				if (pDescription.testAndSave()){
+					int row = pComTable.numberSelectedRow();
+					if (row > 1) {
+						//System.out.println("LsUp "+ row);
+						db.moveUp(type, model, row);
+						fMain.setModel(type, model.id);
+						pComTable.showPrevRow(false);
+					}
 				}
 			} 
 		}	
@@ -279,11 +290,13 @@ public class PnComButtons extends JPanel {
  	class LsDown implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				int row = pComTable.numberSelectedRow();
-				if ((row > 0) && (row < model.program.size())){
-					db.moveDown(type, model, row);
-					fMain.setModel(type, model.id);
-					pComTable.showNextRow(false);
+				if (pDescription.testAndSave()){
+					int row = pComTable.numberSelectedRow();
+					if ((row > 0) && (row < model.program.size())){
+						db.moveDown(type, model, row);
+						fMain.setModel(type, model.id);
+						pComTable.showNextRow(false);
+					}
 				}
 			} 
 		}	
@@ -294,30 +307,32 @@ public class PnComButtons extends JPanel {
  		JTextField newState;
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				String name = pComTable.selectedName();
-				String text = "";
-				if (!name.isEmpty()) {
-					// формуємо Діалогове вікно "Переіменування стану"
-					 String[] textButtons = {"Переіменувати", "Вийти"};
-					 JPanel panel = new JPanel();
-					 init = ((Machine)model).newState();
-					 panel.add(new JLabel("Змінити імя стану " + name + " на "));
-					 newState = new JTextField(3);
-					 newState.setText(init);
-					 panel.add(newState);
-					 newState.addActionListener(new LsText());	
-					 int res = JOptionPane.showOptionDialog(PnComButtons.this, panel, "Переіменування стану",
-							 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
-					 if (res == JOptionPane.OK_OPTION){
-						String name1 = newState.getText();
-						if (!((Machine)model).isState(name1)) {
-							model.dbRenameState(name, name1);
-							fMain.setModel(type, model.id);
-							pComTable.showRow(false,model.findCommand(name1)+1);
+				if (pDescription.testAndSave()){
+					String name = pComTable.selectedName();
+					String text = "";
+					if (!name.isEmpty()) {
+						// формуємо Діалогове вікно "Переіменування стану"
+						String[] textButtons = {"Переіменувати", "Вийти"};
+						JPanel panel = new JPanel();
+						init = ((Machine)model).newState();
+						panel.add(new JLabel("Змінити імя стану " + name + " на "));
+						newState = new JTextField(3);
+						newState.setText(init);
+						panel.add(newState);
+						newState.addActionListener(new LsText());	
+						int res = JOptionPane.showOptionDialog(PnComButtons.this, panel, "Переіменування стану",
+								JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
+						if (res == JOptionPane.OK_OPTION){
+							String name1 = newState.getText();
+							if (!((Machine)model).isState(name1)) {
+								model.dbRenameState(name, name1);
+								fMain.setModel(type, model.id);
+								pComTable.showRow(false,model.findCommand(name1)+1);
+							}
+							else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
 						}
-						else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
-					 }
-					 if(!text.isEmpty())  JOptionPane.showMessageDialog(PnComButtons.this, text);
+						if(!text.isEmpty())  JOptionPane.showMessageDialog(PnComButtons.this, text);
+					}
 				}
 			} 
 		}
@@ -337,35 +352,37 @@ public class PnComButtons extends JPanel {
  	
  	class LsInsert implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			int row = 0;
-			String sWhere = "";
-			if (model == null) return;
-			if (type.equals("Computer")){
-				row = pComTable.numberSelectedRow();
-				if (row == 0) return;
-				sWhere = "після команди " + row + " "; 
-			}
-			String text;
-			ArrayList <String> all = db.getAllModel(type);
-			String name1;
-			int j;
-			String[] values = new String [all.size() - 1];
-			j = 0;
-			for (int i = 0; i < all.size(); i++){
-				name1 = all.get(i);
-				if(!name1.equals(model.name)) {values[j] = name1; j++;}
-			}
-			UIManager.put("OptionPane.okButtonText", "Так");
-			UIManager.put("OptionPane.cancelButtonText", "Вийти");
-			Object res = 
+			if (pDescription.testAndSave()){
+				int row = 0;
+				String sWhere = "";
+				if (model == null) return;
+				if (type.equals("Computer")){
+					row = pComTable.numberSelectedRow();
+					if (row == 0) return;
+					sWhere = "після команди " + row + " "; 
+				}
+				String text;
+				ArrayList <String> all = db.getAllModel(type);
+				String name1;
+				int j;
+				String[] values = new String [all.size() - 1];
+				j = 0;
+				for (int i = 0; i < all.size(); i++){
+					name1 = all.get(i);
+					if(!name1.equals(model.name)) {values[j] = name1; j++;}
+				}
+				UIManager.put("OptionPane.okButtonText", "Так");
+				UIManager.put("OptionPane.cancelButtonText", "Вийти");
+				Object res = 
 					JOptionPane.showInputDialog(PnComButtons.this, 
 							"Вставити " + sWhere + "програму машини", "Вибір програми", JOptionPane.QUESTION_MESSAGE, null,  values, values[0]);
-			if(res != null){
-				if (type.equals("Computer"))
-					text = model.dbInsertModel(row, (String)res);
-				else text = model.dbInsertModel((String)res);	
-				if (text.isEmpty()) fMain.setModel(type, model.id);
-				else JOptionPane.showMessageDialog(PnComButtons.this,text);
+				if(res != null){
+					if (type.equals("Computer"))
+						text = model.dbInsertModel(row, (String)res);
+					else text = model.dbInsertModel((String)res);	
+					if (text.isEmpty()) fMain.setModel(type, model.id);
+					else JOptionPane.showMessageDialog(PnComButtons.this,text);
+				}
 			}
 		}	
 	}
@@ -374,11 +391,12 @@ public class PnComButtons extends JPanel {
  	class LsAddAs implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
-				int row = pComTable.selectedRule();
-				if (row > 1) {
-					JOptionPane.showMessageDialog(PnComButtons.this,"New As..." + row);
+				if (pDescription.testAndSave()){
+					int row = pComTable.selectedRule();
+					if (row > 1) {
+						JOptionPane.showMessageDialog(PnComButtons.this,"New As..." + row);
+					}
 				}
-			
 			}
 		}	
 	} 

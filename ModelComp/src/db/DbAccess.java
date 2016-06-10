@@ -506,6 +506,7 @@ public class DbAccess {
 	    		case "Section": Parameters.setSection(rs.getString(2)); break;
 	    		case "PostVar" : Parameters.setPostVar(rs.getString(2)); break;
 	    		case "RecurSubst" : Parameters.setRecurSubst(rs.getString(2)); break;
+	    		case "Version" : Parameters.setVersion(rs.getString(2)); break;
 	    		default: System.out.println("Db:setParameters: невідомий параметр - "
 	    		                     + rs.getString(1) + ", значення - " + rs.getString(2));
 	    		}
@@ -558,6 +559,7 @@ public class DbAccess {
 		return all;
 	}		
 
+		
 	// знаходить всі значення параметра name 
 	public ArrayList getParameterValue(String name){
 		ArrayList all = new ArrayList ();

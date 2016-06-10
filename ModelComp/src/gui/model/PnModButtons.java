@@ -48,7 +48,7 @@ public class PnModButtons extends JPanel {
 		next.setMaximumSize(new Dimension(20,20));
 		JButton last = new JButton(">|");
 		last.setMaximumSize(new Dimension(20,20));
-		version = new JLabel("2.3");  
+		version = new JLabel(Parameters.getVersion());  
 		section = new JLabel(""); 
 		add = new JButton("Новий");
 		addBase = new JButton("Новий на основі");

@@ -48,7 +48,7 @@ public class PnModel extends JPanel {
 		fMain = owner;                        // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		pDescription.setEnv(db, fMain);       // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		pComTable.setEnv(pComButtons);             // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
-		pComButtons.setEnv(fMain, pComTable); 
+		pComButtons.setEnv(fMain,pDescription,  pComTable); 
 	}                                            // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!  
 	
 	public void setModel(String type, Model model) {
