@@ -400,5 +400,86 @@ public class PnComButtons extends JPanel {
 			}
 		}	
 	} 
-
+	class LsInsertLumbda implements ActionListener  {
+ 		String init;
+ 		JTextField newState;
+ 		private JComboBox cbSet;
+ 		private JComboBox cbName;
+ 		private JLabel what;
+ 		ArrayList aSet; 
+ 	 	
+		public void actionPerformed(ActionEvent event){
+			if (model != null){
+				String name = pComTable.selectedName();
+				String text = "";
+				String fstSet ="";
+				int id=0;
+				aSet = db.getAllModel("Calculus");
+				if (aSet.size()>1) {     // !name.isEmpty()) {
+					// формуємо Діалогове вікно "Select function"
+					 String[] textButtons = {"Select", "Вийти"};
+					 JPanel panel = new JPanel();
+					// init = ((Machine)model).newState();
+					 panel.add(new JLabel("Set "));
+					 cbSet = new JComboBox();
+					 for (int i = 0; i < aSet.size(); i++){
+							String name1 = (String)aSet.get(i);
+							if(!name1.equals(model.name)) {
+								cbSet.addItem(name1);
+								if(fstSet.isEmpty()) fstSet = name1;
+							}
+					 }
+					 panel.add(cbSet);
+					
+					 what = new JLabel("Expr ");
+							 panel.add(what);
+					 //id = db.getModelId("Calculus", fstSet);
+					 aSet = db.getAllNameFunction("Calculus", fstSet);
+					 cbName = new JComboBox();
+					 for (int i = 0; i < aSet.size(); i++){
+						cbName.addItem((String)aSet.get(i));
+					 }
+					 //newState = new JTextField(3);
+					 //newState.setText(init);
+					 //panel.add(newState);
+					 panel.add(cbName);
+			         //newState.addActionListener(new LsText());
+					 cbSet.addActionListener(new LsSet());
+					 int res = JOptionPane.showOptionDialog(PnComButtons.this, panel, "Select function",
+							 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
+					 if (res == JOptionPane.OK_OPTION){
+						String nmSet = (String)cbSet.getSelectedItem();//cbName.getSelectedIndex()//newState.getText();
+						String nmFunc = (String)cbName.getSelectedItem();
+						//if (!((Machine)model).isState(name1)) {
+						//	model.dbRenameState(name, name1);
+						//	fMain.setModel(type, model.id);
+						//	pComTable.showRow(false,model.findCommand(name1)+1);
+						//}
+						//else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
+						text = "select " + nmSet + "  ==  " + nmFunc; 
+					 }
+					 if(!text.isEmpty())  JOptionPane.showMessageDialog(PnComButtons.this, text);
+				}
+			} 
+		}
+		// клас-обробник введення інформації в полі  cbSet
+		class LsSet implements ActionListener  {
+			public void actionPerformed(ActionEvent event){
+				String nmSet = (String)cbSet.getSelectedItem();
+				 aSet = db.getAllNameFunction("Calculus", nmSet);
+				 //cbName = new JComboBox();
+				 cbName.removeAllItems();
+				 for (int i = 0; i < aSet.size(); i++){
+					cbName.addItem((String)aSet.get(i));
+				 }
+				//if (((Machine)model).isState(name1)) {
+				//	JOptionPane.showMessageDialog(PnComButtons.this, 
+				//			"Програма машини " + model.name + " вже використовує стан " + name1 + " !");
+				//	newState.setText(init);
+				//}	
+			}
+		}
+		
+	}
+ 	
 }

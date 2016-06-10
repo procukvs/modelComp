@@ -56,6 +56,27 @@ public class DbCalculus {
 		}
 		return program;
 	}	
+
+	public ArrayList getAllNameLambda(String nmSet) {
+		ArrayList nmLambda = new ArrayList();
+		sql = "select name from eLambda " +
+			   "where idModel = (select id from eCalculus where name = '" + nmSet + "'" +
+				                      " and section = '" + Parameters.getSection()+ "')" +
+			   " order by num";
+		//boolean isConst;		
+		try{ 
+			db.s.execute(sql);
+	        ResultSet rs = db.s.getResultSet();
+	        while((rs!=null) && (rs.next())) {
+	        	//LambdaDecl f = new LambdaDecl(rs.getInt(5), rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+	           		//System.out.println(rs.getInt(1));
+				nmLambda.add(rs.getString(1));
+	        } 
+		}catch (Exception e){
+			System.out.println("ERROR: getAllNameLambda :" + sql + e.getMessage());
+		}
+		return nmLambda;
+	}	
 	
 	// модифікує відредагований набір
 	public void editCalculus(Calculus model) {

@@ -362,6 +362,15 @@ public class DbAccess {
 		}
 	}
 	
+	public ArrayList getAllNameFunction(String type, String nmSet){
+		//System.out.println(" getModel :" + type + " " + id);
+		switch(type){
+		//case "Recursive": return dbRec.getRecursive(id); 
+		case "Calculus": return dbCalc.getAllNameLambda(nmSet); 
+		default: return null;
+		}
+	}	
+	
 	public void editCommand(String type, Model model, int id, Command cmd){
 		switch(type){
 		case "Computer" : dbComp.editInstruction(model.id, (Instruction)cmd); break;
