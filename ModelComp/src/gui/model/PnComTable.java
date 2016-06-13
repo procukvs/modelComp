@@ -128,7 +128,8 @@ public class PnComTable extends JPanel {
 				col = model.getMain().length() + model.getAdd().length() + model.getNo().length() + 3;
 				break;
 			//case "Post": col = 1; break;
-			//case "Computer": col = 1; break;	
+			//case "Computer": col = 1; break;
+			case "Recursive": col = 6; break;	
 			}
 			rule = (Integer)dbm.getValueAt(r,col);		
 		}

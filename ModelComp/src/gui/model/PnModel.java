@@ -51,6 +51,8 @@ public class PnModel extends JPanel {
 		pComButtons.setEnv(fMain,pDescription,  pComTable); 
 	}                                            // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!  
 	
+	public PnDescription getDescription(){return pDescription;}
+	
 	public void setModel(String type, Model model) {
 		this.model = model;
 		this.type = type;
@@ -62,7 +64,7 @@ public class PnModel extends JPanel {
    	}
 	
 	public void setLookAndFeel(String className){
-		//program.setLookAndFeel(className);
+		pComButtons.setLookAndFeel(className);
 	}
 
 }

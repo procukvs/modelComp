@@ -363,10 +363,26 @@ public class DbAccess {
 	}
 	
 	public ArrayList getAllNameFunction(String type, String nmSet){
-		//System.out.println(" getModel :" + type + " " + id);
+		ArrayList nmFunct = new ArrayList();
 		switch(type){
-		//case "Recursive": return dbRec.getRecursive(id); 
-		case "Calculus": return dbCalc.getAllNameLambda(nmSet); 
+		case "Recursive": 
+		case "Calculus": 
+			sql = "select name from " + tableCommand(type) +
+				   " where idModel = (select id from " + tableModel(type) + " where name = '" + nmSet + "'" +
+				                      " and section = '" + Parameters.getSection()+ "')" ; //+
+				  // " order by num";
+			//System.out.println("test: getAllNameFunction :" + sql);
+			try{ 
+				db.s.execute(sql);
+		        ResultSet rs = db.s.getResultSet();
+		        while((rs!=null) && (rs.next())) {
+					nmFunct.add(rs.getString(1));
+		        } 
+			}catch (Exception e){
+				System.out.println("ERROR: getAllNameFunction :" + sql + e.getMessage());
+			}
+			return nmFunct;
+			//return dbCalc.getAllNameLambda(nmSet); 
 		default: return null;
 		}
 	}	

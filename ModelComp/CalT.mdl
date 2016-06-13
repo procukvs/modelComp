@@ -1,9 +1,0 @@
-'Тестовий набір
-Calculus test
-   I = \x.x;
-   ' 
-   K = \x y. x ;
-   S = \f g x . f x (g x);
-   skk = S K K;
-   zero = \f x . x;
-end test

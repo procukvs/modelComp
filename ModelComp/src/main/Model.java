@@ -47,6 +47,7 @@ public class Model {
 	public void dbRenameState(String in,String out) {}
 	public String dbInsertModel(String nmInsert) { return "";}
 	public String dbInsertModel(int were, String nmInsert) { return "";}
+	public String dbInsertModel(int were, String nmModel, String nmFunction) { return "";}
 	
 	
 	private static String[][] titles = { 
@@ -142,7 +143,7 @@ public class Model {
 		return rs;
 	}
 	
-	// знаходить максимальний номер команди в програмi
+	// знаходить максимальний номер id !!! команди в програмi
 	public int findMaxNumber(){
 		int cnt = 0;
 		int num;

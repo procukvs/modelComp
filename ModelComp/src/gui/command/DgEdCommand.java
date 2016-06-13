@@ -4,10 +4,6 @@ import javax.swing.*;
 import javax.swing.tree.*;
 
 import gui.PnTree;
-import gui.command.DgEdCommand.LsCancel;
-import gui.command.DgEdCommand.LsStructure;
-import gui.command.DgEdCommand.LsTest;
-import gui.command.DgEdCommand.LsYes;
 
 import java.util.*;
 import java.awt.*;
@@ -140,4 +136,7 @@ public class DgEdCommand extends JDialog {
 	public Command getCommand() { return command;}
 	
 	public void setTreeVisible(boolean visible){ if (showTree != null) showTree.setVisible(visible);}
+	
+	
+
 }

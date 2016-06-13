@@ -20,7 +20,11 @@ public class Calculus extends Model {
 		return DbAccess.getDbCalculus().newCalculusAs(this);
 	}
 	
+
 	//-----work DB ------- 
+	public String dbInsertModel(int where, String nmModel, String nmFunction) {
+			return DbAccess.getDbCalculus().insertDeclLambda(this, where, nmModel, nmFunction);
+		}
 	public boolean dbDelete() {
 		 return DbAccess.getDbCalculus().deleteCalculus(this);
 	}
@@ -46,18 +50,18 @@ public class Calculus extends Model {
 		return res;
 	}			
 	
-	//знаходить імя виразу по замовчуванню : перше вільне з "base00", "base01",...
+	//знаходить імя виразу по замовчуванню : перше вільне з "base", "base00", "base01",...
 	public String findName(String base){
 		int us,i = 0;
 		NumberFormat suf = new DecimalFormat("00"); 
 		boolean isUse ;
-		String name;
+		String name = base;
 		do {
 			isUse = false; us = 0;
-			name = base + suf.format(i);
 			for(int j = 0; j < program.size(); j++){
 				if(((LambdaDecl) program.get(j)).getName().equals(name)) us++;
 			}
+			if (us>0) name = base + suf.format(i);
 			i++;
 		} while (us>0);
 		return name;

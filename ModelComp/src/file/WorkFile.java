@@ -544,11 +544,20 @@ public class WorkFile {
 			if (errorText.isEmpty()) exam(16, "символ =");
 		}
 		if (errorText.isEmpty()){
-		   while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){
-			 txBody = txBody + valueLex; get(); 
-		   }  
-		   exam (13,"символ ;");
+			// вводимо тіло функції !!!! всі символи до '\n' або ';'
+			//  ... в іншому випадку пропускаємо ВСІ проміжки 
+			while ((next != '\n') && (next != ';')){
+				valueLex = valueLex + next; getChar();
+			}
+			txBody = valueLex; 
+			get(); 
+			exam (13,"символ ;");
 		}
+		   //while ((lex!=13) && (lex!=4) && (lex!=23) && (lex!=10)){
+		   //  txBody = txBody + valueLex; get(); 
+		   //}  
+		   //exam (13,"символ ;");
+		//}
 		if (errorText.isEmpty())
 			return new Function(id, name, txBody, txComm);
 		else return null;
@@ -594,18 +603,8 @@ public class WorkFile {
 		int rank = 1;
 		if (lex == 4) {txComm = valueLex; get();}
 		name = valueLex;
-		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
 		exam(1, "ідентифікатор - імя виразу");
-		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
 		exam(16, "символ =");
-		//System.out.println("lambdaDecl: lex =" + lex + " valueLex ="+ valueLex);
-		/*
-		if (errorText.isEmpty()) {
-			if(lex == 3) rank = new Integer(valueLex);
-			exam(3, "натуральне число - арність функції");
-			if (errorText.isEmpty()) exam(16, "символ =");
-		}
-		*/
 		if (errorText.isEmpty()){
 			// вводимо тіло виразу !!!! всі символи до '\n' або ';'
 			//  ... в іншому випадку пропускаємо ВСІ проміжки 

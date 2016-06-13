@@ -89,7 +89,7 @@ public class FrMain extends JFrame {
 		pParTable = new PnParTable (db);
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		pModButtons = new PnModButtons(db);                // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
-		pModButtons.setEnv(this);                         // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
+		pModButtons.setEnv(this, pModel.getDescription());                         // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
 		//pModButtons.setFiles(showFiles);                     // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
 		pParButtons = new PnParButtons(db); 
 		pParButtons.setEnv(this, pParTable);
@@ -141,8 +141,8 @@ public class FrMain extends JFrame {
 					try {
 						UIManager.setLookAndFeel(plafClassName);
 						SwingUtilities.updateComponentTreeUI(FrMain.this);
-						//showModelButtons.setLookAndFeel(plafClassName);
-						//showModelOne.setLookAndFeel(plafClassName);
+						pModButtons.setLookAndFeel(plafClassName);
+						pModel.setLookAndFeel(plafClassName);
 					}
 					catch (Exception ex) { System.err.println(ex);}
 				}

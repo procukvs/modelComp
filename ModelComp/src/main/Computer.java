@@ -20,7 +20,7 @@ public class Computer extends Model {
 	
 	//-----work DB ------- 
 	public String dbInsertModel(int where, String nmInsert) {
-		return DbAccess.getDbComputer().insertComputer(this.id, where, nmInsert, this.findMaxNumber());
+		return DbAccess.getDbComputer().insertComputer(this, where, nmInsert);
 	}
 	public boolean  dbDelete() {
 		return DbAccess.getDbComputer().deleteComputer(this);
@@ -62,6 +62,21 @@ public class Computer extends Model {
 		}
 		return mr;
 	}
+	
+	// знаходить максимальне значення поля num в програмi
+	public int findMaxNum(){
+		int maxNum = 0;
+		int num;
+		if ((program != null) && (program.size() > 0)) {
+			for(int i = 0; i < program.size(); i++ ){
+				num = ((Instruction)program.get(i)).getNum();
+				if(maxNum < num) maxNum = num;
+			}	
+		}
+		return maxNum;
+	}
+	
+	
 	
 	public ArrayList <String> iswfNum(String num) {
 		ArrayList <String> mes = new ArrayList <String>();

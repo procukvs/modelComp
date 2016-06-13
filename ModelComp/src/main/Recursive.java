@@ -26,6 +26,11 @@ public class Recursive extends Model {
 	public boolean dbDelete() {
 		 return DbAccess.getDbRecursive().deleteRecursive(this);
 	}
+	
+	//-----work DB ------- 
+	public String dbInsertModel(int where, String nmModel, String nmFunction) {
+		return DbAccess.getDbRecursive().insertFunction(this, nmModel, nmFunction);
+	}
 	//=================================
 	private int limit, step;
 	private String reasonUndef;
@@ -231,16 +236,16 @@ public class Recursive extends Model {
 		}
 		return res;
 	}
-	//знаходить імя функції по замовчуванню : перше вільне з "base00", "base01",...
+	//знаходить імя функції по замовчуванню : перше вільне з "base", "base00", "base01",...
 	public String findName(String base){
 		int i = 0;
 		NumberFormat suf = new DecimalFormat("00"); 
 		boolean isUse;
-		String name;
+		String name=base;
 		do {
-			i++;
-			name = base + suf.format(i);
 			isUse = map.containsKey(name);
+			if (isUse) name = base + suf.format(i);
+			i++;
 		} while (isUse);
 		return name;
 	}

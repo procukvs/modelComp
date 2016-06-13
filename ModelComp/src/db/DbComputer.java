@@ -174,7 +174,7 @@ public class DbComputer {
 	
 	public void newInstruction(Computer comp, Instruction inst) {
 		int id = comp.id;
-		int maxNum = comp.findMaxNumber();
+		int maxNum = comp.findMaxNum();
 		try {
 			db.conn.setAutoCommit(false);
 			try{
@@ -241,26 +241,41 @@ public class DbComputer {
 	}
 	
 	//--------------------------------- all for insert !!!!!!!!!!
-	// вставити в програму компютера idModel програму компютера ins після команди where
-	//  ....maxId - найбільший id в програмі idModel
-	public String insertComputer(int idModel, int where, String ins, int maxId) {
+	// вставити в програму компютера comp програму компютера ins після команди where
+	//  ....maxId - найбільший id в програмі comp
+	//  ....maxNum - найбільший num в програмі comp
+	// якщо (where < maxNum), то програма ins ВСТАВЛЯЄТЬСЯ в програму comp, іначе ДОПИСУЄТЬСЯ до comp
+	public String insertComputer(Computer comp, int where, String ins) {
 		String res = "";
+		int maxNum = comp.findMaxNum();
+		int maxId = comp.findMaxNumber();
 		int idIns = getIdComputer(ins);
 		int k = getSizeProgram(idIns);
 		int idCom, num,reg1,reg2,next;
 		String cod, comm; 
 		boolean first = true;
+		//System.out.println("DbComputer:isertComputer--idModel=" + comp.id+".maxNum="+maxNum +".maxId="+maxId + ".where="+where +".ins="+ins + ".k="+k);
 		if ((idIns > 0) && (k>0)){
 			try {
 				st= db.conn.createStatement();
 				db.conn.setAutoCommit(false);
 				try{	
-					
-					sql = "update rInstruction set num = num + " + k + " where idModel = " + idModel + " and num > " + where;
+					//System.out.println("DbComputer:isertComputer=1");
+					// Програму com необхідно зробити стандартною !!!!!
+					sql = "update rInstruction set next = " + (maxNum+1) + "	where idModel = " + comp.id + " and cod = 'J' and next > " + (maxNum+1);
 					db.s.execute(sql);	
-					sql = "update rInstruction set next = next+ " + k + "	where idModel = " + idModel + " and cod = 'J' and next > " + where;
-					db.s.execute(sql);	
-			
+					if (where < maxNum ){
+						// якщо (where < maxNum), то програма ins ВСТАВЛЯЄТЬСЯ в програму comp
+						for (int i = maxNum; i > where; i--){
+							sql = "update rInstruction set num = num + "  + k + " where idModel = " + comp.id + " and num = " + i;
+							db.s.execute(sql);
+						}	
+						//System.out.println("DbComputer:isertComputer=2");
+						sql = "update rInstruction set next = next+ " + k + "	where idModel = " + comp.id + " and cod = 'J' and next > " + where;
+						db.s.execute(sql);	
+					}
+					// якщо (where = maxNum), то програма ins ДОПИСУЄТЬСЯ до програми comp
+					//System.out.println("DbComputer:isertComputer=3");
 					sql = "select id, num, cod, reg1, reg2, next, txComm from rInstruction where idModel = " + idIns + " order by num" ;
 					db.s.execute(sql);
 					rs = db.s.getResultSet();
@@ -268,20 +283,20 @@ public class DbComputer {
 						idCom = rs.getInt(1) + maxId; 
 						num = rs.getInt(2) + where; 
 						cod = rs.getString(3); reg1 = rs.getInt(4); reg2 = rs.getInt(5); next = rs.getInt(6);
+						// коригування програми ins до стандартної!!!!!
+						if (next > k+1) next = k+1; 
 						comm = rs.getString(7);
 						if(first){
 							comm = ins + " " + comm; first = false;
 						}
 						else comm = ins.charAt(0) + " " + comm;
-						sql = "insert into rInstruction values(" + idModel + "," + idCom + "," + num + ",'" + cod + "'," +
+						//System.out.println("DbComputer:isertComputer=4 -- idCom=" + idCom + " num=" + num);
+						sql = "insert into rInstruction values(" + comp.id + "," + idCom + "," + num + ",'" + cod + "'," +
 						                                         reg1 + "," + reg2 + "," + next + ",'" + comm + "')"; 
 						st.execute(sql);
 					}	
-					//sql = "insert into rInstruction select " + idModel + ",id+" + maxId + ",num+" + where + ", cod, reg1, reg2, next, txComm "+ 
-					//					" from  rInstruction where idModel = " + idIns;
-					//db.s.execute(sql);
 					sql = "update rInstruction set next = next+ " + where + 
-							" where idModel = " + idModel + " and cod = 'J' and num > " + where + " and num < " + (where + k+1);
+							" where idModel = " + comp.id + " and cod = 'J' and num > " + where + " and num < " + (where + k+1);
 					db.s.execute(sql);	
 					db.conn.commit();
 				}	catch (Exception e) {

@@ -190,6 +190,29 @@ public class DbRecursive {
 		 }  			
 	}
 	
+	
+	
+	//--------------------------------- all for insert !!!!!!!!!!
+	// вставити в набір номер idModel функцію з іменем nmDecl з набору з іменем nmModel 
+	public String insertFunction(Recursive model,  String nmModel, String nmDecl) {
+		String res = "";
+		Function fun = getFunction(nmModel, nmDecl);
+		//int maxNum = getMaximumNum(model.id);
+		if (fun!=null){
+			try {
+				sql = "insert into fFunction values(" + model.id + "," + (model.findMaxNumber()+1) + ",'" + model.findName(nmDecl) +
+						"','" + fun.gettxBody() + "','" + fun.gettxComm() + "')";
+				db.s.execute(sql);
+				}	
+			catch (Exception e) { System.out.println(e.getMessage());}
+		}
+		else res = "insertFunction: Не знайдено в наборі " + nmModel + " функцію з іменем " + nmDecl  + "!" ;
+		return res;
+	}
+	
+	
+	
+	
 	public void deleteFunction(int idModel, int id){
 		try {
 			db.conn.setAutoCommit(false);
@@ -205,5 +228,24 @@ public class DbRecursive {
 			db.conn.setAutoCommit(true);
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}	
+	}	
+	
+	public Function getFunction(String nmModel, String nmFunct){
+		sql = "select txBody, txComm from fFunction "  +
+			  " where idModel = (select id from fRecursive where name = '" + nmModel + "'" +
+				                      " and section = '" + Parameters.getSection()+ "') " + 
+			  "   and name = '" + nmFunct + "'"; //+
+			//System.out.println("DbCalculus: getLambdaDecl :" + sql);
+		try{ 
+			db.s.execute(sql);
+	        rs = db.s.getResultSet();
+	        if((rs!=null) && (rs.next())) {
+				return new Function(0,nmFunct,rs.getString(1), rs.getString(2) );
+	        } 
+	        else return null;
+		}catch (Exception e){
+			System.out.println("ERROR: getFunction:" + sql + e.getMessage());
+			return null;
+		}
 	}	
 }

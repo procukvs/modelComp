@@ -16,11 +16,13 @@ public class PnModButtons extends JPanel {
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
+	private PnDescription pDescription;
 	private String type = "Algorithm";
 	private Model model = null;
 	private DgEval dEval; 
 	private JTextField nmFile;
 	
+	private JButton test;
 	private JButton add;
 	private JButton addBase;
 	private JButton delete;
@@ -50,6 +52,7 @@ public class PnModButtons extends JPanel {
 		last.setMaximumSize(new Dimension(20,20));
 		version = new JLabel(Parameters.getVersion());  
 		section = new JLabel(""); 
+		test = new JButton("Перевірка");
 		add = new JButton("Новий");
 		addBase = new JButton("Новий на основі");
 		//JButton report = new JButton("Звіти");
@@ -94,6 +97,8 @@ public class PnModButtons extends JPanel {
 		fileBox.add(Box.createHorizontalStrut(5));
 		//----------------------------------
 		Box buttons = Box.createHorizontalBox();
+		buttons.add(test);
+		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(add);
 		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(addBase);
@@ -117,6 +122,8 @@ public class PnModButtons extends JPanel {
 		prev.addActionListener(new SelectPrev());
 		next.addActionListener(new SelectNext());
 		last.addActionListener(new SelectLast());
+		
+		test.addActionListener(new LsTesting());
 		add.addActionListener(new Add());
 		addBase.addActionListener(new AddAs());
 		delete.addActionListener(new ModelDelete());
@@ -127,8 +134,9 @@ public class PnModButtons extends JPanel {
 		quit.addActionListener(new Quit());
 	}
 	
-	public void setEnv(FrMain fMain){   // !!!!!!!!!! ref !!!!!!!!!!!!!!!!!!!!!!
+	public void setEnv(FrMain fMain, PnDescription pDescription){   // !!!!!!!!!! ref !!!!!!!!!!!!!!!!!!!!!!
 		this.fMain = fMain;
+		this.pDescription = pDescription;
 	}
 
 	public void setModel(String type, Model model) {
@@ -146,7 +154,7 @@ public class PnModButtons extends JPanel {
 		work.setText("Рoбота з " + Model.title(type, 5));
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
-	
+		test.setVisible(!type.equals("Computer"));
 	}
 	
 	public void setLookAndFeel(String className){
@@ -191,6 +199,17 @@ public class PnModButtons extends JPanel {
 			selected = r;
 			if (r==0) fMain.setModel(type, 0);
 			 else fMain.setModel(type, db.getNumber(type, selected));
+		}	
+	}
+	
+	class LsTesting implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			if (model != null){
+				if (pDescription.testAndSave()){
+					String[] text= model.iswfModel();
+					if (text != null) JOptionPane.showMessageDialog(PnModButtons.this,text);
+				}	
+			}
 		}	
 	}
 	

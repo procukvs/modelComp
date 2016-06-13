@@ -56,7 +56,27 @@ public class DbCalculus {
 		}
 		return program;
 	}	
-
+	
+	public LambdaDecl getLambdaDecl(String nmModel, String nmFunct){
+		sql = "select txBody, txComm from eLambda "  +
+			  " where idModel = (select id from eCalculus where name = '" + nmModel + "'" +
+				                      " and section = '" + Parameters.getSection()+ "') " + 
+			  "   and name = '" + nmFunct + "'"; //+
+			//System.out.println("DbCalculus: getLambdaDecl :" + sql);
+		try{ 
+			db.s.execute(sql);
+	        rs = db.s.getResultSet();
+	        if((rs!=null) && (rs.next())) {
+				return new LambdaDecl(0,0,nmFunct,rs.getString(1), rs.getString(2) );
+	        } 
+	        else return null;
+		}catch (Exception e){
+			System.out.println("ERROR: getLambdaDecl :" + sql + e.getMessage());
+			return null;
+		}
+	}	
+	
+/*
 	public ArrayList getAllNameLambda(String nmSet) {
 		ArrayList nmLambda = new ArrayList();
 		sql = "select name from eLambda " +
@@ -77,7 +97,7 @@ public class DbCalculus {
 		}
 		return nmLambda;
 	}	
-	
+*/	
 	// модифікує відредагований набір
 	public void editCalculus(Calculus model) {
 		int rows;
@@ -236,6 +256,41 @@ public class DbCalculus {
 		}	
 		catch (Exception e) { System.out.println(e.getMessage());}
 		
+	}
+	
+	//--------------------------------- all for insert !!!!!!!!!!
+	// вставити в набір номер idModel вираз з іменем nmDecl з набору з іменем nmModel після виразу where
+	//  ....maxId - найбільший id в програмі idModel
+	public String insertDeclLambda(Calculus model, int where, String nmModel, String nmDecl) {
+		String res = "";
+		LambdaDecl ld = getLambdaDecl(nmModel, nmDecl);
+		int maxNum = getMaximumNum(model.id);
+		if (ld!=null){
+			try {
+				db.conn.setAutoCommit(false);
+				try{
+					 // потрібно перемістити вирази, щоб звільнити місце !!!                               
+					for (int i = maxNum; i > where; i--){
+						sql = "update eLambda set num = num+1" + "	where idModel = " + model.id + " and num = " + i;
+						db.s.execute(sql);
+					}
+					sql = "insert into eLambda values(" + model.id + "," + (model.findMaxNumber()+1) + 
+							           ","  + (where+1) + ",'" + model.findName(nmDecl) +
+							           "','" + ld.gettxBody() + "','" + ld.gettxComm() + "')";			
+					//System.out.println("DbCalculus:insertDeclLambda:" + sql);
+					db.s.execute(sql);
+					db.conn.commit();
+				}	catch (Exception e) {
+					System.out.println("ERROR:DbCalculus:insertDeclLambda:" + e.getMessage() );
+					res = "ERROR:DbCalculus:insertDeclLambda:" + e.getMessage();
+					db.conn.rollback();
+				}  
+				db.conn.setAutoCommit(true);
+			}	
+			catch (Exception e) { System.out.println(e.getMessage());}
+		}
+		else res = "insertDeclLambda: Не знайдено в наборі " + nmModel + " вираз з іменем " + nmDecl  + "!" ;
+		return res;
 	}
 	
 	public void deleteDeclLambda(int idModel, LambdaDecl ld){

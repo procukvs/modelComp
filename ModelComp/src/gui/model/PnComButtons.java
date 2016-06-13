@@ -6,9 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 import db.*;
-import gui.FrMain;
-import gui.command.DgEdCommand;
-import gui.eval.DgEval;
+import gui.*;
+import gui.command.*;
+import gui.eval.*;
 import gui.model.*;
 import main.*;
 
@@ -17,16 +17,14 @@ public class PnComButtons extends JPanel {
 	private String type = "Algorithm";
 	private PnComTable pComTable;
 	private PnDescription pDescription;
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
 	private Model model = null;
 	private DgEdCommand dEdCommand;
 	private Command command;
-	//private DgEval showWork; 
+	private DgInsert dInsert; 
 	
 	private JLabel selection;
-	
-	private JButton test;
+	//private JButton test;
 	private JButton add;
 	private JButton addAs ;
 	private JButton up ;
@@ -34,13 +32,11 @@ public class PnComButtons extends JPanel {
 	private JButton rename;
 	private JButton insert ;
 	private JButton see;
-	
-	
-	
+		
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	public PnComButtons(DbAccess db){                              //!!!!!!!!!!!!! ref!!!!!!!!!!!!!!!!!!		
+	public PnComButtons(DbAccess db){                             
 		//сформувати необхідні gui-елементи 
-		selection = new JLabel("  0:0 " );  ///+ dbm.getRowCount());  !!!!!!!!!!!!!!!!!!
+		selection = new JLabel("  0:0 " );  ///+ dbm.getRowCount());  
 		JButton first = new JButton("|<");
 		first.setMaximumSize(new Dimension(20,20));
 		JButton prev = new JButton("<");
@@ -49,7 +45,7 @@ public class PnComButtons extends JPanel {
 		next.setMaximumSize(new Dimension(20,20));
 		JButton last = new JButton(">|");
 		last.setMaximumSize(new Dimension(20,20));
-		test = new JButton("Перевірка");
+		//test = new JButton("Перевірка");
 		add = new JButton("Нова");
 		addAs = new JButton("Новий на основі");
 		JButton edit = new JButton("Редагувати");
@@ -63,9 +59,10 @@ public class PnComButtons extends JPanel {
 		
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		dEdCommand = new DgEdCommand(fMain);
-		//showWork = new DgEval(fMain);
+		dInsert = new DgInsert(fMain);
 		
 		this.db = db;
+		
 		//=================================
 		// формуємо розміщення
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -79,12 +76,10 @@ public class PnComButtons extends JPanel {
 		select.add(Box.createHorizontalGlue());
 		//-----------------------------
 		Box buttons = Box.createHorizontalBox();
-		buttons.add(test);
+		//buttons.add(test);
 		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(add);
 		buttons.add(Box.createHorizontalStrut(5));
-		//buttons.add(addAs);
-		//buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(edit); 
 		buttons.add(Box.createHorizontalStrut(5));
 		buttons.add(delete);
@@ -103,35 +98,32 @@ public class PnComButtons extends JPanel {
 		add(select);
 		add(buttons);	
 		add(Box.createVerticalStrut(5));
-		// встановити слухачів !!!	
 		
+		// встановити слухачів !!!	
 		first.addActionListener(new SelectFirst());
 		prev.addActionListener(new SelectPrev());
 		next.addActionListener(new SelectNext());
 		last.addActionListener(new SelectLast());
 		
-		test.addActionListener(new LsTesting());
+		//test.addActionListener(new LsTesting());
 		add.addActionListener(new LsAdd());
 		edit.addActionListener(new LsEdit());
 		delete.addActionListener(new LsDelete());
+		//delete.addActionListener(new LsInsertLumbda());
 		up.addActionListener(new LsUp());
 		down.addActionListener(new LsDown());
 		addAs.addActionListener(new LsAddAs());
 		rename.addActionListener(new LsRename());
-		insert.addActionListener(new LsInsert());
-		//eval.addActionListener(new LsEval());	
+		//insert.addActionListener(new LsInsert());
+		insert.addActionListener(new LsInsertNew());
 	}
 	
-	public void setEnv(FrMain owner, PnDescription pDescription, PnComTable table){     // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+	public void setEnv(FrMain owner, PnDescription pDescription, PnComTable table){   
 		fMain = owner;  
-		this.pComTable = table;// !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+		this.pComTable = table;
 		this.pDescription = pDescription;
 	}         	
-	/*
-	public void setTable(PComTable table){
-		this.table = table;
-	}
-	*/
+	
 	public void setModel(String type, Model model){
 		boolean isVisible = type.equals("Machine");
 		boolean rec = type.equals("Recursive") ;
@@ -139,15 +131,14 @@ public class PnComButtons extends JPanel {
 		this.type = type;
 		this.model = model;
 		
-		test.setVisible(!comp);
+		//test.setVisible(!comp);
 		add.setText(Model.title(type, 9));
 		addAs.setVisible(isVisible);
 		up.setVisible(!isVisible && !rec);
 		down.setVisible(!isVisible && !rec);
 		rename.setVisible(isVisible);
-		insert.setVisible(isVisible || comp);
+		insert.setVisible(isVisible || comp || rec || type.equals("Calculus"));
 		see.setVisible(false);
-	//	eval.setVisible(rec  || type.equals("Calculus"));
 	}	
 	
 	public void setSelection(String txt){
@@ -157,14 +148,13 @@ public class PnComButtons extends JPanel {
 	public void setLookAndFeel(String className){
 		try {
 			UIManager.setLookAndFeel(className);
-			//if(showWork != null) SwingUtilities.updateComponentTreeUI(showWork);
+			if(dInsert != null) SwingUtilities.updateComponentTreeUI(dInsert);
 			if(dEdCommand != null) SwingUtilities.updateComponentTreeUI(dEdCommand);
 		}
 		catch (Exception ex) { System.err.println(ex);}
 	}
 	
 	// Класи слухачі 
-	
 	class SelectFirst implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			pComTable.showTable(false, 1);
@@ -186,10 +176,7 @@ public class PnComButtons extends JPanel {
 			pComTable.showTable(false, selected);   //dbm.getRowCount());
 		}	
 	}
-	
-	
-	
-	
+	/*	
 	class LsTesting implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null){
@@ -200,6 +187,7 @@ public class PnComButtons extends JPanel {
 			}
 		}	
 	}
+	*/
 	class LsAdd implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (model != null) {
@@ -347,9 +335,60 @@ public class PnComButtons extends JPanel {
 				}	
 			}
 		}
-		
+	}
+  	 	
+ 	class LsAddAs implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			if (model != null){
+				if (pDescription.testAndSave()){
+					int row = pComTable.selectedRule();
+					if (row > 1) {
+						JOptionPane.showMessageDialog(PnComButtons.this,"New As..." + row);
+					}
+				}
+			}
+		}	
+	} 
+ 	 	
+ 	class LsInsertNew implements ActionListener  {
+		public void actionPerformed(ActionEvent event){
+			String nmModel = "", nmFunction="";
+			if (model != null) {
+				if (pDescription.testAndSave()){
+					int row = pComTable.numberSelectedRow();
+					dInsert.setInsert(type, model, db, row);
+					dInsert.show();
+					nmModel = dInsert.getNmModel();
+					nmFunction = dInsert.getNmFunction();
+					if ((nmModel !=null) &&!nmModel.isEmpty()){
+						//System.out.println("PnComButton:LsInsertNew:1 " + type + " id= " + model.id);
+						String text = "Insert Model=" + nmModel + "..Function=" + nmFunction + " after=" + row;
+						switch(type){
+						case "Computer" : text = model.dbInsertModel(row, nmModel);  break;
+						case "Machine"  : text = model.dbInsertModel(nmModel);  break;
+						case "Recursive":  
+						case "Calculus" : text = model.dbInsertModel(row, nmModel, nmFunction); break;
+						default: break;
+						}	
+						/*					
+						if (type.equals("Computer"))
+							text = model.dbInsertModel(row, nmModel);   //(String)res);
+						else if (type.equals("Machine")) text = model.dbInsertModel(nmModel);      //(String)res);
+						else if (type.equals("Calculus")) text = model.dbInsertModel(row,nmModel, nmFunction);
+						else if (type.equals("Recursive")) text = model.dbInsertModel(row, nmModel, nmFunction);
+						*/
+						//System.out.println("PnComButton:LsInsertNew:2" + type + " id= " + model.id);		
+						if (text.isEmpty()) fMain.setModel(type, model.id);
+						else JOptionPane.showMessageDialog(PnComButtons.this,text);
+					}
+				}
+			}
+		}	
 	}
  	
+ 	/*
+ 	  Перша версія вставки програми -- працююча 
+ 	  --- замінена на більш універсальну 
  	class LsInsert implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			if (pDescription.testAndSave()){
@@ -385,21 +424,12 @@ public class PnComButtons extends JPanel {
 				}
 			}
 		}	
-	}
-	
- 	
- 	class LsAddAs implements ActionListener  {
-		public void actionPerformed(ActionEvent event){
-			if (model != null){
-				if (pDescription.testAndSave()){
-					int row = pComTable.selectedRule();
-					if (row > 1) {
-						JOptionPane.showMessageDialog(PnComButtons.this,"New As..." + row);
-					}
-				}
-			}
-		}	
-	} 
+	}	
+ 	*/
+ 	 	 	 	
+   /*	
+ 	Перша версія створення діалогового вікна напряму!!!! Через створення панелі, котру потім вставляємо
+ 	  ---- проблеми взаємодії двох випадаючих списків -- похоже незалежна !!!
 	class LsInsertLumbda implements ActionListener  {
  		String init;
  		JTextField newState;
@@ -414,13 +444,12 @@ public class PnComButtons extends JPanel {
 				String text = "";
 				String fstSet ="";
 				int id=0;
-				aSet = db.getAllModel("Calculus");
-				if (aSet.size()>1) {     // !name.isEmpty()) {
+				aSet = db.getAllModel(type);
+				if (aSet.size()>1) {    
 					// формуємо Діалогове вікно "Select function"
-					 String[] textButtons = {"Select", "Вийти"};
+					 String[] textButtons = {"Створити копію", "Вийти"};
 					 JPanel panel = new JPanel();
-					// init = ((Machine)model).newState();
-					 panel.add(new JLabel("Set "));
+					 panel.add(new JLabel("Набір "));
 					 cbSet = new JComboBox();
 					 for (int i = 0; i < aSet.size(); i++){
 							String name1 = (String)aSet.get(i);
@@ -432,30 +461,16 @@ public class PnComButtons extends JPanel {
 					 panel.add(cbSet);
 					
 					 what = new JLabel("Expr ");
-							 panel.add(what);
-					 //id = db.getModelId("Calculus", fstSet);
-					 aSet = db.getAllNameFunction("Calculus", fstSet);
+					 panel.add(what);
 					 cbName = new JComboBox();
-					 for (int i = 0; i < aSet.size(); i++){
-						cbName.addItem((String)aSet.get(i));
-					 }
-					 //newState = new JTextField(3);
-					 //newState.setText(init);
-					 //panel.add(newState);
+					 setNames(fstSet);
 					 panel.add(cbName);
-			         //newState.addActionListener(new LsText());
-					 cbSet.addActionListener(new LsSet());
+			       	 cbSet.addActionListener(new LsSet());
 					 int res = JOptionPane.showOptionDialog(PnComButtons.this, panel, "Select function",
 							 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
 					 if (res == JOptionPane.OK_OPTION){
-						String nmSet = (String)cbSet.getSelectedItem();//cbName.getSelectedIndex()//newState.getText();
+						String nmSet = (String)cbSet.getSelectedItem();
 						String nmFunc = (String)cbName.getSelectedItem();
-						//if (!((Machine)model).isState(name1)) {
-						//	model.dbRenameState(name, name1);
-						//	fMain.setModel(type, model.id);
-						//	pComTable.showRow(false,model.findCommand(name1)+1);
-						//}
-						//else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
 						text = "select " + nmSet + "  ==  " + nmFunc; 
 					 }
 					 if(!text.isEmpty())  JOptionPane.showMessageDialog(PnComButtons.this, text);
@@ -465,21 +480,100 @@ public class PnComButtons extends JPanel {
 		// клас-обробник введення інформації в полі  cbSet
 		class LsSet implements ActionListener  {
 			public void actionPerformed(ActionEvent event){
-				String nmSet = (String)cbSet.getSelectedItem();
-				 aSet = db.getAllNameFunction("Calculus", nmSet);
-				 //cbName = new JComboBox();
-				 cbName.removeAllItems();
-				 for (int i = 0; i < aSet.size(); i++){
-					cbName.addItem((String)aSet.get(i));
-				 }
-				//if (((Machine)model).isState(name1)) {
-				//	JOptionPane.showMessageDialog(PnComButtons.this, 
-				//			"Програма машини " + model.name + " вже використовує стан " + name1 + " !");
-				//	newState.setText(init);
-				//}	
+				setNames((String)cbSet.getSelectedItem());
+				
 			}
 		}
-		
+		private void setNames(String nmSet){
+			 aSet = db.getAllNameFunction(type, nmSet);
+			 cbName.removeAllItems();
+			 for (int i = 0; i < aSet.size(); i++){
+				cbName.addItem((String)aSet.get(i));
+			 }
+		}
 	}
- 	
+ 
+	*/
+	
+	/*
+	    // Друга версія варіантів створення діалогового вікна -- вставка панелі в  JOptionPane.showOptionDialog
+	    // ... в цілому працює -- є проблеми взаємодії двох випадаючих списків !!! -- похоже це незалежна проблема
+	//private PnSelectFunction panel;
+	//panel = new PnSelectFunction();
+	   
+	class LsInsertLumbda1 implements ActionListener  {
+ 		public void actionPerformed(ActionEvent event){
+ 			String text = "";
+			if (model != null){
+				// формуємо Діалогове вікно "Select function"
+				String[] textButtons = {"Створити копію", "Вийти"};
+				panel.setPanel(db,type, model.name);
+				text = "";
+				int res = JOptionPane.showOptionDialog(PnComButtons.this, panel, "Select function",
+							 		JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, textButtons, null);
+				if (res == JOptionPane.OK_OPTION){
+						String nmSet = panel.getSet();
+						String nmFunc = panel.getFunction();
+						text = "select " + nmSet + "  ==  " + nmFunc; 
+					 }
+				if(!text.isEmpty())  JOptionPane.showMessageDialog(PnComButtons.this, text);
+			} 
+		}
+	}
+	
+	class PnSelectFunction extends JPanel {
+		private DbAccess db;
+		private String type;
+		private JComboBox cbSet;
+ 		private JComboBox cbName;
+ 		private JLabel what;
+ 		ArrayList aSet, aSet1; 
+ 		
+		PnSelectFunction(){
+			add(new JLabel("Набір "));
+			cbSet = new JComboBox();
+			add(cbSet);
+			what = new JLabel("Expr ");
+			add(what);
+			cbName = new JComboBox();
+			add(cbName);
+		}
+		public void setPanel(DbAccess db, String type, String nmModel){
+			this.db = db;
+			this.type = type;
+			String fstSet="";
+		
+			cbSet.removeAllItems();
+			aSet = db.getAllModel(type);
+			for (int i = 0; i < aSet.size(); i++){
+				String name1 = (String)aSet.get(i);
+				if(!name1.equals(nmModel)) {
+					cbSet.addItem(name1);
+					if(fstSet.isEmpty()) fstSet = name1;
+				}
+			}
+			setNames(fstSet);
+			cbSet.addActionListener(new LsSetInt());
+		}
+		public String getSet(){
+			return (String)cbSet.getSelectedItem();
+		}
+		public String getFunction(){
+			return (String)cbName.getSelectedItem();
+		}
+		private void setNames(String nmSet){
+			 aSet1 = db.getAllNameFunction(type, nmSet);
+			 System.out.println("PnComButtons:PnSelectFunction: setNames " + nmSet + " " + aSet1.size()); 
+			 cbName.removeAllItems();
+			 for (int i = 0; i < aSet1.size(); i++){
+				cbName.addItem((String)aSet1.get(i));
+			 }
+		}
+		class LsSetInt implements ActionListener  {
+			public void actionPerformed(ActionEvent event){
+				setNames((String)cbSet.getSelectedItem());
+			}
+		}
+	}
+	*/
 }
