@@ -13,7 +13,7 @@ import gui.model.*;
 import main.*;
 
 public class PnComButtons extends JPanel {
-	private DbAccess db;
+	//private DbAccess db;
 	private String type = "Algorithm";
 	private AllModels env=null;
 	
@@ -28,7 +28,7 @@ public class PnComButtons extends JPanel {
 	private JLabel selection;
 	//private JButton test;
 	private JButton add;
-	private JButton addAs ;
+	//private JButton addAs ;
 	private JButton up ;
 	private JButton down ;
 	private JButton rename;
@@ -49,7 +49,7 @@ public class PnComButtons extends JPanel {
 		last.setMaximumSize(new Dimension(20,20));
 		//test = new JButton("Перевірка");
 		add = new JButton("Нова");
-		addAs = new JButton("Новий на основі");
+		//addAs = new JButton("Новий на основі");
 		JButton edit = new JButton("Редагувати");
 		JButton delete = new JButton("Вилучити");
 		up = new JButton("Перемістити вверх");
@@ -63,7 +63,7 @@ public class PnComButtons extends JPanel {
 		dEdCommand = new DgEdCommand(fMain);
 		dInsert = new DgInsert(fMain);
 		
-		this.db = db;
+		//this.db = db;
 		
 		//=================================
 		// формуємо розміщення
@@ -114,7 +114,7 @@ public class PnComButtons extends JPanel {
 		//delete.addActionListener(new LsInsertLumbda());
 		up.addActionListener(new LsUp());
 		down.addActionListener(new LsDown());
-		addAs.addActionListener(new LsAddAs());
+		//addAs.addActionListener(new LsAddAs());
 		rename.addActionListener(new LsRename());
 		//insert.addActionListener(new LsInsert());
 		insert.addActionListener(new LsInsertNew());
@@ -127,6 +127,7 @@ public class PnComButtons extends JPanel {
 	}         	
 	
 	public void setModel(String type, Model model){
+		/*
 		boolean isVisible = type.equals("Machine");
 		boolean rec = type.equals("Recursive") ;
 		boolean comp = type.equals("Computer");
@@ -135,17 +136,34 @@ public class PnComButtons extends JPanel {
 		
 		//test.setVisible(!comp);
 		add.setText(Model.title(type, 9));
-		addAs.setVisible(isVisible);
+		//addAs.setVisible(isVisible);
 		up.setVisible(!isVisible && !rec);
 		down.setVisible(!isVisible && !rec);
 		rename.setVisible(isVisible);
 		insert.setVisible(isVisible || comp || rec || type.equals("Calculus"));
 		see.setVisible(false);
+		*/
 	}	
 	
 	public void show(AllModels env){
+		String text = "програму";
 		this.env = env; 
-		System.out.println("PnCommButtons: show="+env.getType()+".."+env.getPos());
+		type = env.getType();
+		model = env.getModel();
+		boolean isVisible = type.equals("Machine");
+		boolean rec = type.equals("Recursive") ;
+		boolean comp = type.equals("Computer");
+		boolean calc = type.equals("Calculus");
+		add.setText(Model.title(type, 9));
+		if(rec) text = "функцію";
+		if(calc) text = "вираз";
+		insert.setText("Вставити "+ text);
+		up.setVisible(!isVisible && !rec);
+		down.setVisible(!isVisible && !rec);
+		rename.setVisible(isVisible);
+		insert.setVisible(isVisible || comp || rec || type.equals("Calculus"));
+		see.setVisible(false);
+		//System.out.println("PnCommButtons: show="+env.getType()+".."+env.getPos());
 	}
 	public void setSelection(String txt){
 		selection.setText(txt);
@@ -323,8 +341,9 @@ public class PnComButtons extends JPanel {
 						if (res == JOptionPane.OK_OPTION){
 							String name1 = newState.getText();
 							if (!((Machine)model).isState(name1)) {
-								model.dbRenameState(name, name1);
-								fMain.setModel(type, model.id);
+								//model.dbRenameState(name, name1);
+								//fMain.setModel(type, model.id);
+								env.renameStateMachine(name, name1);
 								pComTable.showRow(false,model.findCommand(name1)+1);
 							}
 							else text = "Програма машини " + model.name + " вже використовує стан " + name1 + " !";
@@ -346,32 +365,19 @@ public class PnComButtons extends JPanel {
 			}
 		}
 	}
-  	 	
- 	class LsAddAs implements ActionListener  {
-		public void actionPerformed(ActionEvent event){
-			if (model != null){
-				if (pDescription.testAndSave()){
-					int row = pComTable.selectedRule();
-					if (row > 1) {
-						JOptionPane.showMessageDialog(PnComButtons.this,"New As..." + row);
-					}
-				}
-			}
-		}	
-	} 
- 	 	
+  
  	class LsInsertNew implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
 			String nmModel = "", nmFunction="";
 			if (model != null) {
 				if (pDescription.testAndSave()){
 					int row = pComTable.numberSelectedRow();
-					dInsert.setInsert(type, model, db, row);
+					dInsert.setInsert(type, model, env, row);
 					dInsert.show();
 					nmModel = dInsert.getNmModel();
 					nmFunction = dInsert.getNmFunction();
 					if ((nmModel !=null) &&!nmModel.isEmpty()){
-						//System.out.println("PnComButton:LsInsertNew:1 " + type + " id= " + model.id);
+						/*
 						String text = "Insert Model=" + nmModel + "..Function=" + nmFunction + " after=" + row;
 						switch(type){
 						case "Computer" : text = model.dbInsertModel(row, nmModel);  break;
@@ -380,16 +386,11 @@ public class PnComButtons extends JPanel {
 						case "Calculus" : text = model.dbInsertModel(row, nmModel, nmFunction); break;
 						default: break;
 						}	
-						/*					
-						if (type.equals("Computer"))
-							text = model.dbInsertModel(row, nmModel);   //(String)res);
-						else if (type.equals("Machine")) text = model.dbInsertModel(nmModel);      //(String)res);
-						else if (type.equals("Calculus")) text = model.dbInsertModel(row,nmModel, nmFunction);
-						else if (type.equals("Recursive")) text = model.dbInsertModel(row, nmModel, nmFunction);
-						*/
-						//System.out.println("PnComButton:LsInsertNew:2" + type + " id= " + model.id);		
 						if (text.isEmpty()) fMain.setModel(type, model.id);
 						else JOptionPane.showMessageDialog(PnComButtons.this,text);
+						*/
+						String text = env.insertModel(row, nmModel, nmFunction);
+						if (!text.isEmpty()) JOptionPane.showMessageDialog(PnComButtons.this,text);
 					}
 				}
 			}

@@ -60,14 +60,13 @@ public class PnModel extends JPanel {
 		this.type = type;
 		
 	   //	pDescription.setModel(type, model);
-		if (model == null )idModel = 0; else idModel = model.id;
+		//if (model == null )idModel = 0; else idModel = model.id;
 		//pComTable.setModel(type, model);
-       	pComButtons.setModel(type, model);
+       	//pComButtons.setModel(type, model);
    	}
 	
 	public void show(AllModels env){
 		this.env = env;
-		System.out.println("PnModel: show="+env.getType()+".."+env.getPos());
 		pDescription.show(env);
 		pComTable.show(env);
 		pComButtons.show(env);

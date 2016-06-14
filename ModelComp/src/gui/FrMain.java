@@ -189,9 +189,9 @@ public class FrMain extends JFrame {
 
 	public void show(AllModels env){
 		this.env = env;
-		    type=env.getType(); model= env.getModel();
-			pModel.setModel(type,model);
-			//pModButtons.setModel(type,model);
+		type=env.getType(); model= env.getModel();
+		setVisiblePane(type);
+		label.setText( Model.title(type, 1));
 		pModel.show(env);
 		pModButtons.show(env);
 	}

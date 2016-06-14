@@ -13,7 +13,8 @@ import db.*;
 public class DgInsert extends JDialog {
 	private String type = "Machine";
 	private Model model = null;
-	private DbAccess db;
+	//private DbAccess db;
+	private AllModels env=null;
 	
 	private String nmModel = "";
 	private String nmFunction = "";
@@ -86,11 +87,12 @@ public class DgInsert extends JDialog {
 		cancel.addActionListener(new LsCancel());
 	}
 
-	public void setInsert(String type, Model model, DbAccess db, int num){
+	public void setInsert(String type, Model model, AllModels env, int num){
 		String fstSet = "";
 		nmModel = ""; nmFunction = "";
 		this.type = type; this.model = model;
-		this.db = db;
+		this.env = env;
+		//this.db = db;
 		lFunction.setVisible(type.equals("Recursive")||type.equals("Calculus"));
 		cbFunction.setVisible(type.equals("Recursive")||type.equals("Calculus"));
 		switch(type){
@@ -114,7 +116,8 @@ public class DgInsert extends JDialog {
 		}	
 		
 		workModel = false;
-		aSet = db.getAllModel(type);
+		//aSet = db.getAllModel(type);
+		aSet = env.getAllModel();
 		cbModel.removeAllItems();
 		for (int i = 0; i < aSet.size(); i++){
 			String name1 = (String)aSet.get(i);
@@ -161,7 +164,8 @@ public class DgInsert extends JDialog {
 	private void setNames(String nmSet){
 		 cbFunction.removeAllItems();
 		 if ((nmSet!=null) && !nmSet.isEmpty()){
-			 aSet = db.getAllNameFunction(type, nmSet);
+			 //aSet = db.getAllNameFunction(type, nmSet);
+			 aSet = env.getAllNameFunction(nmSet);
 			 for (int i = 0; i < aSet.size(); i++){
 				 cbFunction.addItem((String)aSet.get(i));
 			 }

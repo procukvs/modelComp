@@ -43,7 +43,15 @@ public class AllModels {
 		section = Parameters.getSection();
 		setAll(0);
 	}
-	
+	public ArrayList <String> getAllModel(){
+		ArrayList <String> allNm = new ArrayList <String> ();
+		for(int i=0; i<list.size();i++) 
+			allNm.add(new String(list.get(i).getName()));
+		return allNm;
+	}
+	public ArrayList <String> getAllNameFunction(String nmSet){
+		return db.getAllNameFunction(type, nmSet);
+	}
 	public void getFirst(){
 		pos=0;	model=null;
 		if (list.size()> 0){
@@ -112,6 +120,24 @@ public class AllModels {
 		db.moveDown(type, model, row);
 		setAll(model.id);
 	}
+	public void renameStateMachine(String name, String name1){
+		model.dbRenameState(name, name1);
+		setAll(model.id);
+	}
+	public String insertModel(int row, String nmModel, String nmFunction){
+		String text = "";
+		switch(type){
+		case "Computer" : text = model.dbInsertModel(row, nmModel);  break;
+		case "Machine"  : text = model.dbInsertModel(nmModel);  break;
+		case "Recursive":  
+		case "Calculus" : text = model.dbInsertModel(row, nmModel, nmFunction); break;
+		default: break;
+		}	
+		if (text.isEmpty()) setAll(model.id);
+		return text;
+	}
+	
+	
 	public String inputModel(String nmFile){
 		String text = "";
 		WorkFile wf = WorkFile.getWorkFile();
