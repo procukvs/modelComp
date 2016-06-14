@@ -14,6 +14,8 @@ public class FrMain extends JFrame {
 	private DbAccess db;
 	private String type = "Algorithm";
 	private Model model = null;
+	private AllModels env=null;
+	
 	private JLabel label;
 	private PnModel pModel;
 	private PnParTable pParTable;
@@ -184,29 +186,56 @@ public class FrMain extends JFrame {
 	/*		
 	*/		
 	}
-		
+
+	public void show(AllModels env){
+		this.env = env;
+		    type=env.getType(); model= env.getModel();
+			pModel.setModel(type,model);
+			//pModButtons.setModel(type,model);
+		pModel.show(env);
+		pModButtons.show(env);
+	}
+	
 	class LsComputer implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {setModel("Computer",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			setModel("Computer",0);
+			Main.initial("Computer");
+		}	
 	}
 	
 	class LsAlgorithm implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {setModel("Algorithm",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			setModel("Algorithm",0);
+			Main.initial("Algorithm");
+		}	
 	}
 	
 	class LsMachine implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {setModel("Machine",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			setModel("Machine",0);
+			Main.initial("Machine");
+		}	
 	}
 	
 	class LsPost implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {setModel("Post",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			setModel("Post",0);
+			Main.initial("Post");
+		}	
 	}
 	
 	class LsRecursive implements ActionListener  {
-		public void actionPerformed(ActionEvent e) {setModel("Recursive",0);	}	
+		public void actionPerformed(ActionEvent e) {
+			setModel("Recursive",0);
+			Main.initial("Recursive");
+		}	
 	}
 	
 	class LsCalculus implements ActionListener {
-		public void actionPerformed(ActionEvent e) {setModel("Calculus",0);	}
+		public void actionPerformed(ActionEvent e) {
+			setModel("Calculus",0);
+			Main.initial("Calculus");
+		}
 	}
 	
 	class LsInput extends AbstractAction {
@@ -240,16 +269,18 @@ public class FrMain extends JFrame {
 	class LsQuit implements ActionListener  {
 		// закінчуємо всю роботу ---- закриваємо базу даних
 		public void actionPerformed(ActionEvent e) {
-		   	db.disConnect();  
-            System.exit(0);
+		   //	db.disConnect();  
+           // System.exit(0);
+            Main.closeAll();
 		}	
 	}
 	
 	class EndWork extends WindowAdapter {
 		// закінчуємо всю роботу ---- закриваємо базу даних
 		public void  windowClosed(WindowEvent e)  {
-	    	db.disConnect();  
-            System.exit(0);
+	    	//db.disConnect();  
+            //System.exit(0);
+			Main.closeAll();
 		}
 	}
 	

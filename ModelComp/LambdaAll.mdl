@@ -1,0 +1,186 @@
+'Спроба рекурсії
+Calculus Fix
+   '---true
+   true = \x y. x;
+   '---false
+   false = \x y. y;
+   '--- if
+   test = \l m n. l m n;
+   '--- Boolean
+   iszero = \n . n (\x . false) true;
+   '---  Arithmetic
+   succ = \n f x . f (n f x);
+   '---  Arithmetic
+   plus = \m n f x . n f (m f x);
+   '---  Arithmetic
+   mult = \m n f . m (n f);
+   '---  Arithmetic
+   pred = \n f x . n (\g h . h (g f)) (\u . x) (\x.x);
+   '-- Fix point
+   fixM = (\f .(\x. f(\y. x x y)) (\x. f (\y . x x y)));
+   '-- Fix point
+   fix = \f . (\x.f(x x)) (\x.f(x x));
+   '-- Example1
+   sumR = \sum n . test (iszero n) 0 (plus n (sum (pred n)));
+   '-- Recursive sum
+   sumRecur = fixM sumR;
+   '-- Example2
+   factR = \fact n . test (iszero n) 1 (mult n (fact (pred n)));
+   '-- factorial recursive
+   factRecur = fixM factR;
+end Fix
+
+'Set from article
+Calculus Lambda
+   'succ n = n+1
+   succ = \ x s z . s (x s z) ;
+   'addition x y = x+y
+   addition = \ x y . x succ y ;
+   'multiplication x y = x*y
+   multiplication = \ x y z . x (y z) ;
+   '-- true    ===Boolean
+   true = \ s z . s ;
+   '--false  ===Boolean
+   false = \ s z . z ;
+   '--and  ===Boolean
+   and = \ x y . x y false;
+   '--or  ===Boolean
+   or = \ x y . x true y ;
+   '--not  ===Boolean
+   not = \ x . x false true  ;
+   'test c t f = if c then t else f  ===Boolean
+   test = \ c t  f . c t f  ;
+   'isZero(0 )= true   isZero(n) = false n > 0
+   isZero = \ x . x false not false;
+   '-- Pair
+   pair = \f s x . x f s;
+   '-- Pair
+   fst = \p . p true;
+   '-- Pair
+   snd = \p . p false;
+   predZZ = pair  0 0;
+   predSS = \p. pair (succ (fst p) ) (fst p)  ;
+   'pred(0) = 0, pred(n) = n-1, n>0
+   pred = \m.snd(m predSS predZZ);
+   'subtract (x,y) = x-y
+   subtract = \x y. y pred x;
+   'grEq(x,y) = true <=> x>=y
+   grEq = \x y. isZero (x pred y);
+   'less(x,y) = true <=> x<y
+   less = \x y. not (grEq x y);
+   divZZ = pair  0 0;
+   'addRem(<x,y>) = <x+1,y>
+   addRem = \p. pair (succ (fst p)) (snd p);
+   'addDiv<x,y>) = <0,y+1>
+   addDiv = \p. pair 0  (succ (snd p));
+   'divSS(y, <r,q>) = if ((r+1)<y) then <r+1,q> else <0,q+1>
+   divSS = \y p. test (less (succ (fst p)) y) (addRem  p) (addDiv p);
+   'divide(x,y) = <x mod y, x div y> --divide(11,5) - 152077
+   divide = \x y. x  (divSS y) divZZ;
+   'remainder (x,y) = x mod y  -- remainder(11,5) -- 75317
+   remainder = \ x y . fst (divide x y) ;
+   'quotient(x,y) = x div y  -- quotient(11,5) -- 114467
+   quotient = \ x y . snd (divide x y) ;
+end Lambda
+
+'Використання пари для реалізації арифметики
+Calculus PairWork
+   '-- Boolean
+   true = \x y . x;
+   '-- Boolean
+   false = \x y . y;
+   iszero = \n . n (\x . false) true;
+   test = \t l n . t l n;
+   'plus x y = x+y  -- Arithmetic
+   plus = \x y s z . x s (y s z);
+   'multiply x y = x*y  -- Arithmetic
+   multiply = \x y . x (plus y) 0;
+   ' -- Pair
+   pair = \f s x . x f s;
+   ' -- Pair
+   fst = \p . p true;
+   ' -- Pair
+   snd = \p . p false;
+   '-- begin Fibonachi
+   fibZZ = pair 1 0;
+   '-- step Fibonachi
+   fibSS = \p . pair (plus (fst p) (snd p)) (fst p);
+   '-- Fibonachi
+   fib = \n . fst (n fibSS fibZZ);
+   '-- begin Factorial
+   facZZ = pair 1 1;
+   '-- step Factorial
+   facSS = \p . pair (multiply (fst p) (snd p)) (plus 1 (snd p));
+   '-- Factorial
+   fac = \n . fst (n facSS facZZ);
+end PairWork
+
+'Набір виразів  із Пратта
+Calculus Pratt
+   '-- Boolean
+   true = \x y . x;
+   '-- Boolean
+   false = \x y . y;
+   iszero = \n . n (\x . false) true;
+   test = \t l n . t l n;
+   ' -- Pair
+   pair = \f s x . x f s;
+   ' -- Pair
+   fst = \p . p true;
+   ' -- Pair
+   snd = \p . p false;
+end Pratt
+
+'Набір виразів  із Пратта
+Calculus PrattRec
+   '-- Boolean
+   true = \x y.x;
+   '-- Boolean
+   false = \x y.y;
+   iszero = \n.n(\x.false)true;
+   test = \ t l n.t l n;
+   'plus m n = m+n
+   plus = \m n s z . m s (n s z);
+   ' -- Pair
+   pair = \f s x . x f s;
+   ' -- Pair
+   fst = \p.p true;
+   ' -- Pair
+   snd = \p.p false;
+   ' -- pred zz
+   predZZ = pair 0 0;
+   ' -- pred ss
+   predSS = \p.pair (snd p) (plus 1 (snd p));
+   ' pred m = m-1, m>0,  pred 0 = 0
+   pred = \m.fst(m predSS predZZ);
+   ' -- rec zz == \ a
+   recZZ = \a.pair 0 a;
+   ' -- rec ss  \ h !!!!!!
+   recSS = \h p.pair (plus 1 (fst p)) (h (fst p) (snd p));
+   '   rec1 a h --> prime recursive   f(m) =R(a,h)
+   rec1 = \a h x.snd(x (recSS h) (recZZ a));
+   'signum(0) = 0 , signum(n) = 1, n>0
+   signum = rec1 0 (\x y.1);
+   'notsignum(0) = 1 , notsignum(n) = 0, n>0
+   notsignum = rec1 1 (\x y.0);
+   'subtract1(0) = 0 , subtract1(n) = n-1, n>0
+   subtract1 = rec1 0 (\x y.x);
+   ' -- rec2 zz ==  (N0->N0) -> N0-> (N0,N0) 
+   rec2ZZ = \a x1.pair 0 (a x1);
+   ' -- rec2SS:: (N0,N0) -> (N0->N0->N0->N0) -> N0 -> (N0,N0) 
+   rec2SS = \h x1 p. (pair  (plus 1 (fst p))  (h x1 (fst p) (snd p)));
+   '   rec2 ::  (N0->N0) -> (N0->N0._ N0-> N0) ->  N0-->N0->N0    recursive2   f(x1,x2) =R(a,h)
+   rec2 = \ a h x1 x2 . snd  (x2  (rec2SS  h  x1)  (rec2ZZ  a  x1));
+   '   addition(x,y) = x+y 
+   addition = rec2  (\x . x) (\x1 x2 x3 . plus 1 x3);
+end PrattRec
+
+'Тестовий набір
+Calculus test
+   I = \x.x;
+   ' 
+   K = \x y. x ;
+   S = \f g x . f x (g x);
+   skk = S K K;
+   zero = \f x . x;
+end test

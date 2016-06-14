@@ -73,7 +73,7 @@ public class DgEdCommand extends JDialog {
 	//описуємо класи - слухачі !!!!!!
 	class LsYes implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			command = pCommand.getCommand();
+			//command = pCommand.getCommand();
 				ArrayList <String> mes = pCommand.testAllCommand();
 				if (mes.size() == 0) {
 					command = pCommand.getCommand();

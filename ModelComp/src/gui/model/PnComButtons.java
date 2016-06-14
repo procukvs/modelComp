@@ -15,6 +15,8 @@ import main.*;
 public class PnComButtons extends JPanel {
 	private DbAccess db;
 	private String type = "Algorithm";
+	private AllModels env=null;
+	
 	private PnComTable pComTable;
 	private PnDescription pDescription;
 	private FrMain fMain;
@@ -141,6 +143,10 @@ public class PnComButtons extends JPanel {
 		see.setVisible(false);
 	}	
 	
+	public void show(AllModels env){
+		this.env = env; 
+		System.out.println("PnCommButtons: show="+env.getType()+".."+env.getPos());
+	}
 	public void setSelection(String txt){
 		selection.setText(txt);
 	}
@@ -200,8 +206,9 @@ public class PnComButtons extends JPanel {
 					dEdCommand.show();
 					command= dEdCommand.getCommand();
 					if (command != null) { 
-						db.newCommand(type, model, command);
-						fMain.setModel(type, model.id);
+						//db.newCommand(type, model, command);
+						//fMain.setModel(type, model.id);
+						env.newCommand(command);
 						pComTable.showRow(false,model.findCommand(command.getId())+1);
 					}
 				}
@@ -220,8 +227,9 @@ public class PnComButtons extends JPanel {
 						command= dEdCommand.getCommand();
 				
 						if (command != null) { 
-							db.editCommand(type, model, row, command);
-							fMain.setModel(type, model.id);
+							//db.editCommand(type, model, row, command);
+							//fMain.setModel(type, model.id);
+							env.editCommand(row, command);
 						}
 					}
 				}
@@ -251,8 +259,9 @@ public class PnComButtons extends JPanel {
 						int response = 
 								JOptionPane.showConfirmDialog(PnComButtons.this,text, "Вилучити ?",JOptionPane.YES_NO_OPTION);
 						if (response == JOptionPane.YES_OPTION) { 
-							db.deleteCommand(type, model.id, row,c);
-							fMain.setModel(type, model.id);
+							//db.deleteCommand(type, model.id, row,c);
+							//fMain.setModel(type, model.id);
+							env.deleteCommand(row, c);
 							pComTable.showRow(false,row1);
 						} 	
 					}
@@ -266,9 +275,9 @@ public class PnComButtons extends JPanel {
 				if (pDescription.testAndSave()){
 					int row = pComTable.numberSelectedRow();
 					if (row > 1) {
-						//System.out.println("LsUp "+ row);
-						db.moveUp(type, model, row);
-						fMain.setModel(type, model.id);
+						//db.moveUp(type, model, row);
+						//fMain.setModel(type, model.id);
+						env.moveUpCommand(row);
 						pComTable.showPrevRow(false);
 					}
 				}
@@ -281,8 +290,9 @@ public class PnComButtons extends JPanel {
 				if (pDescription.testAndSave()){
 					int row = pComTable.numberSelectedRow();
 					if ((row > 0) && (row < model.program.size())){
-						db.moveDown(type, model, row);
-						fMain.setModel(type, model.id);
+						//db.moveDown(type, model, row);
+						//fMain.setModel(type, model.id);
+						env.moveDownCommand(row);
 						pComTable.showNextRow(false);
 					}
 				}

@@ -15,8 +15,10 @@ public class PnModel extends JPanel {
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
-	private String type = "Algorithm";
+	private AllModels env=null;
 	
+	
+	private String type = "Algorithm";
 	private Model model = null;
 	private int idModel = 0;  ///????????????
 	// завжди виділяється одна модель із списку моделей !!!
@@ -57,11 +59,19 @@ public class PnModel extends JPanel {
 		this.model = model;
 		this.type = type;
 		
-	   	pDescription.setModel(type, model);
+	   //	pDescription.setModel(type, model);
 		if (model == null )idModel = 0; else idModel = model.id;
-		pComTable.setModel(type, model);
+		//pComTable.setModel(type, model);
        	pComButtons.setModel(type, model);
    	}
+	
+	public void show(AllModels env){
+		this.env = env;
+		System.out.println("PnModel: show="+env.getType()+".."+env.getPos());
+		pDescription.show(env);
+		pComTable.show(env);
+		pComButtons.show(env);
+	}	
 	
 	public void setLookAndFeel(String className){
 		pComButtons.setLookAndFeel(className);

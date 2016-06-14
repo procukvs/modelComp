@@ -12,7 +12,10 @@ import gui.ModelTable;
 import main.*;
 
 public class PnComTable extends JPanel {
-	private DbAccess db;
+	
+	private AllModels env=null;
+	
+	//private DbAccess db;
 	private TitledBorder border;
 	private ModelTable  dbm;
 	private JTable table;
@@ -29,7 +32,7 @@ public class PnComTable extends JPanel {
 		dbm = new ModelTable(false);
 		table = new JTable(dbm);
 		JScrollPane forTable = new JScrollPane(table);
-		this.db = db; 
+		//this.db = db; 
 		//=================================
 		// формуємо розміщення
 		setLayout(new BorderLayout());
@@ -49,9 +52,19 @@ public class PnComTable extends JPanel {
     	buttons.setSelection("  0:" + dbm.getRowCount());
     }
 	public void setModel(String type, Model model){
+		/*
 		this.type = type; this.model = model;
 		border.setTitle(Model.title(type, 4));
 		showTable(true, table.getSelectedRow() + 1);
+		*/
+	}
+	
+	public void show(AllModels env){
+		this.env = env;
+		type = env.getType(); model = env.getModel();
+		border.setTitle(Model.title(type, 4));
+		showTable(true, table.getSelectedRow() + 1);
+		//System.out.println("PnComTable: show="+env.getType()+".."+env.getPos());
 	}
 	
 	public void showTable(boolean update, int selected){

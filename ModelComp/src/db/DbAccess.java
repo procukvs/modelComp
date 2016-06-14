@@ -182,6 +182,25 @@ public class DbAccess {
 		return number;
 	}
 	
+	// знаходить інформацію про всі моделей даного типу і даного розділу 
+	public ArrayList <Pair> getInfModels(String type, String section){
+		ArrayList <Pair> all = new ArrayList <Pair> ();
+		//boolean go = true;
+		sql = "select id, name from " + tableModel(type) + 
+			  " where section = '" + section + "' order by name";
+		try{ 
+			s.execute(sql);
+	        ResultSet rs = s.getResultSet();
+	        while((rs!=null) && (rs.next())) {
+	        	all.add(new Pair(rs.getInt(1),rs.getString(2)));
+		    }
+		}catch (Exception e){
+			System.out.println("ERROR: getInfModels :" + sql + e.getMessage());
+		}
+		return all;
+	}
+	
+	
 	// знаходить список всіх моделей даного типу 
 	public ArrayList <String> getAllModel(String type){
 		ArrayList <String> all = new ArrayList <String> ();

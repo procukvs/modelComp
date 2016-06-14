@@ -14,6 +14,9 @@ public class PnDescription extends JPanel {
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
+	private AllModels env=null;
+	
+	
 	private String type = "Algorithm";
 	private Model model;
 	boolean isVisibleMany;
@@ -164,11 +167,44 @@ public class PnDescription extends JPanel {
 	}
 	
 	public void setModel(String type,Model model) {
+		/*
 		boolean isVisible = type.equals("Machine");
 		boolean isComputer = type.equals("Computer");
 		isVisibleMany = !type.equals("Recursive") && !type.equals("Calculus");
 		this.type = type;
 	    this.model = model;
+	  	txtAlgo.setText(Model.title(type, 2)); 
+		txtComm.setText("Опис " + Model.title(type, 3));
+	   
+	    
+	    txtMain.setVisible(isVisibleMany && !isComputer);
+	    sMain.setVisible(isVisibleMany && !isComputer);
+	    txtAdd.setVisible(isVisibleMany && !isComputer);
+	    sAdd.setVisible(isVisibleMany && !isComputer);
+	    txtNumeric.setVisible(isVisibleMany && !isComputer);
+	    isNumeric.setVisible(isVisibleMany && !isComputer);
+	    
+		txtRank.setVisible(isVisibleMany);
+		iRank.setVisible(isVisibleMany);
+
+		txtInit.setVisible(isVisible);
+		sInit.setVisible(isVisible);
+		txtFin.setVisible(isVisible);
+		sFin.setVisible(isVisible);
+		
+		if (model == null) showEmpty( );
+		else showModel();
+		*/
+	}
+	
+	public void show(AllModels env){
+		this.env = env;
+		type = env.getType();
+	    model = env.getModel();
+		boolean isVisible = type.equals("Machine");
+		boolean isComputer = type.equals("Computer");
+		isVisibleMany = !type.equals("Recursive") && !type.equals("Calculus");
+		
 	  	txtAlgo.setText(Model.title(type, 2)); 
 		txtComm.setText("Опис " + Model.title(type, 3));
 	   
@@ -261,7 +297,6 @@ public class PnDescription extends JPanel {
 		if (!res){
 			// Є зміни потрібна перевірка нових значеннь
 			ArrayList <String> mess = new ArrayList();  // message about errors. 
-			String [] ames = null;
 			String text="";
 			res = true;
 		 	if (modif[0]){  //перевіряємо коректність імені !!!!
@@ -300,25 +335,22 @@ public class PnDescription extends JPanel {
 		 		if (modif[5]) model.setMain(strMain);
 		 		if (modif[6]) model.setAdd(strAdd);
 		 		if (modif[7]) model.descr = strComm;
-		 		db.editModel(type,model);
-				
-		 	} else {
+		 		//db.editModel(type,model);
+		 		env.editModel(model);
+			} else {
 		 		String[] aMess = new String[mess.size()];
 		 		for(int i=0; i<mess.size();i++) aMess[i]=mess.get(i);
 		 		JOptionPane.showMessageDialog(PnDescription.this,aMess);
+		 		showModel();
 		 	}
-		 	fMain.setModel(type, model.id);
+		 	//fMain.setModel(type, model.id);
 		}
 		return res;
 	}
-	
 		
 	// Класи слухачі 
 	class LssName implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String name = sName.getText();
-			String text="";
-			boolean go = true;
 			if (model == null) showEmpty();
 			else {
 				if (testAndSave()) {
@@ -330,8 +362,6 @@ public class PnDescription extends JPanel {
 	}
 	class LssMain implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String strMain = sMain.getText();
-			String text;
 			if (model == null) showEmpty();
 			else {
 				if (testAndSave())sAdd.requestFocus();
@@ -345,7 +375,6 @@ public class PnDescription extends JPanel {
 	}
 	class LsisNumeric implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			Boolean isNew;
 			if (model != null){
 				if(isNumeric.isSelected()){
 					String tempAdd = sAdd.getText(); 
@@ -366,9 +395,6 @@ public class PnDescription extends JPanel {
 		
 	class LsiRank implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String srank = iRank.getText();
-			int rank = 1;
-			String text;
 			if (model == null) showEmpty();
 			else {
 				if (testAndSave()){
@@ -380,8 +406,6 @@ public class PnDescription extends JPanel {
 	}
 	class LsComm implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String com = sComm.getText();
-			//System.out.println(".." + com + "..");
 			if (model == null) showEmpty();
 			else {testAndSave();}
 		}	
@@ -389,8 +413,6 @@ public class PnDescription extends JPanel {
 		
 	class LssInit implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String init = sInit.getText();
-			String text="";
 			if (model == null) showEmpty();
 			else { 
 				if (testAndSave())sFin.requestFocus();
@@ -400,8 +422,6 @@ public class PnDescription extends JPanel {
 	
 	class LssFin implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
-			String fin = sFin.getText();
-			String text="";
 			if (model == null) showEmpty();
 			else {
 				if (testAndSave())sMain.requestFocus();
@@ -414,7 +434,7 @@ public class PnDescription extends JPanel {
 		String text="";
 		if(!StringWork.isIdentifer(name))
 			text = "Ім\"я " + Model.title(type, 3) + " " + name + " - не ідентифікатор!";
-		if((text.isEmpty()) && (db.isModel(type,  name)))
+		if((text.isEmpty()) && (env.isNameUse(name)))  ///(db.isModel(type,  name)))
 			text = Model.title(type, 2) + " з іменем " + name + " вже існує !";
 		return text;
 	}

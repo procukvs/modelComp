@@ -9,8 +9,9 @@ import gui.*;
 
 
 public class Main {
-	private DbAccess db;
+	private static DbAccess db;
 	private FrMain fMain;
+	private static AllModels env=null;
 		
 	Main(){
 		db = DbAccess.getDbAccess();
@@ -19,10 +20,23 @@ public class Main {
 	    if (db.connectionDb("Model.db")) { 
 	    	if (Parameters.getRegime().equals("teacher")) db.setParameters();
 	    	System.out.println("Forming GUI-- " + "version " + Parameters.getVersion() + ": " + Parameters.getRegime() + "..");
-			fMain = new FrMain(db);    	 
-	  	   	fMain.setVisible(true);
+	    	
+			fMain = new FrMain(db); 
+			env = AllModels.getAllModels(db, fMain); 
+			fMain.setVisible(true);
 	    } 
 	    else System.out.println("No connection to DB Model.db -- version Teacher..");
+	}
+	
+	public static void initial(String type){ 
+		// ініціює ініціалізацію AllModel і встановлення gui 
+		env.set(type); 
+	}
+	
+	public static void closeAll(){
+	   // закриває всі ресурси і закінчує роботу
+	   	db.disConnect();  
+        System.exit(0);
 	}
 	
 	public static void main(String[] args) {

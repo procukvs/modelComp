@@ -13,6 +13,8 @@ import javax.swing.*;
 
 public class PnModButtons extends JPanel {
 	private JFileChooser fc = new JFileChooser();
+	private AllModels env=null;
+	
 	private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
@@ -140,6 +142,7 @@ public class PnModButtons extends JPanel {
 	}
 
 	public void setModel(String type, Model model) {
+		/*
 		this.type = type;
 		this.model = model;
 		if (model == null) selected = 0; else selected = db.getOrder(type, model.name);
@@ -155,8 +158,30 @@ public class PnModButtons extends JPanel {
 		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
 		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
 		test.setVisible(!type.equals("Computer"));
+		*/
 	}
 	
+	public void show(AllModels env){
+		this.env=env;
+		this.type = env.getType();
+		this.model = env.getModel();
+		//if (model == null) selected = 0; else selected = db.getOrder(type, model.name);
+		selected=env.getPos(); r=env.getCntModel();
+		//r = db.getModelCount(type);
+    	//System.out.println("setModel  " + selected + "  cnt = " + r);
+    	//if (selected > r) selected = r;
+    	selection.setText(selected + " : " + r);
+    	if(Parameters.getRegime().equals("teacher")) section.setText(Parameters.getSection());
+		// встановити надписи на кнопках
+		add.setText(Model.title(type, 7));
+		addBase.setText(Model.title(type, 7) + " на основі");
+		work.setText("Рoбота з " + Model.title(type, 5));
+		output.setText("Вивести " + Model.title(type, 6) + " в файл" );
+		input.setText("Ввести " + Model.title(type, 6) + " з файлу");
+		test.setVisible(!type.equals("Computer"));
+		//System.out.println("PnModButtons: show="+env.getType()+".."+env.getPos());
+	}
+		
 	public void setLookAndFeel(String className){
 		try {
 			UIManager.setLookAndFeel(className);
@@ -168,6 +193,7 @@ public class PnModButtons extends JPanel {
 	//описуємо класи - слухачі !!!!!!
 	class SelectFirst implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			/*
 			r = db.getModelCount(type);
 			//System.out.println("SelectFirst  " + r);
 			selected = 1;
@@ -175,30 +201,47 @@ public class PnModButtons extends JPanel {
 				selected = 0; 
 				fMain.setModel(type, 0);
 			} else fMain.setModel(type, db.getNumber(type, selected));
+			*/
+			//===========================================
+			env.getFirst();
+			selected=env.getPos();
 		}	
 	}
 	class SelectPrev implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			/*
 			if (selected > 1) {
 				selected--;
 				fMain.setModel(type, db.getNumber(type, selected));
-			}
+			} */
+			//===========================================
+			env.getPrev();
+			selected=env.getPos();	
 		}	
 	}
 	class SelectNext implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			/*
 			if ((db.getModelCount(type)> selected) && (selected > 0)){ 
 				selected++;
 				fMain.setModel(type, db.getNumber(type, selected));
-			}
+			}*/
+			//===========================================
+			env.getNext();
+			selected=env.getPos();				
 		}	
 	}
 	class SelectLast implements ActionListener  {
 		public void actionPerformed(ActionEvent event){
+			/*
 			r = db.getModelCount(type);
 			selected = r;
 			if (r==0) fMain.setModel(type, 0);
 			 else fMain.setModel(type, db.getNumber(type, selected));
+			 */
+			//===========================================
+			env.getLast();
+			selected=env.getPos();
 		}	
 	}
 	
@@ -215,16 +258,24 @@ public class PnModButtons extends JPanel {
 	
 	class Add implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
+			/*
 			int idModel = Model.dbNew(type);  
 			fMain.setModel(type, idModel);
+			*/
+			//===========================================
+			env.newModel();
 		}	
 	}
 	
 	class AddAs implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null) {
+				/*
 				int idModel = model.dbNewAs(); 
 				fMain.setModel(type, idModel);
+				*/
+				//===========================================
+				env.newModelAs();
 			}
 		}	
 	}
@@ -243,14 +294,17 @@ public class PnModButtons extends JPanel {
 	
 	class ModelOutput implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			WorkFile wf= WorkFile.getWorkFile();
-			OutputText out = wf.getOut();
 			String text = "Файл для виведення не вказано !";
 			String name = nmFile.getText();
 			if (!name.isEmpty()){
 				if (model != null) {
+					/*
+					WorkFile wf= WorkFile.getWorkFile();
+					OutputText out = wf.getOut();
 					text = model.output(name,out);
 					if(text.isEmpty()) text = Model.title(type, 8) + " " + model.name + " виведено в файл " + name + "!";
+					*/
+					text=env.outputModel(name);
 				} 
 			}
 			if ((model != null) )  JOptionPane.showMessageDialog(PnModButtons.this,text);
@@ -263,6 +317,7 @@ public class PnModButtons extends JPanel {
 			String name = nmFile.getText();
 			Model model = null;
 			if (!name.isEmpty()) {
+				/*
 				WorkFile wf = WorkFile.getWorkFile();
 				model = wf.inputModel(name);
 				if (model != null) {
@@ -277,6 +332,8 @@ public class PnModButtons extends JPanel {
 					else text = Model.title(type, 8)+ " " + nameIn + " з файлу " + name + "  введено, але не збережено в базі даних !";
 				}
 				else text = wf.getErrorText();
+				*/
+				text = env.inputModel(name);
 			}
 			JOptionPane.showMessageDialog(PnModButtons.this,text); // text);
 		}	
@@ -296,9 +353,13 @@ public class PnModButtons extends JPanel {
 				UIManager.put("OptionPane.noButtonText", "Ні");
 				int res = JOptionPane.showConfirmDialog(PnModButtons.this,text,"Вилучити ?",JOptionPane.YES_NO_OPTION );
 				if (res == JOptionPane.YES_OPTION) {
+					/*
 					int newId = model.getDbOrder();
 					if (model.dbDelete()) newId = model.getDbNumber(newId-1);
 					fMain.setModel(type, newId);
+					*/
+					//===========================================
+					env.deleteModel();
 				}
 			}
 		}	
