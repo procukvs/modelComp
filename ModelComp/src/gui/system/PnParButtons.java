@@ -307,9 +307,9 @@ public class PnParButtons extends JPanel {
 		}	
 	}
 	class Quit implements ActionListener  {
-		// закінчуємо всю роботу ---- закриваємо базу даних
+		// закінчуємо роботу з файлами.параметрами -- загальне меню
 		public void actionPerformed(ActionEvent e) {
-			showModels.setModel("NoModel", 0);
+			showModels.initial();
 		}	
 	}
 	/*

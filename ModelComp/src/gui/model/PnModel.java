@@ -12,7 +12,7 @@ import main.*;
 
 
 public class PnModel extends JPanel {
-	private DbAccess db;
+	//private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
 	private AllModels env=null;
@@ -30,12 +30,12 @@ public class PnModel extends JPanel {
 	
 	
 	//!!!!!!!!!!!!!!!!!!!!!
-	public PnModel(DbAccess  db){	// !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+	public PnModel(){	// !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		//сформувати необхідні gui-елементи 
 		pDescription = new PnDescription(true);
-		pComTable = new PnComTable(db);
-		pComButtons = new PnComButtons(db); // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
-		this.db = db; 
+		pComTable = new PnComTable();
+		pComButtons = new PnComButtons(); // 
+		//this.db = db; 
 		//=================================
 		// формуємо розміщення
 		setLayout(new BorderLayout());
@@ -48,7 +48,7 @@ public class PnModel extends JPanel {
 	
 	public void setEnv(FrMain owner){     // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		fMain = owner;                        // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
-		pDescription.setEnv(db, fMain);       // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
+		pDescription.setEnv(fMain);       // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		pComTable.setEnv(pComButtons);             // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!
 		pComButtons.setEnv(fMain,pDescription,  pComTable); 
 	}                                            // !!!!!!!!!!!!!ref!!!!!!!!!!!!!!!  

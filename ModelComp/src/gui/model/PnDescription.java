@@ -11,7 +11,7 @@ import java.util.*;
 import javax.swing.*;
 
 public class PnDescription extends JPanel {
-	private DbAccess db;
+	//private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
 	private AllModels env=null;
@@ -161,8 +161,8 @@ public class PnDescription extends JPanel {
 	}
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	public void setEnv(DbAccess db, FrMain owner) {
-		this.db = db;
+	public void setEnv(FrMain owner) {
+		//this.db = db;
 		fMain = owner;		
 	}
 	

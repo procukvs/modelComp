@@ -26,7 +26,7 @@ public class PnComTable extends JPanel {
 	private Model model = null;
 	private PnComButtons pComButtons;
 	
-	public PnComTable(DbAccess  db){  //, ShowModels owner
+	public PnComTable(){  //, ShowModels owner
 		
 		//сформувати необхідні gui-елементи 
 		dbm = new ModelTable(false);

@@ -15,7 +15,7 @@ public class PnModButtons extends JPanel {
 	private JFileChooser fc = new JFileChooser();
 	private AllModels env=null;
 	
-	private DbAccess db;
+	//private DbAccess db;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private FrMain fMain;
 	private PnDescription pDescription;
@@ -41,7 +41,7 @@ public class PnModButtons extends JPanel {
 	private int r = 0;
   	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	public PnModButtons(DbAccess db){	                                       // !!!!!!!!!! ref !!!!!!!!!!!!!!!!!!!!!!
+	public PnModButtons(){	                                       // !!!!!!!!!! ref !!!!!!!!!!!!!!!!!!!!!!
 		//сформувати необхідні gui-елементи 
 		selection = new JLabel("  0:0  ");  
 		JButton first = new JButton("|<");
@@ -70,7 +70,7 @@ public class PnModButtons extends JPanel {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		dEval = new DgEval(fMain);
 		
-		this.db = db;
+		//this.db = db;
 			
 		//=================================
 		// формуємо розміщення
@@ -339,9 +339,9 @@ public class PnModButtons extends JPanel {
 		}	
 	}
 	class Quit implements ActionListener  {
-		// закінчуємо всю роботу ---- закриваємо базу даних
+		// закінчуємо роботу з моделями -- загальне меню !!!!
 		public void actionPerformed(ActionEvent e) {
-			fMain.setModel("NoModel", 0);
+			fMain.initial();
 		}	
 	}
 	

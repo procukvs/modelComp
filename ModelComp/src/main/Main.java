@@ -6,13 +6,14 @@ import javax.swing.*;
 import db.*;
 import gui.*;
 
-
-
 public class Main {
 	private static DbAccess db;
 	private FrMain fMain;
 	private static AllModels env=null;
-		
+	// Cтворює всі об"єкти, відкриває (ініціалізує) ресурси
+	// Запускає gui
+	// Закінсує роботи (метод andWork)
+	
 	Main(){
 		db = DbAccess.getDbAccess();
 		//====================
@@ -20,20 +21,19 @@ public class Main {
 	    if (db.connectionDb("Model.db")) { 
 	    	if (Parameters.getRegime().equals("teacher")) db.setParameters();
 	    	System.out.println("Forming GUI-- " + "version " + Parameters.getVersion() + ": " + Parameters.getRegime() + "..");
-	    	
+	    	// Cтворює всі об"єкти, відкриває (ініціалізує) ресурси
 			fMain = new FrMain(db); 
 			env = AllModels.getAllModels(db, fMain); 
+			fMain.setEnv(db,env);
+			// Запускає gui
 			fMain.setVisible(true);
 	    } 
 	    else System.out.println("No connection to DB Model.db -- version Teacher..");
 	}
 	
-	public static void initial(String type){ 
-		// ініціює ініціалізацію AllModel і встановлення gui 
-		env.set(type); 
-	}
 	
-	public static void closeAll(){
+	
+	public static void endWork(){
 	   // закриває всі ресурси і закінчує роботу
 	   	db.disConnect();  
         System.exit(0);

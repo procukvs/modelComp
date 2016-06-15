@@ -36,7 +36,7 @@ public class PnComButtons extends JPanel {
 	private JButton see;
 		
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	public PnComButtons(DbAccess db){                             
+	public PnComButtons(){                             
 		//сформувати необхідні gui-елементи 
 		selection = new JLabel("  0:0 " );  ///+ dbm.getRowCount());  
 		JButton first = new JButton("|<");

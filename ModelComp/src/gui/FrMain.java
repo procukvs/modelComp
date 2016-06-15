@@ -84,17 +84,11 @@ public class FrMain extends JFrame {
 		label.setHorizontalAlignment(label.CENTER);
 		label.setFont(new Font("Courier",Font.BOLD|Font.ITALIC,20));
 		//-------------------------------
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		pModel = new PnModel(db);          // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
-		pModel.setEnv(this);                 // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
+		pModel = new PnModel();          
 		//-------------------------------
 		pParTable = new PnParTable (db);
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		pModButtons = new PnModButtons(db);                // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
-		pModButtons.setEnv(this, pModel.getDescription());                         // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
-		//pModButtons.setFiles(showFiles);                     // !!!!!!!!!!!!!!!!!!ref!!!!!!!!!!!!!!!!!!!!
+		pModButtons = new PnModButtons();                
 		pParButtons = new PnParButtons(db); 
-		pParButtons.setEnv(this, pParTable);
 		//===============================
 		// розташуємо їх
 		//-----------------------------
@@ -113,6 +107,23 @@ public class FrMain extends JFrame {
 		setSize(800,500);
  	   	setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
   	   	addWindowListener(new EndWork());
+  	   	initial();
+	}	
+	
+	public void setEnv(DbAccess db, AllModels env){
+		this.db = db; this.env = env;
+		pModel.setEnv(this);                 
+		pModButtons.setEnv(this, pModel.getDescription()); 
+		pParButtons.setEnv(this, pParTable);
+	}
+	
+	public void initial(){ 
+		// створює початковий стан gui - нічого не показує 
+		label.setVisible(false);
+		pModel.setVisible(false);
+		pParTable.setVisible(false);
+		pModButtons.setVisible(false);
+		pParButtons.setVisible(false);
 	}	
 	
 	private void setVisiblePane( String type) {
@@ -198,43 +209,43 @@ public class FrMain extends JFrame {
 	
 	class LsComputer implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Computer",0);
-			Main.initial("Computer");
+			//setModel("Computer",0);
+			env.set("Computer");
 		}	
 	}
 	
 	class LsAlgorithm implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Algorithm",0);
-			Main.initial("Algorithm");
+			//setModel("Algorithm",0);
+			env.set("Algorithm");
 		}	
 	}
 	
 	class LsMachine implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Machine",0);
-			Main.initial("Machine");
+			//setModel("Machine",0);
+			env.set("Machine");
 		}	
 	}
 	
 	class LsPost implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Post",0);
-			Main.initial("Post");
+			//setModel("Post",0);
+			env.set("Post");
 		}	
 	}
 	
 	class LsRecursive implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Recursive",0);
-			Main.initial("Recursive");
+			//setModel("Recursive",0);
+			env.set("Recursive");
 		}	
 	}
 	
 	class LsCalculus implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			setModel("Calculus",0);
-			Main.initial("Calculus");
+			//setModel("Calculus",0);
+			env.set("Calculus");
 		}
 	}
 	
@@ -271,7 +282,7 @@ public class FrMain extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 		   //	db.disConnect();  
            // System.exit(0);
-            Main.closeAll();
+            Main.endWork();
 		}	
 	}
 	
@@ -280,7 +291,7 @@ public class FrMain extends JFrame {
 		public void  windowClosed(WindowEvent e)  {
 	    	//db.disConnect();  
             //System.exit(0);
-			Main.closeAll();
+			Main.endWork();
 		}
 	}
 	
