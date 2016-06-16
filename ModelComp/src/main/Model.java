@@ -1,4 +1,6 @@
 package main;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 import db.*;
@@ -95,8 +97,28 @@ public class Model {
 	public ArrayList getStepSource(ArrayList sl, boolean internal, int var) {return null;}
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {return null;}
 	
-	public ArrayList getDataSource(int idModel) {
-		return null;
+	public ArrayList getDataSource() {
+		ArrayList data = new ArrayList();
+		ArrayList row;
+		//System.out.println("Model:getDataSourse: " + name + " " + id);
+		for (int i = 0; i < program.size(); i++){
+			Command cmd = (Command)program.get(i);
+			/*
+			row = new ArrayList();
+			fun = (Function)program.get(i);
+			row.add(fun.getName());
+			row.add(fun.getRank());
+			row.add(fun.getisConst());
+			row.add(fun.getiswf());
+			row.add(fun.gettxBody());
+			row.add(fun.gettxComm());
+			row.add(fun.getId());
+			row.add(idModel);
+			data.add(row);
+			*/
+			data.add(cmd.getSource(id));
+        } 
+        return data;
 	}
 	
 	public String[] iswfModel(){
@@ -120,6 +142,38 @@ public class Model {
 	
 	public String show(){
 		 return "Model-show";
+	}
+	
+	// Recursive, Calculus
+	//знаходить імя команди по замовчуванню : перше вільне з "base", "base00", "base01",...
+	public String findNameCommand(String base){
+		int us,i = 0;
+		NumberFormat suf = new DecimalFormat("00"); 
+		boolean isUse ;
+		String name = base;
+		do {
+			isUse = false; us = 0;
+			for(int j = 0; j < program.size(); j++){
+				if(((Command) program.get(j)).getName().equals(name)) us++;
+			}
+			if (us>0) name = base + suf.format(i);
+			i++;
+		} while (us>0);
+		return name;
+	}
+	//перевіряє ім"я нової команди на коректність...
+	public String testNameCommand(String name){
+		String st = "";
+		Command cmd;
+		//String txt = "функції";
+		//if(this.getType().equals("Calculuse")) txt = "виразу";
+		if (StringWork.isIdentifer(name)){
+			for(int i = 0; i < program.size(); i++) {
+				cmd = (Command)program.get(i);
+				if (cmd.getName().equals(name))st = "В наборі вже використовується таке імя " + name + ".";
+			}	
+		} else st = "Імя " + name + " - не ідентифікатор.";
+		return st;
 	}
 	
 	public String output(OutputText out) {return "outputModel";}

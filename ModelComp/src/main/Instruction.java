@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Instruction extends Command {
 	private int num = 1;
 	private String cod = "Z";
@@ -40,4 +42,15 @@ public class Instruction extends Command {
 		 if(cod.equals("Z") || cod.equals("S")) return reg1;
 		 else return ((reg1>reg2)?reg1:reg2); 
 	}
+	 
+	public ArrayList getSource(int idModel) { 
+		ArrayList row = new ArrayList();
+		row.add(this.getNum());
+		row.add("  " + this.toCommand());
+		row.add(this.gettxComm());
+		row.add(this.getId());;
+		row.add(idModel);
+        return row;
+	}
+		
 }

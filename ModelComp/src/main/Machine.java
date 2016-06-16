@@ -154,7 +154,7 @@ public class Machine extends Model {
 		return res;	
 	}
 
-	public ArrayList getDataSource(int idModel) {
+	public ArrayList getDataSource() {
 		ArrayList data = new ArrayList();
 		ArrayList row;
 		State st;
@@ -171,7 +171,7 @@ public class Machine extends Model {
 				}
 				row.add(st.gettxComm());
 				row.add(st.getId());
-				row.add(idModel);
+				row.add(id);
 				data.add(row);
 			} 
 		}

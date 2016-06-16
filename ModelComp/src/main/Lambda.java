@@ -1,6 +1,6 @@
 package main;
 
-import java.util.HashMap;
+//import java.util.HashMap;
 
 public class Lambda {
 	int rank = -1;

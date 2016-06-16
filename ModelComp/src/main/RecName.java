@@ -58,7 +58,12 @@ public class RecName extends RecBody {
 	public int eval(int[] arg, Recursive set){
 		int res = 0;
 		if (set.getNoUndef()){
-			res = set.map.get(name).eval(arg, set);
+			int i = set.findCommand(name);
+			if (i>=0){
+				RecBody bd = ((Function)set.program.get(i)).getBody();
+				res = bd.eval(arg, set);
+			} else System.out.println("RecName=eval: not find body function " + name + ". Set = " + set.toString());
+			//res = set.map.get(name).eval(arg, set);
 		}
 		return res;
 	}
@@ -72,7 +77,12 @@ public class RecName extends RecBody {
 		if (set.getNoUndef()){
 			String sBase = name + "<" + StringWork.argString(arg) + ">=" ;
 			DefaultMutableTreeNode base = new DefaultMutableTreeNode(sBase,true);
-			res = set.map.get(name).test(arg, set,base);
+			int i = set.findCommand(name);
+			if (i>=0){
+				RecBody bd = ((Function)set.program.get(i)).getBody();
+				res = bd.test(arg, set,base);
+			} else System.out.println("RecName=eval: not find body function " + name + ". Set = " + set.toString());
+			//res = set.map.get(name).test(arg, set,base);
 			base.setUserObject(sBase+res); 
 			root.add(base);
 		}

@@ -1,17 +1,15 @@
 package main;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.*;
 import java.util.*;
 
-import db.DbAccess;
-import file.OutputText;
+import db.*;
+import file.*;
 
 public class Calculus extends Model {
-	//public HashMap <String, Lambda> map;
+	
 	public Calculus(int id, String name) {
 		super(id,name);
-//		map = new HashMap <String, Lambda>();
 	}
 
 	public String getType() {return "Calculus";}  
@@ -51,6 +49,7 @@ public class Calculus extends Model {
 	}			
 	
 	//знаходить імя виразу по замовчуванню : перше вільне з "base", "base00", "base01",...
+	/*
 	public String findName(String base){
 		int us,i = 0;
 		NumberFormat suf = new DecimalFormat("00"); 
@@ -66,15 +65,15 @@ public class Calculus extends Model {
 		} while (us>0);
 		return name;
 	}
-
+    */
 	public LambdaDecl newLambdaDecl(LambdaDecl ld){	
 		//System.out.println("Calculus:newLambdaDecl " + ((ld==null)?"Null":"No null"));
 	   int id = findMaxNumber();
 	   int num = program.size()+1;
        if (ld != null){
-		  return new LambdaDecl(id, num, findName(ld.getName()), ld.gettxBody(), ld.gettxComm()); 
+		  return new LambdaDecl(id, num, this.findNameCommand(ld.getName()), ld.gettxBody(), ld.gettxComm()); 
 	   } 
-	   else return new LambdaDecl(id, num, findName("new"),"","");
+	   else return new LambdaDecl(id, num, this.findNameCommand("new"),"","");
     }
 	
 	public String[] iswfModel(){
@@ -90,6 +89,7 @@ public class Calculus extends Model {
 	}	
 	
 	//перевіряє ім"я нового виразу на коректність...
+	/*
 	public String testName(String name){
 		String st = "";
 		LambdaDecl ld;
@@ -101,7 +101,7 @@ public class Calculus extends Model {
 		} else st = "Імя виразу " + name + " - не ідентифікатор.";
 		return st;
 	}
-	
+	*/
 	public ArrayList eval(String str, int max, boolean isStep) {
 		// виконує обчислення виразу txt не більше ніж (nodef+1) редукцій :isStep=true => формуючи кроки !!
 		ArrayList sl = new ArrayList();
@@ -384,7 +384,7 @@ public class Calculus extends Model {
 		//System.out.println("rank ...." );
 		//System.out.println(toString());
 	
-	
+	/*
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -394,11 +394,8 @@ public class Calculus extends Model {
 		for (int i = 0; i < program.size(); i++){
 			row = new ArrayList();
 			fun = (LambdaDecl)program.get(i);
-			//    System.out.println("LambdaDecl:Num ."+ fun.getNum());
 			row.add(fun.getNum());
 			row.add(fun.getName());
-			//row.add(fun.getRank());
-			//row.add(fun.getisConst());
 			row.add(fun.getiswf());
 			row.add(fun.gettxBody());
 			row.add(fun.gettxComm());
@@ -408,7 +405,7 @@ public class Calculus extends Model {
         } 
         return data;
 	}
-	
+	*/
 	public ArrayList getStepSource(ArrayList sl, boolean internal) {
 		ArrayList data = new ArrayList();
 		ArrayList row;

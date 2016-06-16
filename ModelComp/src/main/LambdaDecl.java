@@ -1,9 +1,10 @@
 package main;
 
+import java.util.ArrayList;
+
 public class LambdaDecl extends Command {
 	String name;
 	int num;
-	//boolean isConst;
 	boolean iswf;
 	Lambda body;
 	String txBody;
@@ -37,4 +38,17 @@ public class LambdaDecl extends Command {
 	public void settxBody(String txBody){ this.txBody =txBody;}
 	public void setBody(Lambda body){ this.body =body;}
 	public Lambda getBody() {return body;}
+	
+	public ArrayList getSource(int idModel) { 
+		ArrayList row = new ArrayList();
+		row.add(this.getNum());
+		row.add(this.getName());
+		row.add(this.getiswf());
+		row.add(this.gettxBody());
+		row.add(this.gettxComm());
+		row.add(this.getId());
+		row.add(idModel);
+        return row;
+	}
+	
 }

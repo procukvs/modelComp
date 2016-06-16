@@ -275,7 +275,7 @@ public class DbCalculus {
 						db.s.execute(sql);
 					}
 					sql = "insert into eLambda values(" + model.id + "," + (model.findMaxNumber()+1) + 
-							           ","  + (where+1) + ",'" + model.findName(nmDecl) +
+							           ","  + (where+1) + ",'" + model.findNameCommand(nmDecl) +
 							           "','" + ld.gettxBody() + "','" + ld.gettxComm() + "')";			
 					//System.out.println("DbCalculus:insertDeclLambda:" + sql);
 					db.s.execute(sql);

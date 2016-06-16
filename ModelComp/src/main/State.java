@@ -36,4 +36,12 @@ public class State extends Command {
 		}
 		return goSt + ";";
 	}
+	/*
+	public ArrayList getSource(int idModel) { 
+		ArrayList row = new ArrayList();
+		
+		row.add(idModel);
+        return row;
+	}
+	*/	
 }

@@ -375,7 +375,7 @@ public class PnCommand extends JPanel {
 			if (id==0) f = recur.newFunction(null);
 			else f = (Function)model.program.get(recur.findCommand(id));
 			if (isEdit) state.setText(f.getName());
-			else state.setText(id==0?f.getName():recur.findName(f.getName()));
+			else state.setText(id==0?f.getName():recur.findNameCommand(f.getName()));
 			
 			sBody.setText(f.gettxBody());
 			sComm.setText(f.gettxComm());
@@ -392,7 +392,7 @@ public class PnCommand extends JPanel {
 			else ld = (LambdaDecl)model.program.get(calc.findCommand(id));
 			//System.out.println("ShowRule:setRule2 " + what + " " + type + " " + id);
 			if (isEdit) state.setText(ld.getName());
-			else state.setText(id==0?ld.getName():calc.findName(ld.getName()));
+			else state.setText(id==0?ld.getName():calc.findNameCommand(ld.getName()));
 			numLambda = ld.getNum();
 			if (!isEdit && (id != 0)) numLambda ++;
 			
@@ -533,14 +533,14 @@ public class PnCommand extends JPanel {
 				else  sMove[0].requestFocus();
 				break;
 			case "Recursive":
-				text = recur.testName(state.getText());
+				text = recur.testNameCommand(state.getText());                        //recur.testName(state.getText());
 				if (!text.isEmpty()) JOptionPane.showMessageDialog(PnCommand.this, text);	
 				else  sBody.requestFocus();
 				break;	
 			case "Calculus":
 				text= "";
 				if (what.equals("Add")){
-					text = calc.testName(state.getText());
+					text = calc.testNameCommand(state.getText());
 				//	System.out.println("ShowRule text " + text);
 				}
 				if (!text.isEmpty()) JOptionPane.showMessageDialog(PnCommand.this, text);	

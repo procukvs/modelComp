@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Command {
 	private int id; // внутр≥шн≥й номер в баз≥ даних (кл€ч разом з id модел≥) 
 	public String txComm;
@@ -18,6 +20,10 @@ public class Command {
 		 return "Command-show";
 	}
 	public int getId() { return id;}
-	public String gettxComm() {return txComm;};
+	public String gettxComm() {return txComm;}
+	
+	public ArrayList getSource(int idModel) { return null; }
+	public String getName() {return "----";}  // Recursive, Calculus
+	
 
 }

@@ -35,20 +35,12 @@ public class Algorithm extends Model {
 	public int dbNewAs() { 
 		return DbAccess.getDbAlgorithm().newAlgorithmAs(this);
 	}
-	
+	/*
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
 		Rule rule;
 		char[] typeInfo = {'I','S','S','B','S','I','I'}; 
-		//sql = "select id, sLeft, sRigth, isEnd, txComm, idModel " +
-    	//			" from mRule where idModel = " + idModel;
-    	//System.out.println("model = " + model + "   " + sql);
-        //db.s.execute(sql);
-        //ResultSet rs = db.s.getResultSet();
-		// while((rs!=null) && (rs.next())) {
-        	// тут будемо зберігати комірки одного рядка
-		//System.out.println("getDataSource : " + name + " " + idModel + " " +  program.size() );
 		for (int i = 0; i < program.size(); i++){
 			row = new ArrayList();
 			rule = (Rule)program.get(i);
@@ -63,7 +55,7 @@ public class Algorithm extends Model {
         } 
         return data;
 	}
-	
+	*/
 	public String[] iswfModel(){
 		String noLeft;
 		String noRigth;

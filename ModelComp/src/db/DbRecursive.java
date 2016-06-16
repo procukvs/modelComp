@@ -14,6 +14,7 @@ public class DbRecursive {
 	DbRecursive(DbAccess db){
 		this.db = db; 
 	}
+	
 		
 	public Recursive getRecursive(int id){
 		model= null;
@@ -200,7 +201,7 @@ public class DbRecursive {
 		//int maxNum = getMaximumNum(model.id);
 		if (fun!=null){
 			try {
-				sql = "insert into fFunction values(" + model.id + "," + (model.findMaxNumber()+1) + ",'" + model.findName(nmDecl) +
+				sql = "insert into fFunction values(" + model.id + "," + (model.findMaxNumber()+1) + ",'" + model.findNameCommand(nmDecl) +
 						"','" + fun.gettxBody() + "','" + fun.gettxComm() + "')";
 				db.s.execute(sql);
 				}	

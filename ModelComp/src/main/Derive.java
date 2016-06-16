@@ -53,6 +53,19 @@ public class Derive extends Command {
 	   return mes;
    }
    
+   public ArrayList getSource(int idModel) { 
+		ArrayList row = new ArrayList();
+		row.add(this.getNum());
+		row.add(this.getisAxiom());
+		row.add(this.getsLeft());
+		row.add(this.getsRigth());
+		row.add(this.gettxComm());
+		row.add(this.getId());
+		row.add(idModel);
+       return row;
+	}
+	
+   
    // застосування правила виводу num до слова str на кроці step
    public ArrayList <FullSubstitution> extend(String str, String main, int step){
 	   ArrayList <FullSubstitution> res = new ArrayList <FullSubstitution>();

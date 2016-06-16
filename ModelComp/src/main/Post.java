@@ -49,7 +49,7 @@ public class Post extends Model {
 	public int dbNewAs() { 
 		return DbAccess.getDbPost().newPostAs(this);
 	}
-	
+	/*
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -69,7 +69,7 @@ public class Post extends Model {
         } 
         return data;
 	}	
-	
+	*/
 	// знаходить максимальний номер стану в програмi
 	public int findMaxNumber(){
 		int cnt = 0;

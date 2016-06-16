@@ -70,7 +70,7 @@ public class PnComTable extends JPanel {
 	public void showTable(boolean update, int selected){
 		if (update) {
 			ArrayList ds = null;
-			if(model != null) ds = model.getDataSource(model.id);
+			if(model != null) ds = model.getDataSource();
 			setTableStructure();
 			if ((ds != null) && (ds.size() > 0)) dbm.setDataSource(ds);
 		}

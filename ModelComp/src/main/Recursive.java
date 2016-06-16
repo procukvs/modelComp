@@ -2,17 +2,17 @@ package main;
 
 import java.text.*;
 import java.util.*;
-
 import javax.swing.tree.*;
 
 import db.*;
 import file.*;
 
 public class Recursive extends Model {
-	public HashMap <String, RecBody> map;
+	//private HashMap <String, RecBody> map;
+	// похоже його можна ПРИБРАТИ !!!!!! до локального в певних методах !!!!!
+	//  для доступу до функції через ім"я findCommand(nm) => >=0::+; -1::- 
 	public Recursive(int id, String name) {
 		super(id,name);
-		map = new HashMap <String, RecBody>();
 	}
 	
 	
@@ -31,6 +31,48 @@ public class Recursive extends Model {
 	public String dbInsertModel(int where, String nmModel, String nmFunction) {
 		return DbAccess.getDbRecursive().insertFunction(this, nmModel, nmFunction);
 	}
+	
+	//============================= in load Recursive ===================
+	//     build map!!!
+	public void extend(){
+		HashMap <String, RecBody> map = new HashMap <String, RecBody>();
+		Function f;
+		String st;
+		RecBody rb;
+		for(int i = 0; i < program.size(); i++){
+			f = (Function) program.get(i);
+			rb = analysRecBody(f.txBody);
+			f.setBody(rb);
+			f.iswf = (rb != null);
+			if(rb == null) f.errorText = "S:" + errorText; 
+			map.put(f.name,rb);
+		}
+		for(int i = 0; i < program.size(); i++){
+			f = (Function) program.get(i);
+			if(f.iswf) {
+				rb = f.getBody();
+				st = rb.setRank(f.name, map);
+				f.rank = rb.rank;
+				if(!st.isEmpty()){
+					f.errorText = "R:" + st;
+					f.iswf = false;
+				}
+				else f.isConst = rb.isConst(map);
+			}
+		}
+		for(int i = 0; i < program.size(); i++){
+			f = (Function) program.get(i);
+			if(f.iswf) {
+				rb = f.getBody();
+				st = rb.iswf(map);
+				if(!st.isEmpty()) {
+					f.iswf = false; f.errorText = "C:" + st;
+				}
+			}
+		} 
+	}
+
+	
 	//=================================
 	private int limit, step;
 	private String reasonUndef;
@@ -42,8 +84,8 @@ public class Recursive extends Model {
 		this.limit = limit;	step = 0;
 		reasonUndef = ""; noUndef = true;
 		result = 0;
-		
-		bf = map.get(f.getName());
+		//bf = map.get(f.getName());
+		bf=f.getBody();
 		result = bf.eval(arg, this);
 		if (!noUndef){
 			if (reasonUndef.equals("Limit")) return "Невизначено (вичерпана загальна кількість кроків)";
@@ -67,53 +109,7 @@ public class Recursive extends Model {
 	public int getAllStep() {return step;}
 	public int getResult() {return result;}
 	
-	public void extend(){
-		Function f;
-		String st;
-		RecBody rb;
-		for(int i = 0; i < program.size(); i++){
-			f = (Function) program.get(i);
-			rb = analysRecBody(f.txBody);
-			f.iswf = (rb != null);
-			if(rb == null) f.errorText = "S:" + errorText; //getErrorText(); 
-			//String st;
-			//if( rb == null) st = getErrorText(); else st = rb.toString(); 
-			//System.out.println(f.name + ":" + f.txBody + " ==> " + f.iswf);
-			map.put(f.name,rb);
-		}
-		
-		for(int i = 0; i < program.size(); i++){
-			f = (Function) program.get(i);
-			if(f.iswf) {
-				rb = map.get(f.name);
-				st = rb.setRank(f.name, map);
-				f.rank = rb.rank;
-				if(!st.isEmpty()){
-					f.errorText = "R:" + st;
-					f.iswf = false;
-				}
-				else f.isConst = rb.isConst(map);
-				//System.out.println(f.name + ":" + f.errorText);
-			}
-		}
-		
-		for(int i = 0; i < program.size(); i++){
-			f = (Function) program.get(i);
-			if(f.iswf) {
-				rb = map.get(f.name);
-				st = rb.iswf(map);
-				if(!st.isEmpty()) {
-					f.iswf = false; f.errorText = "C:" + st;
-					//System.out.println(f.name + ":" + f.errorText);
-				}
-			}
-		} 
-		//System.out.println("rank ...." );
-		//System.out.println(toString());
-		
-		
-	}
-
+	
 	public String[] iswfModel(){
 		ArrayList <String> mes = new ArrayList<String>();
 		String [] names = new String[] {"","",""};
@@ -139,7 +135,7 @@ public class Recursive extends Model {
 		if(!names[2].isEmpty()) mes.add("Для функцій " + names[2] + " не виконуються контекстні умови."); 
 		return StringWork.transferToArray(mes);
 	}
-	
+	/*
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -149,26 +145,25 @@ public class Recursive extends Model {
 		for (int i = 0; i < program.size(); i++){
 			row = new ArrayList();
 			fun = (Function)program.get(i);
-			//rb = map.get(fun.getName());
 			row.add(fun.getName());
 			row.add(fun.getRank());
 			row.add(fun.getisConst());
 			row.add(fun.getiswf());
 			row.add(fun.gettxBody());
 			row.add(fun.gettxComm());
-			//row.add((rb==null)?"":rb.toTest());
 			row.add(fun.getId());
 			row.add(idModel);
 			data.add(row);
         } 
         return data;
 	}		
-		
+	*/	
 	public String toString() {
 		String rs = "[";
-		for(String nf:map.keySet()){
-			RecBody rb = map.get(nf);
-			rs = rs + "\n.." + nf + ":" ;
+		for(int i=0; i<program.size(); i++){
+			Function f = (Function)program.get(i);
+			RecBody rb = f.getBody();
+			rs = rs + "\n.." + f.getName() + ":" ;
 			if (rb != null) rs = rs + rb.rank + ":" + rb.toString();
 		}
 		return rs + "\n]";
@@ -178,8 +173,6 @@ public class Recursive extends Model {
 		String res = "";
 		String wr;
 		Function f;
-		//if(out.open(name)) {
-		//	System.out.println("File " + name + " is open..");
 			if (!descr.isEmpty()) out.output("'" + descr); else out.output("'");
 			out.output("Recursive " + this.name);
 			for (int i = 0; i < program.size(); i++){
@@ -189,17 +182,18 @@ public class Recursive extends Model {
 				out.output("   " + wr + ";");
 			}
 			out.output("end " + this.name);
-		//	out.close();
-		//	System.out.println("File " + name + " is close.."); 
-		//} else res = "Not open output file " + name + "!"; 
 		return res;
 	}		
-	
 	
 	public String fullAnalys(String name, String body){
 		String st = "";
 		RecBody rb = analysRecBody(body);
 		if (rb != null) {
+			HashMap <String, RecBody> map = new HashMap <String, RecBody>();
+			for(int i = 0; i < program.size(); i++){
+				Function f = (Function) program.get(i);
+				map.put(f.getName(),f.getBody());
+			}
 			st = rb.setRank(name, map);
 			if(st.isEmpty()){
 				st = rb.iswf(map);
@@ -211,6 +205,8 @@ public class Recursive extends Model {
 	}
 	
 	//перевіряє ім"я нової функції на коректність...
+	//public String testName(String name){ return this.testNameCommand(name);}
+	/*
 	public String testName(String name){
 		String st = "";
 		if (StringWork.isIdentifer(name)){
@@ -218,15 +214,17 @@ public class Recursive extends Model {
 		} else st = "Імя функції " + name + " - не ідентифікатор.";
 		return st;
 	}
-	
-	
+	*/
 	// повертає список ВСІХ функцій, котрі використовують функцію name
 	public String usingName(String name) {
 		boolean first = true;
 		String res = "";
-		for(String nf:map.keySet()){
+		//for(String nf:map.keySet()){
+		for(int i=0; i <program.size();i++){
+			Function f = (Function)program.get(i);
+			String nf = f.getName();
 			if (!nf.equals(name)){
-				RecBody rb = map.get(nf);
+				RecBody rb = f.getBody();  //map.get(nf);
 				if ((rb != null) && (rb.usingName(name))){
 						if (!first) res = res + ", ";
 						first = false;
@@ -237,6 +235,8 @@ public class Recursive extends Model {
 		return res;
 	}
 	//знаходить імя функції по замовчуванню : перше вільне з "base", "base00", "base01",...
+	//public String findName(String base){  return this.findNameCommand(base);} 
+	/*
 	public String findName(String base){
 		int i = 0;
 		NumberFormat suf = new DecimalFormat("00"); 
@@ -249,13 +249,14 @@ public class Recursive extends Model {
 		} while (isUse);
 		return name;
 	}
+	*/
 	
    public Function newFunction(Function f){	
 	   int num = findMaxNumber();
 	   if (f != null){
-		  return new Function(num, findName(f.name), f.txBody, f.txComm); 
+		  return new Function(num, this.findNameCommand(f.name), f.txBody, f.txComm); 
 	   } 
-	   else return new Function(num, findName("new"),"","");
+	   else return new Function(num, this.findNameCommand("new"),"","");
    }
 	
    	// 	знаходить порядковий номер функції в програмі за іменем name 
@@ -444,7 +445,8 @@ public class Recursive extends Model {
 		String result = "..";
 		this.limit = limit;	step = 0;
 		reasonUndef = ""; noUndef = true;
-		bf = map.get(f.getName());
+		//bf = map.get(f.getName());
+		bf = f.getBody();
 		result = bf.test(arg, this, root);
 		if (!noUndef){
 			if (reasonUndef.equals("Limit")) return "Невизначено (вичерпана загальна кількість кроків)";

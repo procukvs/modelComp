@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Rule extends Command  {
 	private int num = 1;
 	private String sLeft = "";
@@ -30,4 +32,19 @@ public class Rule extends Command  {
 		wr = wr + " \"" + sRigth + "\";";
     	return wr;
    };
+   
+   public ArrayList getSource(int idModel) { 
+		ArrayList row = new ArrayList();
+		row.add(this.getNum());
+		row.add(this.getsLeft());
+		row.add(this.getsRigth());
+		row.add(this.getisEnd());
+		row.add(this.gettxComm());
+		row.add(this.getId());
+		row.add(idModel);
+       return row;
+	}
+	
 }
+
+
