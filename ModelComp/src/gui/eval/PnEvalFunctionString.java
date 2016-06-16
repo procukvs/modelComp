@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class PnEvalFunctionString extends JPanel {
+	private AllModels env=null;
 	private JLabel lParam;
 	private JLabel lInit;
 	//private JLabel lFunction;
@@ -106,12 +107,15 @@ public class PnEvalFunctionString extends JPanel {
 		this.owner = owner;                        //     !!!!!!ref!!!!!!!!!!!!!!!!!!
 	}  
 	//     !!!!!!ref!!!!!!!!!!!!!!!!!!
-	public void setModel(String type, Model model) {
+	//public void setModel(String type, Model model) {
+		
+	public void show(AllModels env){	
 		//Algorithm algo = (Algorithm) model;
-		this.model = model;
-		this.type = type;
+		this.model = env.getModel();
+		this.type = env.getType();
+		this.env =env;
+		//System.out.println("PnEvalFunctionString:SetModel " + type + " " + model.id );
 		boolean isPost = type.equals("Post");
-		if(!type.equals("Recursive")){
 			rank = model.getRank();
 			main = model.getMain();
 			
@@ -131,13 +135,7 @@ public class PnEvalFunctionString extends JPanel {
 				tInit.setText(""); 
 				tInit.requestFocus();
 			}
-		} else{
-			for(int i = 0; i < 10; i++)	tParam[i].setVisible(false);
-			lInit.setVisible(false);
-			tInit.setVisible(false);
-			lParam.setVisible(true);	
-		}
-		
+			
 		tNodef.setText("1000");	
 		tResult.setText("");
 		tStep.setText("");

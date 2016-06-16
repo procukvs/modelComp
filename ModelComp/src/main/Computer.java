@@ -28,7 +28,7 @@ public class Computer extends Model {
 	public int dbNewAs() { 
 		return DbAccess.getDbComputer().newComputertAs(this);
 	}
-	
+	/*
 	public ArrayList getDataSource(int idModel) {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -48,7 +48,7 @@ public class Computer extends Model {
 		}
         return data;
 	}
-	
+	*/
 	public int evalMaxReg(){
 		int mr = 0;
 		int r = 0;

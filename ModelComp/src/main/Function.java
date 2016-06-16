@@ -20,7 +20,7 @@ public class Function extends Command {
 	public void setBody(RecBody body){ this.body =body;}     //////////////New
 	public RecBody getBody(){return body;}                    //////////////New
 	
-	public ArrayList getSource(int idModel) { 
+	public ArrayList getSource(Model model) { 
 		ArrayList row = new ArrayList();
 		row.add(this.getName());
 		row.add(this.getRank());
@@ -29,7 +29,7 @@ public class Function extends Command {
 		row.add(this.gettxBody());
 		row.add(this.gettxComm());
 		row.add(this.getId());
-		row.add(idModel);
+		row.add(model.id);
         return row;
 	}
 	

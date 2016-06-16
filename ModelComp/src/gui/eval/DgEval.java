@@ -37,6 +37,8 @@ public class DgEval extends JDialog {
 	JButton quit;
 	
 	//==========================
+	private AllModels env=null;
+	
 	private String type = "Algorithm";
 	private Model model = null;
 	private Function f = null;
@@ -114,44 +116,31 @@ public class DgEval extends JDialog {
 		
 	}	
 	
+	
+	/*
 	public void setModel(String type,Model model) {
-		//System.out.println("ShowWork --- setModel" + type);
 		this.type = type;
 	    this.model = model;
 	    
 	    if (showTree != null)evalBox.remove(showTree);
-	   /*
-	    if(!type.equals("Recursive") && !type.equals("Calculus")){
-	    	lWhat.setText("Робота з " + Model.title(type, 12));		
-	    	isNumeric = model.getIsNumeric();
-	    	rank = model.getRank();
-	    	main = model.getMain();
-	    } 
-	    else {
-	    	String txt = "Робота з " + Model.title(type, 12) + ".";
-	    	//if (type.equals("Recursive")) txt = txt + "  Обчислити функцію.";
-	    	lWhat.setText(txt);
-	    }
-	    */
-	    lWhat.setText("Робота з " + Model.title(type, 12));		
+	     lWhat.setText("Робота з " + Model.title(type, 12));		
 	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
 	    if(!type.equals("Recursive") && !type.equals("Calculus")){
 	    	isNumeric = model.getIsNumeric();
 	    	rank = model.getRank();
 	    	main = model.getMain();
 	    } 
-	    pDescription.setModel(type, model);
+	    pDescription.show(env);
 	    
 	    pForming.setVisible(type.equals("Post"));
-	   // pEvFunction.setVisible(type.equals("Post"));
 	    pValFunction.setVisible(false);
 	    pSelFunction.setVisible(type.equals("Recursive"));
 	    pEval.setVisible(!type.equals("Post") && !type.equals("Calculus") && !type.equals("Recursive"));
 	    pEvExpr.setVisible(type.equals("Calculus"));        // !!!!!!!!!!!!!!!!!!!!!
 	    pStepsTable.setVisible(false);
 	    
-    	eval.setText("Виконати");
-    	show.setText("Переглянути");  
+		eval.setText("Виконати");
+		show.setText("Переглянути");  
 	    switch(type){
 		case "Post":
 			pForming.setModel(type, model);
@@ -167,30 +156,62 @@ public class DgEval extends JDialog {
 			pEvExpr.setModel(type, model);
 			break;
 		default:
+			System.out.println("DgEval:SetModel " + type + " " + model.id );
 			pEval.setModel(type, model);
 	    }	
-	   /* 
-	    if (type.equals("Calculus")){
-	    	showEvalLambda.setModel(type, model);
-	     } else{
-	    	showForm.setModel(type, model);
-	    	showEval.setModel(type, model);
-	    	pSelFunction.setModel((Recursive)model);
-	    }	
-   	    if (type.equals("Post")){
-	    	eval.setText("Формувати дані");
-	    	show.setText("Переглянути дані");
-	    } else{
-	    	eval.setText("Виконати");
-	    	show.setText("Переглянути");
-	    }
-	    if(type.equals("Recursive")) eval.setVisible(model.program.size()>0);
-	    */
 	    show.setEnabled(false);
 		pack();
 	}
-	
-
+	*/
+	public void show(AllModels env){
+		this.env=env;
+		this.type = env.getType();
+		this.model = env.getModel();
+		if (showTree != null)evalBox.remove(showTree);
+	   	lWhat.setText("Робота з " + Model.title(type, 12));		
+	    lWhat.setAlignmentX(CENTER_ALIGNMENT);
+	    if(!type.equals("Recursive") && !type.equals("Calculus")){
+	    	isNumeric = model.getIsNumeric();
+	    	rank = model.getRank();
+	    	main = model.getMain();
+	    } 
+	    pDescription.show(env);
+	    
+	    pForming.setVisible(type.equals("Post"));
+	    pValFunction.setVisible(false);
+	    pSelFunction.setVisible(type.equals("Recursive"));
+	    pEval.setVisible(!type.equals("Post") && !type.equals("Calculus") && !type.equals("Recursive"));
+	    pEvExpr.setVisible(type.equals("Calculus"));        // !!!!!!!!!!!!!!!!!!!!!
+	    pStepsTable.setVisible(false);
+	    
+		eval.setText("Виконати");
+		show.setText("Переглянути");  
+	    switch(type){
+		case "Post":
+			//pForming.setModel(type, model);
+			pForming.show(env);
+	    	//pValFunction.setModel(type, model);
+			pValFunction.show(env);
+	      	eval.setText("Формувати дані");
+	    	show.setText("Переглянути дані");
+			break;
+		case "Recursive":
+			//pSelFunction.setModel((Recursive)model);
+			pSelFunction.show(env);
+			eval.setVisible(model.program.size()>0);
+			break;
+		case "Calculus":
+			//pEvExpr.setModel(type, model);
+			pEvExpr.show(env);
+			break;
+		default:
+			//System.out.println("DgEval:show2 " + type + " " + model.id );
+			//pEval.setModel(type, model);
+			pEval.show(env);
+	    }	
+	    show.setEnabled(false);
+		pack();
+	}
 /*
 	// викликається зразу після setModel !!!!! 
 	public void setLambdaDecl(LambdaDecl f) {

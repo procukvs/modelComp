@@ -116,7 +116,7 @@ public class Model {
 			row.add(idModel);
 			data.add(row);
 			*/
-			data.add(cmd.getSource(id));
+			data.add(cmd.getSource(this));
         } 
         return data;
 	}

@@ -39,7 +39,7 @@ public class LambdaDecl extends Command {
 	public void setBody(Lambda body){ this.body =body;}
 	public Lambda getBody() {return body;}
 	
-	public ArrayList getSource(int idModel) { 
+	public ArrayList getSource(Model model) { 
 		ArrayList row = new ArrayList();
 		row.add(this.getNum());
 		row.add(this.getName());
@@ -47,7 +47,7 @@ public class LambdaDecl extends Command {
 		row.add(this.gettxBody());
 		row.add(this.gettxComm());
 		row.add(this.getId());
-		row.add(idModel);
+		row.add(model.id);
         return row;
 	}
 	

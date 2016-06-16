@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class PnValFunction extends JPanel {
+	private AllModels env=null;
 	private JLabel lParam;
 	private JLabel lFunction;
 	JTextField tParam[];
@@ -80,10 +81,12 @@ public class PnValFunction extends JPanel {
 		this.owner = owner;                        //     !!!!!!ref!!!!!!!!!!!!!!!!!!
 	}  
 	//     !!!!!!ref!!!!!!!!!!!!!!!!!!
-	public void setModel(String type, Model model) {
+	//public void setModel(String type, Model model) {
+	public void show(AllModels env){	
 		//  only for Post 
-		this.model = model;
-		this.type = type;
+		this.model = env.getModel();
+		this.type = env.getType();
+		this.env=env;
 		//boolean isPost = type.equals("Post");
 		if(!type.equals("Recursive")){
 			rank = model.getRank();

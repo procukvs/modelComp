@@ -153,7 +153,7 @@ public class Machine extends Model {
 		if (!allNoAlfa.isEmpty()) res = "Cимволи " + allNoAlfa + " не входять в об\"єднаний алфавіт _" + alfa ;
 		return res;	
 	}
-
+/*
 	public ArrayList getDataSource() {
 		ArrayList data = new ArrayList();
 		ArrayList row;
@@ -177,7 +177,7 @@ public class Machine extends Model {
 		}
         return data;
 	}
-	
+*/	
 	// перевіряє чи є в програмі стан з іменем state
 	public boolean isState(String state){
 		boolean is = false;

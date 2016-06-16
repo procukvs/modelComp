@@ -33,7 +33,7 @@ public class Rule extends Command  {
     	return wr;
    };
    
-   public ArrayList getSource(int idModel) { 
+   public ArrayList getSource(Model model) { 
 		ArrayList row = new ArrayList();
 		row.add(this.getNum());
 		row.add(this.getsLeft());
@@ -41,7 +41,7 @@ public class Rule extends Command  {
 		row.add(this.getisEnd());
 		row.add(this.gettxComm());
 		row.add(this.getId());
-		row.add(idModel);
+		row.add(model.id);
        return row;
 	}
 	

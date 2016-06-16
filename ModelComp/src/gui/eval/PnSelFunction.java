@@ -10,6 +10,7 @@ import java.awt.event.*;
 
 
 public class PnSelFunction extends JPanel {
+	private AllModels env = null;
 	private DgEval dEval;
 	private JLabel lName;
 	//private JTextField tName;
@@ -160,8 +161,11 @@ public class PnSelFunction extends JPanel {
 	public void setEnv(DgEval dEval){
 		this.dEval = dEval;
 	}
-	public void setModel(Model model) {
+	//public void setModel(Model model) {
+	public void show(AllModels env){	
 		int cnt=0;
+		Model model = env.getModel();
+		this.env=env;
 		rec = (Recursive)model;
 		cnt = rec.program.size();
 		for (int i = 0; i < cnt; i++){

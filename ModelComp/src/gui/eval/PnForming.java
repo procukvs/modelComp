@@ -14,7 +14,7 @@ import java.util.*;
 import main.*;
 
 public class PnForming extends JPanel {
-	
+	private AllModels env = null;
 	private Post post = null;
 	//public JTextField tStep;
 	private JTextField tStep;
@@ -69,8 +69,10 @@ public class PnForming extends JPanel {
 	public void setParent(DgEval owner){       //     !!!!!!ref!!!!!!!!!!!!!!!!!!
 		showWork = owner;                        //     !!!!!!ref!!!!!!!!!!!!!!!!!!
 	}                                            //     !!!!!!ref!!!!!!!!!!!!!!!!!!
-	public void setModel(String type,Model model) {
-		if (type.equals("Post")) post = (Post)model; else post = null;
+	//public void setModel(String type,Model model) {
+	public void show(AllModels env){
+		this.env = env;
+		if (env.getType().equals("Post")) post = (Post)env.getModel(); else post = null;
 		tMessage.setText("");
 	}
 	

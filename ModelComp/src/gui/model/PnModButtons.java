@@ -139,6 +139,7 @@ public class PnModButtons extends JPanel {
 	public void setEnv(FrMain fMain, PnDescription pDescription){   // !!!!!!!!!! ref !!!!!!!!!!!!!!!!!!!!!!
 		this.fMain = fMain;
 		this.pDescription = pDescription;
+		//dEval.setEnv(pDescription);
 	}
 
 	public void setModel(String type, Model model) {
@@ -368,7 +369,9 @@ public class PnModButtons extends JPanel {
 	class ModelWork implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null){
-				dEval.setModel(type, model);
+				//System.out.println("PnModButtons:ModelWork " + type + " " + model.id );
+				dEval.show(env);
+				//dEval.setModel(type, model);
 				dEval.show();
 			}		
 		}

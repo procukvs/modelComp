@@ -5,12 +5,14 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
+import main.AllModels;
 import main.Model;
 import main.StringWork;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
 public class PnEvExpr extends JPanel {
+	private AllModels env = null;
 	private JLabel lInit;
 	JTextField tInit;
 	JLabel lNodef;
@@ -97,9 +99,12 @@ public class PnEvExpr extends JPanel {
 		add(Box.createGlue());
 	}
 	
-	public void setModel(String type, Model model) {
-		this.model = model;
-		this.type = type;
+	
+	//public void setModel(String type, Model model) {
+	public void show(AllModels env){		
+		this.model = env.getModel();
+		this.type = env.getType();
+		this.env = env;
 		tNodef.setText("1000");	
 		tResult.setText("");
 		tStep.setText("");

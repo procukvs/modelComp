@@ -36,12 +36,19 @@ public class State extends Command {
 		}
 		return goSt + ";";
 	}
-	/*
-	public ArrayList getSource(int idModel) { 
+	
+	public ArrayList getSource(Model model) { 
 		ArrayList row = new ArrayList();
-		
-		row.add(idModel);
+		Machine mach = (Machine)model;
+		String allCh = "_" + mach.main + mach.add + mach.no;
+		row.add(this.getState());
+		for(int j=0; j < allCh.length(); j++){
+			row.add(this.getGoing().get(j));
+		}
+		row.add(this.gettxComm());
+		row.add(this.getId());
+		row.add(model.id);
         return row;
 	}
-	*/	
+		
 }

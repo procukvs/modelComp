@@ -22,7 +22,7 @@ public class Command {
 	public int getId() { return id;}
 	public String gettxComm() {return txComm;}
 	
-	public ArrayList getSource(int idModel) { return null; }
+	public ArrayList getSource(Model model) { return null; }
 	public String getName() {return "----";}  // Recursive, Calculus
 	
 

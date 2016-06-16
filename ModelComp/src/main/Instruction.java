@@ -43,13 +43,13 @@ public class Instruction extends Command {
 		 else return ((reg1>reg2)?reg1:reg2); 
 	}
 	 
-	public ArrayList getSource(int idModel) { 
+	public ArrayList getSource(Model model) { 
 		ArrayList row = new ArrayList();
 		row.add(this.getNum());
 		row.add("  " + this.toCommand());
 		row.add(this.gettxComm());
 		row.add(this.getId());;
-		row.add(idModel);
+		row.add(model.id);
         return row;
 	}
 		
