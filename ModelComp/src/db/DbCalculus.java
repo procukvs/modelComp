@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.calc.Calculus;
+import model.calc.LambdaDecl;
 
 public class DbCalculus {
 	private DbAccess db;

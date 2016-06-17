@@ -4,6 +4,11 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import main.*;
+import model.AllModels;
+import model.Model;
+import model.rec.Function;
+import model.rec.Recursive;
+
 import java.awt.event.*;
 
 

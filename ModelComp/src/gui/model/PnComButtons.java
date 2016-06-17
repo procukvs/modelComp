@@ -11,6 +11,13 @@ import gui.command.*;
 import gui.eval.*;
 import gui.model.*;
 import main.*;
+import model.AllModels;
+import model.Command;
+import model.Machine;
+import model.Model;
+import model.Rule;
+import model.rec.Function;
+import model.rec.Recursive;
 
 public class PnComButtons extends JPanel {
 	//private DbAccess db;

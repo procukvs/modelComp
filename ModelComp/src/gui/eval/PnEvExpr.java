@@ -5,9 +5,10 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
-import main.AllModels;
-import main.Model;
 import main.StringWork;
+import model.AllModels;
+import model.Model;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 

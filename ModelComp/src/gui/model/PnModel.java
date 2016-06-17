@@ -9,6 +9,8 @@ import db.*;
 import gui.*;
 
 import main.*;
+import model.AllModels;
+import model.Model;
 
 
 public class PnModel extends JPanel {

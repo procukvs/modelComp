@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.Algorithm;
+import model.Rule;
 
 public class DbAlgorithm {
 	private DbAccess db;

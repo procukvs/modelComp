@@ -4,6 +4,19 @@ import java.util.ArrayList;
 
 import db.DbAccess;
 import main.*;
+import model.Algorithm;
+import model.Computer;
+import model.Derive;
+import model.Instruction;
+import model.Machine;
+import model.Model;
+import model.Post;
+import model.Rule;
+import model.State;
+import model.calc.Calculus;
+import model.calc.LambdaDecl;
+import model.rec.Function;
+import model.rec.Recursive;
 
 public class WorkFile {
 	private static WorkFile workFile = null;

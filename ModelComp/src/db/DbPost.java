@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.Derive;
+import model.Post;
 
 public class DbPost {
 	private DbAccess db;

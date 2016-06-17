@@ -5,6 +5,7 @@ import javax.swing.*;
 
 import db.*;
 import gui.*;
+import model.AllModels;
 
 public class Main {
 	private static DbAccess db;

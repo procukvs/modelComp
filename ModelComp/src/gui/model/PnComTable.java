@@ -10,6 +10,9 @@ import javax.swing.table.*;
 import db.*;
 import gui.ModelTable;
 import main.*;
+import model.AllModels;
+import model.Machine;
+import model.Model;
 
 public class PnComTable extends JPanel {
 	

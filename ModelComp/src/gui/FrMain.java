@@ -9,6 +9,8 @@ import db.*;
 import gui.model.*;
 import gui.system.*;
 import main.*;
+import model.AllModels;
+import model.Model;
 
 public class FrMain extends JFrame {
 	private DbAccess db;

@@ -6,6 +6,6 @@ public class Pair {
 	public Pair(int id, String name){
 		this.id = id; this.name=name;
 	}
-	int getId() {return id;}
-	String getName() {return name;}
+	public int getId() {return id;}
+	public String getName() {return name;}
 }

@@ -9,6 +9,20 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import main.*;
+import model.Algorithm;
+import model.Command;
+import model.Computer;
+import model.Derive;
+import model.Instruction;
+import model.Machine;
+import model.Model;
+import model.Post;
+import model.Rule;
+import model.State;
+import model.calc.Calculus;
+import model.calc.LambdaDecl;
+import model.rec.Function;
+import model.rec.Recursive;
 
 public class PnCommand extends JPanel {
 	private String type = "Algorithm";

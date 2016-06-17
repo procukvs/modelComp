@@ -11,6 +11,15 @@ import java.util.*;
 import java.util.Date;
 
 import main.*;
+import model.AllModels;
+import model.Model;
+import model.Post;
+import model.calc.Calculus;
+import model.calc.LamStep;
+import model.calc.Lambda;
+import model.calc.LambdaDecl;
+import model.rec.Function;
+import model.rec.Recursive;
 import db.*;
 import gui.FrMain;
 import gui.PnTree;

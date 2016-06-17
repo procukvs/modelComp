@@ -10,6 +10,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 import main.*;
+import model.Command;
+import model.Model;
+import model.calc.Calculus;
+import model.calc.LambdaDecl;
+import model.rec.Function;
+import model.rec.RecBody;
+import model.rec.Recursive;
 
 public class DgEdCommand extends JDialog {
 	private JLabel lWhat;

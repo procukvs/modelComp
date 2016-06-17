@@ -1,6 +1,8 @@
 package gui.model;
 
 import main.*;
+import model.AllModels;
+import model.Model;
 import db.*;
 import gui.*;
 

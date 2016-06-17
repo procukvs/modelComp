@@ -15,7 +15,8 @@ BEGIN TRANSACTION;
   name varchar(30) not null,
   txBody varchar(250),
   txComm varchar(250),
-  primary key (idModel, id)
+  primary key (idModel, id),
+  unique (idModel, num)
  );   
 DELETE FROM eCalculus;
 INSERT INTO eCalculus VALUES(1,'base','test','Тестовий набір');

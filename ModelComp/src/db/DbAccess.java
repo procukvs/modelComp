@@ -11,6 +11,19 @@ import org.sqlite.*;
 import java.util.*;
 
 import main.*;
+import model.Algorithm;
+import model.Command;
+import model.Computer;
+import model.Derive;
+import model.Instruction;
+import model.Machine;
+import model.Model;
+import model.Post;
+import model.Rule;
+import model.State;
+import model.calc.Calculus;
+import model.calc.LambdaDecl;
+import model.rec.Recursive;
 
 public class DbAccess {
 	protected Connection conn = null;
@@ -138,7 +151,7 @@ public class DbAccess {
 		catch (Exception e) {System.out.println(e.getMessage());}
 		return name;
 	}
-	
+	/*
 	// знаходить id моделі типа type, яка по порядку order
 	public int getNumber(String type, int order){
 		int number = 0;
@@ -162,7 +175,8 @@ public class DbAccess {
 		//System.out.println("final =: getNumber : number = " + number);
 		return number;
 	}
-	
+	*/
+	/*
 	// знаходить порядковий номер моделі типа type з іменем name
 	public int getOrder(String type, String name){
 		int number = 0;
@@ -181,7 +195,7 @@ public class DbAccess {
 		}
 		return number;
 	}
-	
+	*/
 	// знаходить інформацію про всі моделей даного типу і даного розділу 
 	public ArrayList <Pair> getInfModels(String type, String section){
 		ArrayList <Pair> all = new ArrayList <Pair> ();
@@ -351,22 +365,30 @@ public class DbAccess {
 		}	
 		return idModel;
 	}
-/*	
+
 	public void deleteModel(String type, Model model) {
 		switch(type){
+		case "Computer" : dbComp.deleteComputer((Computer)model); break;
 		case "Algorithm" : dbAlgo.deleteAlgorithm((Algorithm)model); break;
 		case "Machine" : dbMach.deleteMachine((Machine)model); break;
+		case "Post" : dbPost.deletePost((Post)model); break;
+		case "Recursive" : dbRec.deleteRecursive((Recursive)model); break;
+		case "Calculus" : dbCalc.deleteCalculus((Calculus)model); break;
 		}	
 	}
-*/	
-	/*
+	
 	public int newModelAs(String type, Model model) {
 		int idModel = 0;
 		switch(type){
+		case "Computer" : idModel = dbComp.newComputerAs((Computer)model); break;
 		case "Algorithm" : idModel = dbAlgo.newAlgorithmAs((Algorithm)model); break;
+		case "Machine" : idModel = dbMach.newMachineAs((Machine)model); break;
+		case "Post" : idModel = dbPost.newPostAs((Post)model); break;
+		case "Recursive" : idModel = dbRec.newRecursiveAs((Recursive)model); break;
+		case "Calculus" : idModel = dbCalc.newCalculusAs((Calculus)model); break;
 		}	
 		return idModel;
-	} */
+	}
 	
 	public Model getModel(String type, int id){
 		//System.out.println(" getModel :" + type + " " + id);
@@ -412,8 +434,8 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.editRule(model.id, id, (Rule)cmd); break;
 		case "Machine": dbMach.editState((Machine)model, id, (State)cmd); break;
 		case "Post" : dbPost.editDerive(model.id, (Derive)cmd); break;
-		case "Recursive" : dbRec.editFunction(model.id, (main.Function)cmd); break;
-		case "Calculus" : dbCalc.editDeclLambda(model.id, (main.LambdaDecl)cmd); break;
+		case "Recursive" : dbRec.editFunction(model.id, (model.rec.Function)cmd); break;
+		case "Calculus" : dbCalc.editDeclLambda(model.id, (model.calc.LambdaDecl)cmd); break;
 		default: System.out.println(">>> Not realise editCommand for: " + type + "!");
 		}
 	}
@@ -424,8 +446,8 @@ public class DbAccess {
 		case "Algorithm" : dbAlgo.newRule((Algorithm)model, (Rule)cmd); break;
 		case "Machine": dbMach.newState((Machine)model, (State)cmd); break;
 		case "Post" : dbPost.newDerive((Post)model, (Derive)cmd); break;
-		case "Recursive" : dbRec.newFunction(model.id, (main.Function)cmd); break;
-		case "Calculus" : dbCalc.newDeclLambda(model.id, (main.LambdaDecl)cmd); break;
+		case "Recursive" : dbRec.newFunction(model.id, (model.rec.Function)cmd); break;
+		case "Calculus" : dbCalc.newDeclLambda(model.id, (model.calc.LambdaDecl)cmd); break;
 		default: System.out.println(">>> Not realise newCommand for: " + type + "!");
 		}
 	}

@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import main.*;
+import model.AllModels;
+import model.Post;
 
 public class PnForming extends JPanel {
 	private AllModels env = null;

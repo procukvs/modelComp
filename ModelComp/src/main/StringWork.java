@@ -104,7 +104,7 @@ public class StringWork {
 		if (what.equals("Var")) return var; else return alfa;
 	}
 	
-	static String substitution(String bs, String wh, int b, int l){
+	public static String substitution(String bs, String wh, int b, int l){
 		//Підстановка в рядок bs рядка wh замісто підрядка, що починається з позиції b довжиною l символів
 		if (l==0) return wh.concat(bs);   // only on begin of bs ==> b ==0  ...wh+bs
 		else if(wh.length() == 0)  
@@ -119,7 +119,7 @@ public class StringWork {
 		return (str.substring(m-1, m-1+pt.length())).equals(pt);
 	}
 	
-	static int findFirst(String str, String pt ){
+	public static int findFirst(String str, String pt ){
 		int m = 0;
 		int i = 1;
 		while ((m==0) && (i+pt.length() <= str.length()+1)) {

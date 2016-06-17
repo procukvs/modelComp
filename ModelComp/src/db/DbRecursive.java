@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.rec.Function;
+import model.rec.Recursive;
 
 public class DbRecursive {
 	private DbAccess db;

@@ -2,6 +2,7 @@ package gui.system;
 
 import db.*;
 import main.*;
+import model.Model;
 import file.*;
 import gui.FrMain;
 import gui.eval.DgEval;
@@ -236,7 +237,7 @@ public class PnParButtons extends JPanel {
 	
 	class ModelOutput implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("PParButtons:ModelOutput =  "+ type );
+			//System.out.println("PParButtons:ModelOutput =  "+ type );
 			WorkFile wf= WorkFile.getWorkFile();
 			OutputText out = wf.getOut();
 			String text = "Файл для виведення не вказано !";
@@ -275,7 +276,7 @@ public class PnParButtons extends JPanel {
 	}
 	class ModelInput implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("PParButtons:ModelInput =  "+ type );
+			//System.out.println("PParButtons:ModelInput =  "+ type );
 			String text = "Файл для введення не вказано !";
 			String name = nmFile.getText();
 			Model model = null;

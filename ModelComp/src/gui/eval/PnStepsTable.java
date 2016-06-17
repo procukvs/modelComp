@@ -9,6 +9,9 @@ import javax.swing.table.*;
 
 import gui.ModelTable;
 import main.*;
+import model.Algorithm;
+import model.Computer;
+import model.Model;
 
 public class PnStepsTable extends JPanel {
 	ModelTable dbm;

@@ -175,6 +175,13 @@ Calculus PrattRec
    addition = rec2  (\x . x) (\x1 x2 x3 . plus 1 x3);
 end PrattRec
 
+'new set
+Calculus Set01ad01
+   'succ n = n+1
+   succ = \ x s z . s (x s z) ;
+   fst = \p. p true;
+end Set01ad01
+
 'Тестовий набір
 Calculus test
    I = \x.x;

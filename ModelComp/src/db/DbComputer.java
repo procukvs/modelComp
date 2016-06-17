@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.Computer;
+import model.Instruction;
 
 public class DbComputer {
 	private DbAccess db;
@@ -90,7 +92,7 @@ public class DbComputer {
 		
 	
 	// створює нову машину на основі машини з model (включаючи всю програму)
-	public int newComputertAs(Computer model){
+	public int newComputerAs(Computer model){
 		String name = db.findName("Computer", model.name);
 		int cnt = db.maxNumber("Computer")+1;
 		int rows;

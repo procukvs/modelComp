@@ -2,6 +2,8 @@ package gui.model;
 
 import db.*;
 import main.*;
+import model.AllModels;
+import model.Model;
 import file.*;
 import gui.*;
 import gui.eval.*;

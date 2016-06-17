@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
+import model.Machine;
+import model.State;
 
 public class DbMachine {
 	private DbAccess db;

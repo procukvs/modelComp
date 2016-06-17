@@ -8,6 +8,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.event.*;
 
 import main.*;
+import model.AllModels;
+import model.Model;
 import db.*;
 
 public class DgInsert extends JDialog {

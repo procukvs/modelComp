@@ -1,6 +1,9 @@
 package gui.eval;
 
 import main.*;
+import model.AllModels;
+import model.Model;
+import model.rec.Function;
 import db.*;
 
 import java.awt.*;
