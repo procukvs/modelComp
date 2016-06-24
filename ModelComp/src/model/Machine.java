@@ -541,10 +541,33 @@ public class Machine extends Model {
 			ns = nextState(ns,allStateThis);
 			newState.put(s, ns);
 		}
+		no = no + newChar;
+		String allNew = '_' + main + add + no;
+		fin = newState.get(ins.fin);
+		ArrayList <Command> prog = this.program;
+		ArrayList <Command> newProg = new ArrayList <Command>();
+		String tempInit = newState.get(ins.init);
+		int maxId = 0;
+		for(int i=0; i<prog.size(); i++){
+			State st = (State)prog.get(i);
+			Map<Character,String> goingMap = fromState (st, allThis, tempInit);
+			ArrayList<String> newGoing =  toGoing(allNew, goingMap);
+			if(maxId < st.getId()) maxId = st.getId(); 
+			newProg.add(new State(st.getState(), st.getId(),newGoing, st.gettxComm()));
+		}
+		for(int i1=0; i1<ins.program.size(); i1++){
+			State st1 = (State)ins.program.get(i1);
+			Map<Character,String> goingMap1 = fromState (st1, allIns, newState);
+			ArrayList<String> newGoing1 =  toGoing(allNew, goingMap1);
+			String stN = newState.get(st1.getState());
+			newProg.add(new State(stN, ++maxId,newGoing1, st1.gettxComm()));
+		}
+		this.program = newProg;
 		System.out.println("allStateThis = " + allStateThis.toString()); 
 		System.out.println("allStateIns= " + allStateIns.toString());
-		System.out.println("newState = " + newState.toString()); 
-		text = "New staTES !!";
+		System.out.println("newState = " + newState.toString());
+		System.out.println("newMachine  = " + this.show());
+		//text = "New staTES !!";
 		//text = "Insert into " + this.name + " macnine " + ins.name + " newChar = " + newChar;
 		if (text.isEmpty()) DbAccess.getDbMachine().saveMachine(this, section);
 		return text;
@@ -597,5 +620,42 @@ public class Machine extends Model {
 		if (j == 36) {i++; j = 0;} 
 		if (i < 27) res = "@" + first.substring(i,i+1) + second.substring(j,j+1); 
 		return res;
+	}
+	
+	private Map<Character,String> fromState (State st, String all, String initNew){
+		Map<Character,String> go = new HashMap<Character,String>();
+		ArrayList<String> going = st.getGoing();
+		for(int i=0; i<going.size(); i++){
+			String goFull = going.get(i);
+			if (!goFull.isEmpty()){
+				String sGo = goFull.substring(0,3);
+				if(sGo.equals(fin)) goFull = initNew + goFull.substring(3,5);
+				Character ch = new Character(all.charAt(i));
+				go.put(ch, goFull);
+			}
+		}
+		return go;
+	}
+	private Map<Character,String> fromState (State st, String all, Map<String,String> newState){
+		Map<Character,String> go = new HashMap<Character,String>();
+		ArrayList<String> going = st.getGoing();
+		for(int i=0; i<going.size(); i++){
+			String goFull = going.get(i);
+			if (!goFull.isEmpty()){
+				String sGo = goFull.substring(0,3);
+				goFull = newState.get(sGo) + goFull.substring(3,5);
+				Character ch = new Character(all.charAt(i));
+				go.put(ch, goFull);
+			}
+		}
+		return go;
+	}
+	private ArrayList<String> toGoing(String allCh, Map<Character,String> map){
+		ArrayList<String> going = new ArrayList <String>();
+		for( int i = 0; i < allCh.length(); i++){
+			Character c = new Character(allCh.charAt(i));
+			if (map.containsKey(c))	going.add(map.get(c)); else going.add("");
+		}
+		return going;
 	}
 }
