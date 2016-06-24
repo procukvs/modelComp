@@ -151,6 +151,21 @@ public class DbAccess {
 		catch (Exception e) {System.out.println(e.getMessage());}
 		return name;
 	}
+	
+	public int getIdModel(String section, String type, String name) {
+		int res = 0;
+		try{ 
+			sql = "select id from "+ tableModel(type) + " where name = '" + name + "' and section = '" + section + "'";
+			db.s.execute(sql);
+			rs = db.s.getResultSet();
+            if((rs!=null) && (rs.next())){
+            	res= rs.getInt(1); 
+            }
+		}catch (Exception e){
+			System.out.println("DbAccess: getIdModel :" + sql + " >> " + e.getMessage());
+		}
+		return res;	
+	}
 	/*
 	// знаходить id моделі типа type, яка по порядку order
 	public int getNumber(String type, int order){

@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.*;
 
 import main.*;
-import model.Machine;
-import model.State;
+import model.*;
+
 
 public class DbMachine {
 	private DbAccess db;
@@ -344,8 +344,8 @@ public class DbMachine {
 		return no;
 	}
 	
-	private ArrayList <State> getProgram(int mach) {
-		ArrayList <State> states = new ArrayList();
+	private ArrayList <Command> getProgram(int mach) {
+		ArrayList <Command> states = new ArrayList();
 		String inSym = "_" + model.main + model.add + model.no;
 		int idSt;
 		String state;
@@ -586,7 +586,73 @@ public class DbMachine {
 		wh = " and (" + in + ") and (" + out + ")"; 
 		return wh;
 	}
+	
+	
+	// повністю видаляє попередню машину з БД model.id
+	// зберігає нову версію машини  model  
+	// ВСЕ в розділі section 
+	public boolean saveMachine(Machine model, String section){
+		String allCh = "_" + model.main + model.add + model.no;
+		//String name = model.name;
+		//int cnt = db.maxNumber("Machine")+1;
+		//int rows;
+		//State st;
+		//String move = "";
+		//String inCh = "";
+		//String section = Parameters.getSection();
+		int rows;
+		boolean res = false;
 		
+		try {
+			db.conn.setAutoCommit(false);
+			try{
+				//  видаляємо попередню
+				sql = "delete from tMove where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from tProgram where idModel = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				sql = "delete from tMachine where id = " + model.id;
+				rows=db.s.executeUpdate(sql);
+				//  вставляємо нову
+				int isNumeric = (model.isNumeric?1:0); 
+				sql = "insert into tMachine values(" + model.id +  ",'" + section +  "','" + model.name + "','" + model.main + "','" +
+						model.add + "','" + model.init + "','" + model.fin + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
+				//System.out.println(">>> " + sql);
+				rows=db.s.executeUpdate(sql);
+				for (int i = 0; i < model.program.size(); i++) {
+					State st = (State)model.program.get(i);
+					sql = "insert into tProgram values(" + model.id + "," + st.getId() + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+					//System.out.println(">>> " + sql);
+					rows=rows + db.s.executeUpdate(sql);
+					for(int j = 0; j < st.getGoing().size(); j++) {
+						String move = st.getGoing().get(j);
+						if (!move.isEmpty()) {
+							if(j < allCh.length()) {
+								String inCh = allCh.substring(j,j+1);                        ///else inCh = " ";
+							    sql = "insert into tMove values(" + model.id + "," + st.getId() + ",'" + inCh + "','" + move.substring(3,4)
+						    			+ "','" + move.substring(0,3) + "','" + move.substring(4,5) + "')";	
+							    //System.out.println(">>> " + sql);
+							    db.s.execute(sql);
+							}    
+						}
+					}
+				}
+				db.conn.commit();
+				res = true;
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: saveMachine :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);
+		}	
+		catch (Exception e) { System.out.println(e.getMessage());}	
+		return res;
+	}
+	
+	
 		
 	/*
 	private ArrayList <State> getAllStates(int mach) {

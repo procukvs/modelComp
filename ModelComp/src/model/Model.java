@@ -1,18 +1,17 @@
 package model;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.*;
 import java.util.*;
 
 import db.*;
 import file.*;
 import gui.*;
-import main.StringWork;
+import main.*;
 
 public class Model {
 	public int id;
 	public String name;
 	public String descr;
-	public ArrayList program;
+	public ArrayList <Command> program;
 	
 	public Model(int id, String name) {
 		this.id = id; this.name = name;

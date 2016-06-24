@@ -132,7 +132,9 @@ public class AllModels {
 		String text = "";
 		switch(type){
 		case "Computer" : text = model.dbInsertModel(row, nmModel);  break;
-		case "Machine"  : text = model.dbInsertModel(nmModel);  break;
+		case "Machine"  : //text = model.dbInsertModel(nmModel);
+					      text = insertMachine(nmModel);
+		                   break;
 		case "Recursive":  
 		case "Calculus" : text = model.dbInsertModel(row, nmModel, nmFunction); break;
 		default: break;
@@ -140,6 +142,13 @@ public class AllModels {
 		if (text.isEmpty()) setAll(model.id);
 		return text;
 	}
+	
+	private String insertMachine(String nmModel){
+		String text = "";
+		Machine ins = (Machine)db.getModel("Machine", db.getIdModel(section, "Machine", nmModel));
+		text = ((Machine)model).insertMachine(section, ins);
+		return text;
+	} 
 	
 	
 	public String inputModel(String nmFile){

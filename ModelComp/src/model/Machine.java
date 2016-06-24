@@ -525,5 +525,77 @@ public class Machine extends Model {
 		//for(i = 0; i < k; i++) System.out.println("newArState: k =" + k + " res[] =" + res[i]);
 		return res;
 	}
+		
+	// ====================== insert Machine =========================
+	// розширює машину вствляючи в неї ІНШУ
+	public String insertMachine(String section, Machine ins){
+		String text = "";
+		String allThis = '_' + main + add + no;
+		String allIns = '_' + ins.main + ins.add + ins.no; 
+		String newChar = StringWork.isAlfa(allThis, allIns); 
+		SortedSet <String> allStateThis = allState(this);
+		SortedSet <String> allStateIns = allState(ins);
+		Map<String,String> newState = new HashMap<String,String>();
+		String ns = "@0z";
+		for(String s:allStateIns){
+			ns = nextState(ns,allStateThis);
+			newState.put(s, ns);
+		}
+		System.out.println("allStateThis = " + allStateThis.toString()); 
+		System.out.println("allStateIns= " + allStateIns.toString());
+		System.out.println("newState = " + newState.toString()); 
+		text = "New staTES !!";
+		//text = "Insert into " + this.name + " macnine " + ins.name + " newChar = " + newChar;
+		if (text.isEmpty()) DbAccess.getDbMachine().saveMachine(this, section);
+		return text;
+	}
 	
+	private SortedSet <String> allState (Machine mach){
+		SortedSet <String> allSt = new TreeSet <String>();
+		String allCh = "_" + mach.main + mach.add + mach.no;
+		//boolean isFin;
+		for(int i = 0;	(i < mach.program.size()); i++ ) {
+			State state = (State)mach.program.get(i);
+			String name = ((State)mach.program.get(i)).getState();
+			if (!allSt.contains(name)) allSt.add(name); 
+		}
+		//isFin = allSt.contains(fin);
+		for(int i = 0;	(i < mach.program.size()); i++ ) {
+			State state = (State)mach.program.get(i);
+			for(int j = 0; j < state.getGoing().size(); j++){
+				String move = state.getGoing().get(j);  
+				if(!move.isEmpty()){
+					String stgo = move.substring(0,3);
+					//if(!stgo.equals(fin))
+					//  if (!allSt.contains(stgo)) 
+					allSt.add(stgo); 
+				}
+			}	
+			
+		}
+		return allSt;
+	}
+
+	// будує слідуючий за st новий стан (ЩО не ВХОДИТЬ В allState), "@zz"- НЕМАЄ нових станів 
+	private String nextState(String st, SortedSet <String> allState){
+		String res = "";	
+		do{
+			st = nextState(st);
+			if (!st.isEmpty())
+		       if (!allState.contains(st)) res = st;
+		} while((res.isEmpty() && !st.isEmpty()));
+		return res;
+	}
+	
+	// будує слідуючий за st новий стан, "@zz"- НЕМАЄ нових станів 
+	private String nextState(String st){
+		String res = "@zz";
+		String first = "0abcdefghijklmnopqrstuvwxyz";
+		String second = "0123456789abcdefghijklmnopqrstuvwxyz";	
+		int i = first.indexOf(st.substring(1,2));
+		int j = second.indexOf(st.substring(2)) + 1;
+		if (j == 36) {i++; j = 0;} 
+		if (i < 27) res = "@" + first.substring(i,i+1) + second.substring(j,j+1); 
+		return res;
+	}
 }
