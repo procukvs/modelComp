@@ -104,7 +104,7 @@ public class DbCalculus {
 	public void editCalculus(Calculus model) {
 		int rows;
 		try{
-			sql = "update eCalculus set name = '" + model.name + "', descr  = '" + model.descr + "' where id = " + model.id;
+			sql = "update eCalculus set name = '" + model.name + "', descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0)
 				System.out.println("editCalculus: Не змінило відредагований " + model.name + "!");
@@ -217,7 +217,7 @@ public class DbCalculus {
 	
 	public void editDeclLambda(int id, LambdaDecl fun) {
 		 try{	
-			sql = "update eLambda set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + fun.gettxComm() + "'" +
+			sql = "update eLambda set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + StringWork.transferTxComm(fun.gettxComm()) + "'" +
 		 			"	where idModel = " + id + " and id = " + fun.getId() ;
 		 	//System.out.println("Db.."+sql);
 		 	db.s.execute(sql);

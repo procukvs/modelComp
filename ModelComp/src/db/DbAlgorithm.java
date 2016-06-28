@@ -122,7 +122,7 @@ public class DbAlgorithm {
 			int isNumeric = (model.isNumeric?1:0); 
 			sql = "update mAlgorithm set name = '" + model.name + "', sMain = '" + model.main + "', " +
 						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + "," +
-						"descr  = '" + model.descr + "' where id = " + model.id;
+						"descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0)
 				System.out.println("editAlgorithm: Не змінило відредагований " + model.name + "!");
@@ -173,7 +173,7 @@ public class DbAlgorithm {
 	public void editRule(int algo, int row, Rule rule) {
 		 try{	int isEnd = (rule.getisEnd()?1:0); 
 			 	sql = "update mRule set sLeft = '" + rule.getsLeft() + "'," + "sRigth = '" + rule.getsRigth() + 
-			 			"', isEnd = " +	isEnd + ", txComm = '" + rule.gettxComm() + "'" +
+			 			"', isEnd = " +	isEnd + ", txComm = '" + StringWork.transferTxComm(rule.gettxComm()) + "'" +
 			 			"	where idModel = " + algo + " and id = " + row ;
 			 	//System.out.println("1:" + sql);
 			 	db.s.execute(sql);

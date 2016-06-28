@@ -68,7 +68,7 @@ public class DbPost {
 			int isNumeric = (model.isNumeric?1:0); 
 			sql = "update pPost set name = '" + model.name + "', sMain = '" + model.main + "', " +
 						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + "," +
-						"descr  = '" + model.descr + "' where id = " + model.id;
+						"descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0)
 				System.out.println("editPost: Не змінило відредагований " + model.name + "!");
@@ -177,7 +177,7 @@ public class DbPost {
 			int  isAxiom = (rule.getisAxiom()?1:0); 
 			//System.out.println("Db.."+rule.output());
 		 	sql = "update pDerive set sLeft = '" + rule.getsLeft() + "'," + "sRigth = '" + rule.getsRigth() + 
-		 			"', isAxiom = " +	isAxiom + ", txComm = '" + rule.gettxComm() + "'" +
+		 			"', isAxiom = " +	isAxiom + ", txComm = '" + StringWork.transferTxComm(rule.gettxComm()) + "'" +
 		 			"	where idModel = " + post + " and id = " + rule.getId() ;
 		 	//System.out.println("Db.."+sql);
 		 	db.s.execute(sql);

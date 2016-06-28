@@ -336,6 +336,7 @@ public class PnDescription extends JPanel {
 		 		if (modif[4]) model.setRank(intRank);
 		 		if (modif[5]) model.setMain(strMain);
 		 		if (modif[6]) model.setAdd(strAdd);
+		 		//System.out.println("PnDescription:testAndSave: model.descr=" +  model.descr + " strComm = " + strComm); 
 		 		if (modif[7]) model.descr = strComm;
 		 		//db.editModel(type,model);
 		 		env.editModel(model);

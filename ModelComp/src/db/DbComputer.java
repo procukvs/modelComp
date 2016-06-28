@@ -80,7 +80,7 @@ public class DbComputer {
 		int rows;
 		try{
 			sql = "update rComputer set name = '" + model.name + "', " +
-						" Rank = " + model.rank + ", descr  = '" + model.descr + "' where id = " + model.id;
+						" Rank = " + model.rank + ", descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0)
 				System.out.println("editComputer: Не змінило відредаговану " + model.name + "!");
@@ -203,7 +203,7 @@ public class DbComputer {
 	public void editInstruction(int comp, Instruction inst) {
 		 try{	
 			sql = "update rInstruction set cod = '" + inst.getCod() + "'," + "reg1 = " + inst.getReg1() + 
-		 			", reg2 = " +	inst.getReg2() + ", next = " + inst.getNext() + ", txComm = '" + inst.gettxComm() + "'" +
+		 			", reg2 = " +	inst.getReg2() + ", next = " + inst.getNext() + ", txComm = '" + StringWork.transferTxComm(inst.gettxComm()) + "'" +
 		 			"	where idModel = " + comp + " and id = " + inst.getId() ;
 		 	//System.out.println("Db.."+sql);
 		 	db.s.execute(sql);

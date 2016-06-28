@@ -201,7 +201,7 @@ public class StringWork {
 		return st;
 	}
 	
-	public static String trasferTxComm(String com){
+	public static String transferTxComm(String com){
 		String res = "";
 		for(int i=0; i < com.length(); i++ ){
 			if (com.charAt(i) == '\'') res = res + "\"";

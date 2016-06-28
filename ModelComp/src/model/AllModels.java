@@ -146,6 +146,7 @@ public class AllModels {
 	private String insertMachine(String nmModel){
 		String text = "";
 		Machine ins = (Machine)db.getModel("Machine", db.getIdModel(section, "Machine", nmModel));
+		//System.out.println("AllModel:insertMachine :" + model.show());
 		text = ((Machine)model).insertMachine(section, ins);
 		return text;
 	} 

@@ -61,7 +61,7 @@ public class DbRecursive {
 	public void editRecursive(Recursive model) {
 		int rows;
 		try{
-			sql = "update fRecursive set name = '" + model.name + "', descr  = '" + model.descr + "' where id = " + model.id;
+			sql = "update fRecursive set name = '" + model.name + "', descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0)
 				System.out.println("editRecursive: Не змінило відредагований " + model.name + "!");
@@ -174,7 +174,7 @@ public class DbRecursive {
 	
 	public void editFunction(int id, Function fun) {
 		 try{	
-			sql = "update fFunction set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + fun.gettxComm() + "'" +
+			sql = "update fFunction set txBody = '" + fun.gettxBody() + "'," + "txComm = '" + StringWork.transferTxComm(fun.gettxComm()) + "'" +
 		 			"	where idModel = " + id + " and id = " + fun.getId() ;
 		 	//System.out.println("Db.."+sql);
 		 	db.s.execute(sql);

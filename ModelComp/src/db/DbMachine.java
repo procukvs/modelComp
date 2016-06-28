@@ -58,9 +58,9 @@ public class DbMachine {
 			sql = "update tMachine set name = '" + model.name + "', sMain = '" + model.main + "', " +
 						"sAdd = '" + model.add + "', isNumeric = " + isNumeric + ", Rank = " + model.rank + ", " +
 						"sInitial = '" + model.init + "', sFinal = '" + model.fin + "', " +
-						"descr  = '" + model.descr + "' where id = " + model.id;
+						"descr  = '" + StringWork.transferTxComm(model.descr) + "' where id = " + model.id;
 			rows=db.s.executeUpdate(sql);
-			//System.out.println("rows = " + rows + " sql=" + sql);
+			//System.out.println("DbMachine:editMachine : sql=" + sql);
 			if (rows == 0)
 				System.out.println("editMachine: Не змінило відредагований " + model.name + "!");
 			//System.out.println("rows = " + rows + " sql=" + sql);
@@ -81,7 +81,7 @@ public class DbMachine {
 		int rows;
 		String section = Parameters.getSection();
 		try{
-			sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','|#','','@a0', '@zz', 1,2,'new')";
+			sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','|#','','@a0', '@a0', 1,2,'new')";
 			rows=db.s.executeUpdate(sql);
 			if (rows == 0) cnt = 0;
 		}
@@ -275,7 +275,7 @@ public class DbMachine {
 		try {
 			db.conn.setAutoCommit(false);
 			try{	
-				sql = "update tProgram set txComm = '" + st.gettxComm() + "' where idModel = " + mach.id + " and id = " + id;
+				sql = "update tProgram set txComm = '" + StringWork.transferTxComm(st.gettxComm()) + "' where idModel = " + mach.id + " and id = " + id;
 				//System.out.println("editState " + sql);
 				db.s.execute(sql);
 				sql = "delete from tMove where idModel = " + mach.id + " and id = " + id;
@@ -616,12 +616,12 @@ public class DbMachine {
 				//  вставляємо нову
 				int isNumeric = (model.isNumeric?1:0); 
 				sql = "insert into tMachine values(" + model.id +  ",'" + section +  "','" + model.name + "','" + model.main + "','" +
-						model.add + "','" + model.init + "','" + model.fin + "'," + isNumeric + "," + model.rank + ",'" + model.descr + "')";  
-				//System.out.println(">>> " + sql);
+						model.add + "','" + model.init + "','" + model.fin + "'," + isNumeric + "," + model.rank + ",'" + StringWork.transferTxComm(model.descr) + "')";  
+				//System.out.println("DbMachine:saveMachine =" + sql);
 				rows=db.s.executeUpdate(sql);
 				for (int i = 0; i < model.program.size(); i++) {
 					State st = (State)model.program.get(i);
-					sql = "insert into tProgram values(" + model.id + "," + st.getId() + ",'" + st.getState() + "','" + st.gettxComm() + "')";
+					sql = "insert into tProgram values(" + model.id + "," + st.getId() + ",'" + st.getState() + "','" + StringWork.transferTxComm(st.gettxComm()) + "')";
 					//System.out.println(">>> " + sql);
 					rows=rows + db.s.executeUpdate(sql);
 					for(int j = 0; j < st.getGoing().size(); j++) {

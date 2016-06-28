@@ -13,13 +13,9 @@ public class Machine extends Model {
 	public int rank = 1;
 	public String init = "@a0";
 	public String fin = "@zz";
-	//public ArrayList <String> stAll = null;
-		
+			
 	public Machine(int id, String name) {
 		super(id,name);
-		//stAll = new ArrayList();
-		//stAll.add(new String(init));
-		//stAll.add(new String(fin));
 	}
 	
 	//-----------------------------------------------
@@ -54,20 +50,12 @@ public class Machine extends Model {
 	public String dbInsertModel(String nmInsert) {
 		return DbAccess.getDbMachine().insertMachine(this, nmInsert);
 	}
-	/*public boolean isState(String st) {
-		boolean go = true;
-		int i = 0;
-		while ((i < stAll.size()) && go){
-			go = !st.equals(stAll.get(i)); i++;
-		}
-		return !go;
-	} */
-	
-	
-	
+		
 	public String[] iswfModel(){
 		String allNoAlfa = "";  // символи в переходах не із обєднаного алфавіту
-		String states = "";		// стани, що використовують символи не із обєднаного алфавіту
+		//String states = "";		
+		// стани, що використовують символи не із обєднаного алфавіту
+		SortedSet <String> states = new TreeSet <String>();
 		ArrayList <String> badMoves = new ArrayList();  // невірні переходи. 
 		String badMove = "";
 		String [] res = null;
@@ -81,19 +69,17 @@ public class Machine extends Model {
 		for(i = 0; i < program.size(); i++) {
 			state = (State)program.get(i);
 			badMove = "";
-			//noLeft = StringWork.isAlfa(main+add,rule.getsLeft());
-        	//noRigth = StringWork.isAlfa(main+add,rule.getsRigth());
-        	//if(!noLeft.isEmpty()) noRigth = StringWork.unionAlfa(noLeft, noRigth);
 			for(int j = 0; j < state.getGoing().size(); j++){
 				String c = allCh.substring(j,j+1) ; 
 				//System.out.println("iswfModel j= " +j + " c =" + c + ".." + state.getGoing().size()); 
 				move = state.getGoing().get(j);  // c -> move
 				if(!move.isEmpty()){
-					if (StringWork.isMove(move)) {    //iswfMove(move)
+					if (StringWork.isMove(move)) {   
 						noChar = StringWork.isAlfa(goodCh,c + move.substring(3,4));
 						//System.out.println("iswfModel goodCh = " +goodCh + " move = " + move + " c =" + move.substring(3,4) + ".." + noChar); 
 						if (!noChar.isEmpty()) {
-							states = states + "," + state.getState();
+							//states = states + "," + state.getState();
+							states.add(state.getState());
 							if (allNoAlfa.isEmpty()) allNoAlfa = noChar;
 							else allNoAlfa = StringWork.unionAlfa(allNoAlfa,noChar);
 						}	
@@ -119,9 +105,15 @@ public class Machine extends Model {
 			}
 			//System.out.println("iswfModel lb=" +lb + " states.isEmpty()=" + states.isEmpty() + " r=" + r + " res.length =" + res.length  + " i =" + i);
 			if(!states.isEmpty()) {
-				res[i] = "В станах " + states.substring(1); i++;
-				res[i] = " використовуються символи " + allNoAlfa; i++;
-				res[i] = " що не входять в об\"єднаний алфавіт _" + main+add + " !";
+				boolean first = true;
+				if(states.size()>1) res[i] = "В станах "; else res[i] = "В станi ";
+				for(String s:states){
+				    if (first) {res[i] = res[i] + s; first = false;}
+				    else res[i] = res[i] + ", " + s; 
+				}
+				//res[i] = "В станах " + states.substring(1);i++;
+				res[++i] = " використовуються символи " + allNoAlfa; //i++;
+				res[++i] = " що не входять в об\"єднаний алфавіт _" + main+add + " !";
 			}
 		}
 		return res;
@@ -222,13 +214,6 @@ public class Machine extends Model {
 	
 	// додає стан в програму --- всі переходи - НЕВИЗНАЧЕНІ!
 	public void addStateGoing(String st) {
-		/*ArrayList <String> going = new ArrayList();
-		String allCh = "_" + main + add + no;
-		for( int i = 0; i < allCh.length(); i++){
-			char c = allCh.charAt(i);
-			going.add("");
-		}
-		insertCommand(new State(st,findMaxNumber() + 1,going,"---")); */
 		insertCommand(emptyState(st));
 	}
 	
@@ -254,18 +239,6 @@ public class Machine extends Model {
 		}
 		return cnt;
 	}
-	
-	// знаходить порядковий номер команди в програмі за номером стану num в БД
-	/*
-	public int findCommand(int num) {
-		int cnt = -1;
-		if ((program != null) && (program.size() > 0)) {
-			for(int i = 0; i < program.size(); i++ )
-				if(num == (((State)program.get(i)).getId())) cnt = i;
-		}
-		return cnt;
-	}
-	*/
 	
 	public ArrayList eval(String str, int nodef) {
 		// застосовує машину Тьюрінга до слова str не більше ніж (nodef+1) раз
@@ -340,13 +313,17 @@ public class Machine extends Model {
 		String text = con.tape;
 		String finState = con.st;
 		if (finState.equals(fin)){
-			if (text.equals("_")) text = "";
-			if (isNumeric) text = StringWork.transNumeric(text);
+			//String noMain = StringWork.isAlfa("_" + main, text);
+			//if(noMain.length()==0){
+				if (text.equals("_")) text = "";
+				if (isNumeric) text = StringWork.transNumeric(text);
+			//}
+			//else text = "Невизначено: Не основний -" + noMain + "::" + text;   
 		} else 
 			switch(finState.charAt(1)){
-			case 's': text = "Невизначений стан: " + finState.substring(2); break;
-			case 'g': text = "Невизначений перехід: " + finState.substring(2,5) + "+'" + finState.substring(5) + "'"; break;
-			case 'c': text = "Невизначено (вичерпана кіількість переходів)" ; break;
+			case 's': text = "Невизначено: Стан - " + finState.substring(2); break;
+			case 'g': text = "Невизначено: Перехід - " + finState.substring(2,5) + "+'" + finState.substring(5) + "'"; break;
+			case 'c': text = "Невизначено: Вичерпана кількість переходів" ; break;
 			default:  text = "Невизначено" ;
 			};	
 		return text ;
@@ -532,42 +509,55 @@ public class Machine extends Model {
 		String text = "";
 		String allThis = '_' + main + add + no;
 		String allIns = '_' + ins.main + ins.add + ins.no; 
+		String shIns = ins.name.substring(0,1);
+		// find new Symbols
 		String newChar = StringWork.isAlfa(allThis, allIns); 
+		//System.out.println("Machine:insertMachine  start= " + init + " fin = " + fin);
+		// find all states and new states !!
 		SortedSet <String> allStateThis = allState(this);
+		if (this.findCommand(fin)==(-1))allStateThis.remove(fin);
 		SortedSet <String> allStateIns = allState(ins);
 		Map<String,String> newState = new HashMap<String,String>();
-		String ns = "@0z";
+		String ns = lastState (allStateThis);
 		for(String s:allStateIns){
 			ns = nextState(ns,allStateThis);
-			newState.put(s, ns);
+			if (ns.equals("@!!")) text = "insertMachine: вичерпано ВСІ можливі стани ";
+			else newState.put(s, ns);
 		}
-		no = no + newChar;
-		String allNew = '_' + main + add + no;
-		fin = newState.get(ins.fin);
-		ArrayList <Command> prog = this.program;
-		ArrayList <Command> newProg = new ArrayList <Command>();
-		String tempInit = newState.get(ins.init);
-		int maxId = 0;
-		for(int i=0; i<prog.size(); i++){
-			State st = (State)prog.get(i);
-			Map<Character,String> goingMap = fromState (st, allThis, tempInit);
-			ArrayList<String> newGoing =  toGoing(allNew, goingMap);
-			if(maxId < st.getId()) maxId = st.getId(); 
-			newProg.add(new State(st.getState(), st.getId(),newGoing, st.gettxComm()));
+		if (text.isEmpty()){
+			// build new program newProg
+			String allNew = '_' + main + add + no+ newChar;
+			ArrayList <Command> prog = this.program;
+			ArrayList <Command> newProg = new ArrayList <Command>();
+			String tempInit = newState.get(ins.init);
+			int maxId = 0;
+			//System.out.println("startMachine  = " + this.show());
+			//System.out.println("insMachine  = " + ins.show());
+			for(int i=0; i<prog.size(); i++){
+				State st = (State)prog.get(i);
+				Map<Character,String> goingMap = fromState (st, allThis, tempInit);
+				ArrayList<String> newGoing =  toGoing(allNew, goingMap);
+				if(maxId < st.getId()) maxId = st.getId(); 
+				newProg.add(new State(st.getState(), st.getId(),newGoing, st.gettxComm()));
+			}
+			for(int i1=0; i1<ins.program.size(); i1++){
+				State st1 = (State)ins.program.get(i1);
+				Map<Character,String> goingMap1 = fromState (st1, allIns, newState);
+				ArrayList<String> newGoing1 =  toGoing(allNew, goingMap1);
+				String stN = newState.get(st1.getState());
+				String newComm = (i1==0?ins.name:shIns) + " " + st1.gettxComm();
+				newProg.add(new State(stN, ++maxId,newGoing1, newComm)); //st1.gettxComm()));
+			}
+			// modify Machine
+			no = no + newChar;
+			fin = newState.get(ins.fin);
+			this.program = newProg;
+			//System.out.println("allStateThis = " + allStateThis.toString()); 
+			//System.out.println("allStateIns= " + allStateIns.toString());
+			//System.out.println("newState = " + newState.toString());
+			//System.out.println("newMachine  = " + this.show());
+			//text = "New staTES !!";
 		}
-		for(int i1=0; i1<ins.program.size(); i1++){
-			State st1 = (State)ins.program.get(i1);
-			Map<Character,String> goingMap1 = fromState (st1, allIns, newState);
-			ArrayList<String> newGoing1 =  toGoing(allNew, goingMap1);
-			String stN = newState.get(st1.getState());
-			newProg.add(new State(stN, ++maxId,newGoing1, st1.gettxComm()));
-		}
-		this.program = newProg;
-		System.out.println("allStateThis = " + allStateThis.toString()); 
-		System.out.println("allStateIns= " + allStateIns.toString());
-		System.out.println("newState = " + newState.toString());
-		System.out.println("newMachine  = " + this.show());
-		//text = "New staTES !!";
 		//text = "Insert into " + this.name + " macnine " + ins.name + " newChar = " + newChar;
 		if (text.isEmpty()) DbAccess.getDbMachine().saveMachine(this, section);
 		return text;
@@ -576,12 +566,13 @@ public class Machine extends Model {
 	private SortedSet <String> allState (Machine mach){
 		SortedSet <String> allSt = new TreeSet <String>();
 		String allCh = "_" + mach.main + mach.add + mach.no;
-		//boolean isFin;
 		for(int i = 0;	(i < mach.program.size()); i++ ) {
 			State state = (State)mach.program.get(i);
 			String name = ((State)mach.program.get(i)).getState();
 			if (!allSt.contains(name)) allSt.add(name); 
 		}
+		if((mach.init!=null) && (!allSt.contains(mach.init))) allSt.add(mach.init); 
+		if((mach.fin!=null) && (!allSt.contains(mach.fin))) allSt.add(mach.fin); 
 		//isFin = allSt.contains(fin);
 		for(int i = 0;	(i < mach.program.size()); i++ ) {
 			State state = (State)mach.program.get(i);
@@ -599,6 +590,16 @@ public class Machine extends Model {
 		return allSt;
 	}
 
+	// шукає "останній" використаний стан, ВСІ нові будуть за ним підряд!! 
+	private String lastState(SortedSet <String> allState){
+		String res = "@0a";
+		for(String s:allState){
+			if(!s.substring(0,2).equals("@z")){
+				if ((res.charAt(1)  < s.charAt(1)) || (res.charAt(1) == s.charAt(1)) && (res.charAt(2) < s.charAt(2))) res = s;
+			}
+		}
+		return res;
+	}
 	// будує слідуючий за st новий стан (ЩО не ВХОДИТЬ В allState), "@zz"- НЕМАЄ нових станів 
 	private String nextState(String st, SortedSet <String> allState){
 		String res = "";	
@@ -610,7 +611,7 @@ public class Machine extends Model {
 		return res;
 	}
 	
-	// будує слідуючий за st новий стан, "@zz"- НЕМАЄ нових станів 
+	// будує слідуючий за st новий стан, "@!!"- НЕМАЄ нових станів 
 	private String nextState(String st){
 		String res = "@zz";
 		String first = "0abcdefghijklmnopqrstuvwxyz";
@@ -618,7 +619,7 @@ public class Machine extends Model {
 		int i = first.indexOf(st.substring(1,2));
 		int j = second.indexOf(st.substring(2)) + 1;
 		if (j == 36) {i++; j = 0;} 
-		if (i < 27) res = "@" + first.substring(i,i+1) + second.substring(j,j+1); 
+		if (i < 27) res = "@" + first.substring(i,i+1) + second.substring(j,j+1); else res ="@!!";
 		return res;
 	}
 	
