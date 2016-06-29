@@ -289,8 +289,17 @@ public class PnDescription extends JPanel {
 			} else modif[4]=true;
 		}
 		if(!type.equals("Recursive") && !type.equals("Calculus")&& !type.equals("Computer")){
-			strMain = sMain.getText(); modif[5] = (!strMain.equals(model.getMain()));
-			strAdd = sAdd.getText(); modif[6] = (!strAdd.equals(model.getAdd()));
+			String temp ="";
+			strMain = sMain.getText(); temp = StringWork.isAlfa("", strMain);
+			if (!strMain.equals(temp)){
+				sMain.setText(temp); strMain = temp;
+			}
+			modif[5] = (!strMain.equals(model.getMain()));
+			strAdd = sAdd.getText(); temp = StringWork.isAlfa(strMain, strAdd);
+			if (!strAdd.equals(temp)){
+				sAdd.setText(temp); strAdd = temp;
+			}
+			modif[6] = (!strAdd.equals(model.getAdd()));
 		}
 		strComm=sComm.getText();
 		modif[7] = (!strComm.equals(model.descr));

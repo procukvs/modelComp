@@ -125,10 +125,12 @@ public class Machine extends Model {
 		State state;
 		String move;
 		String res = "", noChar = "";
-		String allCh = "_" + alfa + no;
+		String allCh = "_" + main + add + no;
 		String goodCh = "_" + alfa;
+		//System.out.println("Machine:iswfModel: alfa = " + alfa + " allCh =" + allCh + ".."); 
 		for(int i = 0; i < program.size(); i++) {
 			state = (State)program.get(i);
+			//System.out.println("Machine:iswfModel: state.getGoing().size() = " + state.getGoing().size() + " allCh.lenght() =" + allCh.length() + ".."); 
 			for(int j = 0; j < state.getGoing().size(); j++){
 				String c = allCh.substring(j,j+1) ; 
 				//System.out.println("iswfModel j= " +j + " c =" + c + ".." + state.getGoing().size()); 
