@@ -11,9 +11,6 @@ import model.rec.Recursive;
 
 import java.awt.event.*;
 
-
-
-
 public class PnSelFunction extends JPanel {
 	private AllModels env = null;
 	private DgEval dEval;
@@ -42,6 +39,7 @@ public class PnSelFunction extends JPanel {
 	private Recursive rec = null;
 	private Function f = null;
 	private int rank = 0;
+	private Boolean isData=false;
 	
 	//ShowFunction(ShowWork owner) {  // !!!!!!ref!!!!!!!!!!!!!!!!!!
 	PnSelFunction() {                // !!!!!!ref!!!!!!!!!!!!!!!!!!            
@@ -171,13 +169,16 @@ public class PnSelFunction extends JPanel {
 		int cnt=0;
 		Model model = env.getModel();
 		this.env=env;
+		isData = false;
 		rec = (Recursive)model;
 		cnt = rec.program.size();
+		cbName.removeAllItems();
 		for (int i = 0; i < cnt; i++){
 			f = (Function)rec.program.get(i);
 			cbName.addItem(f.getName());
 		}
 		cbName.setEnabled(cnt>0);
+		isData = true;
 		if (cnt==0){
 			lName.setText("Ôóíêö³ÿ ... ");
 			rank = 0;
@@ -214,10 +215,12 @@ public class PnSelFunction extends JPanel {
 
 	private class FuncName implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			int i = cbName.getSelectedIndex();
-			f = (Function)rec.program.get(i);
-			setFunction(f); 
-			dEval.setShow(false);
+			if (isData){ 
+				int i = cbName.getSelectedIndex();
+				f = (Function)rec.program.get(i);
+				setFunction(f); 
+				dEval.setShow(false);
+			}	
 		}
 	}
 	
