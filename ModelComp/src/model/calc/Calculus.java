@@ -559,7 +559,7 @@ public class Calculus extends Model {
 		getChar(); get();
 		rb = term(cnt);
 		if (errorText.isEmpty()){
-			if (!eos) {
+			if (lex != 20) {                           // !eos) {
 				errorText = "Ќе знайдено к≥нц€ р€дка!";rb = null;
 			}
 		}

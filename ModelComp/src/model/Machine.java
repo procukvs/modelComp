@@ -315,12 +315,12 @@ public class Machine extends Model {
 		String text = con.tape;
 		String finState = con.st;
 		if (finState.equals(fin)){
-			//String noMain = StringWork.isAlfa("_" + main, text);
-			//if(noMain.length()==0){
+			String noMain = StringWork.isAlfa("_" + main, text);
+			if(noMain.length()==0){
 				if (text.equals("_")) text = "";
 				if (isNumeric) text = StringWork.transNumeric(text);
-			//}
-			//else text = "Невизначено: Не основний -" + noMain + "::" + text;   
+			}
+			else text = "Невизначено: Не основний -" + noMain + "::" + text;   
 		} else 
 			switch(finState.charAt(1)){
 			case 's': text = "Невизначено: Стан - " + finState.substring(2); break;

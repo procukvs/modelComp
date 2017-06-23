@@ -371,10 +371,18 @@ public class PnModButtons extends JPanel {
 	class ModelWork implements ActionListener  {
 		public void actionPerformed(ActionEvent e) {
 			if (model != null){
-				//System.out.println("PnModButtons:ModelWork " + type + " " + model.id );
-				dEval.show(env);
-				//dEval.setModel(type, model);
-				dEval.show();
+				if (pDescription.testAndSave()){
+					String[] text= model.iswfModel();
+					if (text != null) 
+						 JOptionPane.showMessageDialog(PnModButtons.this,text);
+					else {
+				        //System.out.println("PnModButtons:ModelWork " + type + " " + model.id );
+				      	dEval.show(env);
+				      	//dEval.setModel(type, model);
+				      	//dEval.show();
+				      	dEval.setVisible(true);
+					}
+				}	
 			}		
 		}
 	}
