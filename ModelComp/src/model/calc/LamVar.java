@@ -13,6 +13,14 @@ public class LamVar extends Lambda {
 	public int getInd(){return ind;}
 	public int getLng(){return lng;}
 	public String toStringFull() {return "(Var " + name+":" +ind + ")";} 
+	public String toStringShort(LamNames nms, int wh) {
+		String txt="";
+		if (wh==2) txt = " . ";
+		if (ind==-1) txt = txt + name;  else  txt = txt + nms.fname(name, ind);
+		//System.out.println (" .... LamVar..." + txt + "..wh=.." + wh);
+		return txt;
+	} 
+	/*
 	public String toStringShort(int wh) {
 		String txt="";
 		if (wh==2) txt = " . ";
@@ -20,4 +28,5 @@ public class LamVar extends Lambda {
 		//System.out.println (" .... LamVar..." + txt + "..wh=.." + wh);
 		return txt;
 	} 
+	*/
 }

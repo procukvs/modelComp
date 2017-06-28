@@ -11,11 +11,12 @@ public class LamNmb extends Lambda {
 	public String getName(){return name;}
 	public int getInd(){return val;}
 	public String toStringFull() {return "(Nmb " + name + ")";} 
-	public String toStringShort(int wh) {
+	public String toStringShort(LamNames nms,int wh) {
 		String txt="";
 		if (wh==2) txt = " . ";
 		txt = txt+name;
 		//System.out.println (" .... LamNmb..." + txt + "..wh=.." + wh);
 		return txt;
 	} 
+
 }

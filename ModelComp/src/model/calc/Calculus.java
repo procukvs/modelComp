@@ -213,15 +213,20 @@ public class Calculus extends Model {
 	private ArrayList runEval(int max, LamContext ctx, Lambda t, boolean isStep){
 		ArrayList sl = new ArrayList();
 		int i=0; 
-		Lambda nx=t, pr; 
+		Lambda nx=t, pr , tmp; 
+		LamNames nms = new LamNames();
 		LamStep tst;
 		do{ pr = nx;
 		   // System.out.println("...Step " + i+ " " + pr.toStringFull());
 		   // System.out.println("...Step " + i+ " " + pr.toStringShort(0));
 		    if (isStep){
-		    	tst = evalStep(ctx,pr);
+		    	tst = evalStep(nms, ctx,pr);
 		    	if (tst!=null ){
 		    		//System.out.println(tst.toString());
+		    	      	// модиф≥кувати tst - rename (tst.getTerm()[0])  !!!
+		    		    //tmp = tst.getTerm()[0];
+		    		    //tmp.rename(nms);
+		    		    //tst.modify(tmp);
 		    		sl.add(tst);
 		    		nx = tst.getTerm()[0];
 		    	} else nx = null;
@@ -230,7 +235,21 @@ public class Calculus extends Model {
 		} 
 		while((i<=max) && (nx!=null) );
 		if(nx!=null) sl.add(new LamStep("¬иконано крок≥в б≥льше н≥ж " + max + "."));
-		else sl.add(new LamStep(""+(i-1), pr));
+		else {  // new LamStep(""+(i-1), rename(pr)  !!!
+			    //pr.rename(nms); 
+			sl.add(new LamStep(""+(i-1), pr));
+		}
+		/*
+		for(i= 0; i<sl.size(); i++ ){
+			tst = (LamStep)sl.get(i);
+			//System.out.println("Calculus.rumEval:" + i + "  " + tst.toString());
+		    tmp = tst.getTerm()[0];
+		    tmp.rename(nms);
+		    tst.modify(tmp);
+		    sl.set(i, tst);
+		    // sl.add(tst);
+		}
+		*/
 		return sl;
 	}
 	private Lambda eval(LamContext ctx, Lambda t){
@@ -274,7 +293,7 @@ public class Calculus extends Model {
 		return tr;	
 	}
 	
-	private LamStep evalStep(LamContext ctx, Lambda t){
+	private LamStep evalStep(LamNames nms, LamContext ctx, Lambda t){
 		LamStep tr=null, tempStep;
 		Lambda temp;
 		String txt;
@@ -285,9 +304,9 @@ public class Calculus extends Model {
 		}
 		switch (t.getClass().getSimpleName()){
 	    case "LamNmb": 	temp = integerTerm(t.getInd());
-	    				tr = new LamStep("Nmb",t.getName(),temp,temp);  break;
+	                    tr = new LamStep(nms,t.getName(),temp,temp);  break;  //"Nmb"
 	    case "LamVar":  temp = getBinding(ctx,t.getInd());
-	    				if (temp==null) tr = null; else tr = new LamStep("Var",t.getName(),temp,temp);
+	    				if (temp==null) tr = null; else tr = new LamStep(nms, t.getName(),temp,temp,t.getInd());  // "Var"
 	                     //System.out.println("    Binding: " + (tr==null?"Null":tr.toString())); 
 	                     break;
 	    case "LamApp": Lambda body = t.getBody();
@@ -298,22 +317,24 @@ public class Calculus extends Model {
 	                   if (body.getClass().getSimpleName().equals("LamAbs")){
 	                	 // body = LamAbs(x t12)  substitution 
 	                	 temp = termSubstTop(t.getArg(), body.getBody());
-	                	 tr = new LamStep("App", body.getName(),temp,t.getArg(), body.getBody());
+	                	 tr = new LamStep(nms,"App", body.getName(),temp,t.getArg(), body.getBody());
 	                   } else {
-	                	 tr = evalStep(ctx,body);
+	                	 tr = evalStep(nms,ctx,body);
 	                	 if (tr == null) {
-	                		 tr = evalStep(ctx,t.getArg());
+	                		 tr = evalStep(nms,ctx,t.getArg());
 	                		 if (tr == null) tr = null;
 	                		 else tr.modify(new LamApp(body,tr.getTerm()[0]));
 	                	 } else tr.modify(new LamApp(tr.getTerm()[0],t.getArg()));
 	                   }; break;
 	    case "LamLet":  temp = termSubstTop(t.getArg(),t.getBody());
-	    				tr = new LamStep("Let", t.getName(),temp,t.getArg(),t.getBody());
+	    				tr = new LamStep(nms, "Let", t.getName(),temp,t.getArg(),t.getBody());
 	    				break;
 	    case "LamAbs":  ctx.add(new LamBinding(t.getName(),null));
-	    	           tr = evalStep(ctx,t.getBody());
+	                   nms.add(t.getName());
+	    	           tr = evalStep(nms,ctx,t.getBody());
 	             	   if (tr == null) tr = null;
                 	   else tr.modify(new LamAbs(t.getName(),tr.getTerm()[0]));
+	             	   nms.delete();
 	             	   ctx.delete(); break;
 	    default:
 		}
@@ -421,7 +442,8 @@ public class Calculus extends Model {
 				row.add(ls.getWhat());
 				//row.add(ls.getTerm()[1]);
 				row.add(ls.takeArgs());
-				row.add(ls.getTerm()[0].toStringShort(0));
+				    String sres = ((Lambda)ls.getTerm()[0]).toStringShort(new LamNames(),0);
+				   row.add(sres);    //ls.getTerm()[0].toStringShort(0));
 				//row.add(ls.getTerm()[0].toStringFull());
 				data.add(row);
 			}
@@ -477,7 +499,7 @@ public class Calculus extends Model {
 		}
 		return res;
 	}
-	
+	/*
 	public Lambda findEqTerm(Lambda t, LamContext ctx ){
 		Lambda res = null;
 		if (!isNumber(t)){
@@ -491,6 +513,14 @@ public class Calculus extends Model {
 		} else res = inNumber(t);
 		return res;
 	}
+	*/
+	// перетворюЇмо Ћ»Ў≈!!! числов≥ терми в числа 
+	public Lambda findEqTerm(Lambda t, LamContext ctx ){
+		Lambda res = null;
+		if (isNumber(t)) res = inNumber(t);
+		return res;
+	}
+	
 	
 	public Lambda inNumber(Lambda t){
 		Lambda res = null;

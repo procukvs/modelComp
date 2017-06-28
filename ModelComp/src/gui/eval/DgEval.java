@@ -11,18 +11,11 @@ import java.util.*;
 import java.util.Date;
 
 import main.*;
-import model.AllModels;
-import model.Model;
-import model.Post;
-import model.calc.Calculus;
-import model.calc.LamStep;
-import model.calc.Lambda;
-import model.calc.LambdaDecl;
-import model.rec.Function;
-import model.rec.Recursive;
+import model.*;
+import model.calc.*;
+import model.rec.*;
 import db.*;
-import gui.FrMain;
-import gui.PnTree;
+import gui.*;
 import gui.model.PnDescription;
 
 public class DgEval extends JDialog {
@@ -294,7 +287,8 @@ public class DgEval extends JDialog {
 						pEvExpr.setResult(res.getName(), ""+(nodef+1));
 					} else{
 						Lambda rLd = ((Calculus)model).compressFull(res.getTerm()[0]);
-						pEvExpr.setResult(rLd.toStringShort(0), res.getName());
+						pEvExpr.setResult(rLd.toStringShort(new LamNames(), 0), res.getName());
+						//pEvExpr.setResult(rLd.toString(), res.getName());
 						//showEval.setVisible(showEvalLambda.getTest());
 						show.setEnabled(pEvExpr.getTest());
 					}

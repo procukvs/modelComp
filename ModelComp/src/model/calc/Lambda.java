@@ -14,15 +14,22 @@ public class Lambda {
 		return null;
 	}
 	public String toStringFull() {return "";} 
-	public String toStringShort(int wh) {
+	public String toStringShort(LamNames nms, int wh) {
 		// wh=2 --> in Abs-body , wh=1 --> in App fun, wh=0 --> else    
 		return "";
 	} 
+	
 	public String getName(){return "";}
 	public Lambda getArg(){return null;}
 	public Lambda getBody(){return null;}
 	public int getInd(){return (-1);}
 	public int getLng(){return (-1);}
+	/*
+	public String toStringShort(int wh) {
+		// wh=2 --> in Abs-body , wh=1 --> in App fun, wh=0 --> else    
+		return "";
+	} 
+	*/
 	/*
 	public String setRank(String name, HashMap <String, Lambda> map) {return "";}
 	public boolean isConst(HashMap <String, Lambda> map) {return false;}
