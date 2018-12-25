@@ -278,7 +278,8 @@ public class Recursive extends Model {
 		getChar(); get();
 		recBody();
 		if (errorText.isEmpty()){
-			if (!eos) errorText = "Не знайдено кінця рядка!";
+			//if (!eos) errorText = "Не знайдено кінця рядка!";
+			if (lex != 20) errorText = "Не знайдено кінця рядка!";
 		}
 		if (errorText.isEmpty()) return "Аналіз успішний!";
 		else return errorText;
@@ -291,7 +292,7 @@ public class Recursive extends Model {
 		getChar(); get();
 		rb = recBody();
 		if (errorText.isEmpty()){
-			if (!eos) {
+			if (lex!=20){    //(!eos) {
 				errorText = "Не знайдено кінця рядка!";rb = null;
 			}
 		}
@@ -346,7 +347,7 @@ public class Recursive extends Model {
 					get(); af.add(recBody());
 				}
 				exam(12, "символ ']'");
-				exam(10, "символ '('");
+				exam(10, "символ ')'");
 			}
 		}
 		if (errorText.isEmpty()) r = new RecSuper(f,af);
@@ -362,7 +363,7 @@ public class Recursive extends Model {
 			exam(13, "символ ','");
 			if (errorText.isEmpty()) {
 				h=recBody();
-				exam(10, "символ '('");
+				exam(10, "символ ')'");
 			}
 		}
 		if (errorText.isEmpty()) r = new RecPrime(g,h);
@@ -378,7 +379,7 @@ public class Recursive extends Model {
 			exam(13, "символ ','");
 			exam(2, "число");
 			if (errorText.isEmpty()) max = new Integer(valuePrev);
-			exam(10, "символ '('");
+			exam(10, "символ ')'");
 		}
 		if (errorText.isEmpty()) r = new RecSolve(g,max);
 		return r;
@@ -394,6 +395,7 @@ public class Recursive extends Model {
 	}
 	private void get() {
 		lex = 20;
+		                          //if (test) System.out.println("eos="+eos+" next="+next +"?");
 		while ((next == ' ') && !eos) getChar();
 		if (!eos){
 			valueLex = "";

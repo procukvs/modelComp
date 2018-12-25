@@ -29,7 +29,7 @@ public class Main {
 			// Запускає gui
 			fMain.setVisible(true);
 	    } 
-	    else System.out.println("No connection to DB Model.db -- version Teacher..");
+	    else System.out.println("No connection--- to DB Model.db -- version Teacher..");
 	}
 	
 	
