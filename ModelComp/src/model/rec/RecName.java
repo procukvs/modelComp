@@ -46,7 +46,11 @@ public class RecName extends RecBody {
 		return map.get(name).isConst(map);
 	}
 	public String iswf(HashMap <String, RecBody> map) {
-		return "";
+		// return "";
+		if (map.containsKey(name))  return "";
+			//if (StringWork.isIdentifer(name))  return "";
+			//else return "Імя функції " + name + " не ідентифікатор."; 
+		else return "Не знайдено функцію " + name + "."; 
 	}
 	public void setIswf(HashMap <String, RecBody> map) {
 		String st="";

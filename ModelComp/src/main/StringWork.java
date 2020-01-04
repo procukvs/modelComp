@@ -35,7 +35,7 @@ public class StringWork {
 	}
 
 	public static boolean isIden(char ch) {
-		return Pattern.matches("[a-zA-Z_0-9]", new String("" + ch));
+		return Pattern.matches("[a-zA-Z0-9]", new String("" + ch)); //("[a-zA-Z_0-9]", new String("" + ch));
 	}
 	
 	public static boolean isDigit(char ch) {
@@ -48,7 +48,7 @@ public class StringWork {
 	
 	public static boolean isIdentifer(String s) {
 		//Pattern pnum = Pattern.compile("tt");
-		return Pattern.matches("[a-zA-Z][0-9a-zA-Z_]*", s);
+		return Pattern.matches("[a-zA-Z][0-9a-zA-Z]*", s); // ("[a-zA-Z][0-9a-zA-Z_]*", s);
 	}
 	
 

@@ -190,19 +190,22 @@ public class Recursive extends Model {
 	public String fullAnalys(String name, String body){
 		String st = "";
 		RecBody rb = analysRecBody(body);
-		if (rb != null) {
-			HashMap <String, RecBody> map = new HashMap <String, RecBody>();
-			for(int i = 0; i < program.size(); i++){
-				Function f = (Function) program.get(i);
-				map.put(f.getName(),f.getBody());
-			}
-			st = rb.setRank(name, map);
-			if(st.isEmpty()){
-				st = rb.iswf(map);
-				if(!st.isEmpty()) st = "R:" + st;
-			}
-			else st = "R:" + st;
-		} else st = "S:" + errorText;
+		String stName = this.testNameCommand(name);
+		if(stName.isEmpty()){ 
+			if (rb != null) {
+				HashMap <String, RecBody> map = new HashMap <String, RecBody>();
+				for(int i = 0; i < program.size(); i++){
+					Function f = (Function) program.get(i);
+					map.put(f.getName(),f.getBody());
+				}
+				st = rb.setRank(name, map);
+				if(st.isEmpty()){
+					st = rb.iswf(map);
+					if(!st.isEmpty()) st = "R:" + st;
+				}
+				else st = "R:" + st;
+			} else st = "S:" + errorText;
+		} else st = "S:" + stName;
 		return st;
 	}
 	
