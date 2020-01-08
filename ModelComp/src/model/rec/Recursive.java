@@ -96,7 +96,7 @@ public class Recursive extends Model {
 		result = bf.eval(arg, this);
 		if (!noUndef){
 			if (reasonUndef.equals("Limit")) return "Невизначено (вичерпана загальна кількість кроків)";
-			else return "Невизначено (при виконанні операції " + reasonUndef + ")";
+			else return "Невизначено " + reasonUndef; //"Невизначено (при виконанні операції " + reasonUndef + ")";
 		} else	return "" + result;
 		
 	}
