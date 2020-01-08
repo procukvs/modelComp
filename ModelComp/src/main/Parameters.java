@@ -5,7 +5,7 @@ public class Parameters {
 	static String section = "base";
 	static String postVar = "duplicate";
 	static String recurSubst = "operation";
-	static String version = "1.0.0";
+	static String version = "5.0.4";
 	public static String getRegime() {
 		return regime;
 	}

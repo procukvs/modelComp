@@ -280,7 +280,8 @@ public class PnDescription extends JPanel {
 		}
 		if(!type.equals("Recursive") && !type.equals("Calculus")&& !type.equals("Computer")){
 			blnNumeric = isNumeric.isSelected();
-			modif[3] = (blnNumeric!=model.getIsNumeric());
+			modif[3] = (blnNumeric!=model.getIsNumeric()); 
+			//System.out.println("testAndSave: blnNumeric=" + blnNumeric);
 		}
 		if(!type.equals("Recursive") && !type.equals("Calculus")){
 			srank = iRank.getText();

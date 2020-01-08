@@ -72,24 +72,45 @@ public class DbMachine {
 		}
 	}	
 	
-	
-	
 	// створюЇ нову порожню машину “юр≥нга
 	public int newMachine() {
 		String name = db.findName("Machine","Machine");
 		int cnt = db.maxNumber("Machine")+1;
 		int rows;
+
 		String section = Parameters.getSection();
 		try{
-			sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','|#','','@a0', '@a0', 1,2,'new')";
-			rows=db.s.executeUpdate(sql);
-			if (rows == 0) cnt = 0;
+			db.conn.setAutoCommit(false);
+			try{			
+				//sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','|#','','@a0', '@a1', 1,2,'new')";
+				sql = "insert into tMachine values(" + cnt + ",'" + section + "','" + name + "','','','@a0', '@a1', 0,2,'new')";				
+				rows=db.s.executeUpdate(sql);
+				sql = "insert into tProgram values(" + cnt + ", 1, '@a0','initial state')";
+				rows=rows+db.s.executeUpdate(sql);
+				String symb = "_"; //"|_"; //"|#_";
+				String one;
+				for (int i = 0; i < symb.length(); i++){
+					one = symb.substring(i,i+1);
+					sql = "insert into tMove values(" + cnt + ", 1, '" + one + "','" + one + "', '@a1', '.')";
+					rows=rows+db.s.executeUpdate(sql);
+					// rows = 2;
+				}	
+				if (rows == symb.length()+ 2) db.conn.commit();
+				else {
+					cnt =0;
+					db.conn.rollback();
+					System.out.println("ERROR: Machine : forming new Mashine rows = " + rows);				
+				}
+			}
+			catch (Exception e) {
+				//System.out.println(e.getMessage());
+				db.conn.rollback();
+				System.out.println("ERROR: Machine :" + sql);
+				System.out.println(">>> " + e.getMessage());
+			}
+			db.conn.setAutoCommit(true);				
 		}
-		catch (Exception e) {
-			//System.out.println(e.getMessage());
-			System.out.println("ERROR: newMachine :" + sql);
-			System.out.println(">>> " + e.getMessage());
-		}
+		catch (Exception e) { System.out.println(e.getMessage());}	
 		return cnt;
 	}
 		

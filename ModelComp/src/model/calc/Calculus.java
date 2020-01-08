@@ -364,7 +364,7 @@ public class Calculus extends Model {
 		}
 	}
 	
-	public String fullAnalys(int num, String body){
+	public String fullAnalys(int num, String name, String body){
 		LamContext cnt = new LamContext();
 		int mxDecl = (num==0?program.size():num-1);
 		String st = "";
@@ -375,7 +375,8 @@ public class Calculus extends Model {
 			cnt.add(new LamBinding(f.getName(),f.getBody()));	
 		}	
 		rb = analysLambda(body, cnt);	
-		if(rb == null) st = errorText; 
+		if(rb == null) st = errorText;
+		if ((!StringWork.isIdentifer(name))&& st.isEmpty()) st = "Імя " + name + " - не ідентифікатор.";
 		return st;
 	}	
 		/*

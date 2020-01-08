@@ -106,7 +106,7 @@ public class DgEdCommand extends JDialog {
 				//System.out.println("Analys " + type);
 				Calculus calc = (Calculus)model;
 				LambdaDecl ld = (LambdaDecl)pCommand.getCommand();
-				pCommand.setLTesting(calc.fullAnalys(ld.getNum(),ld.gettxBody()));
+				pCommand.setLTesting(calc.fullAnalys(ld.getNum(),ld.getName(),ld.gettxBody()));
 			}
 		}
 	}

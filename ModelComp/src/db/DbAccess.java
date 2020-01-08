@@ -133,6 +133,7 @@ public class DbAccess {
 			sql = "select count(*) from " + tableModel(type) + 
 			      " where section = '" + Parameters.getSection() + "'";
 			s.execute(sql);
+			// System.out.println("getModelCount: " + type + " " + sql); 
 			rs = s.getResultSet();
             if((rs!=null) && (rs.next()))cnt = rs.getInt(1);
        	}
@@ -236,6 +237,7 @@ public class DbAccess {
 		//boolean go = true;
 		sql = "select name from " + tableModel(type) + 
 			  " where section = '" + Parameters.getSection() + "' order by name";
+		//System.out.println("getAllModel :" + sql );
 		try{ 
 			s.execute(sql);
 	        ResultSet rs = s.getResultSet();

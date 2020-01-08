@@ -475,9 +475,20 @@ public class PnCommand extends JPanel {
 			break;	
 		case "Calculus":
 			String nameLam =state.getText();
-			if (!StringWork.isIdentifer(nameLam))
-				mes.add("Імя виразу " + nameLam + " не Ідентифікатор !");
+			String errCal = ""; 
+			if (!what.equals("Edit"))errCal = calc.testNameCommand(nameLam);
+			if (!errCal.isEmpty()) mes.add(errCal);			
+			//if (!StringWork.isIdentifer(nameLam))
+			//	mes.add("Імя виразу " + nameLam + " не Ідентифікатор !");
 			break;
+		case "Recursive":
+			String nameFun =state.getText();
+			String errFun = ""; 
+			if (!what.equals("Edit"))errFun = recur.testNameCommand(nameFun);
+			// else if (!StringWork.isIdentifer(nameFun))
+			//	errFun = "Імя функції " + nameFun + " не Ідентифікатор !"; 
+			if (!errFun.isEmpty()) mes.add(errFun);
+			break;			
 		}
 		return mes;
 	}

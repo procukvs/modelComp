@@ -47,6 +47,11 @@ public class Recursive extends Model {
 			f.setBody(rb);
 			f.iswf = (rb != null);
 			if(rb == null) f.errorText = "S:" + errorText; 
+			if ((!StringWork.isIdentifer(f.name))&& f.errorText.isEmpty()) {
+				f.errorText = "S:Імя " + f.name + " - не ідентифікатор."; 
+				//System.out.println ("extend1 "+f.errorText);
+				f.iswf = false;
+			}	
 			map.put(f.name,rb);
 		}
 		for(int i = 0; i < program.size(); i++){
@@ -190,7 +195,7 @@ public class Recursive extends Model {
 	public String fullAnalys(String name, String body){
 		String st = "";
 		RecBody rb = analysRecBody(body);
-		String stName = this.testNameCommand(name);
+		String stName = ""; //this.testNameCommand(name);
 		if(stName.isEmpty()){ 
 			if (rb != null) {
 				HashMap <String, RecBody> map = new HashMap <String, RecBody>();
@@ -206,6 +211,7 @@ public class Recursive extends Model {
 				else st = "R:" + st;
 			} else st = "S:" + errorText;
 		} else st = "S:" + stName;
+		if ((!StringWork.isIdentifer(name))&& st.isEmpty()) st = "S:Імя " + name + " - не ідентифікатор.";
 		return st;
 	}
 	
